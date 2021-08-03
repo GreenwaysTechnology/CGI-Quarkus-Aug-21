@@ -1,0 +1,13 @@
+					QuarKus
+...........................................................................................
+What is QuarKus?
+
+ A Kubernetes Native Java stack tailored for OpenJDK HotSpot and GraalVM, crafted from the best of breed Java libraries and standards.
+
+In Quarkus you can built  monolithic and micro servies apps which we can run directly on containers(kubernetes) and native(host) machines, on JVM as well.
+Non Blocking and Async Programming
+Reactive Programming
+
+Quarks and JEE Standards
+Micro Profile -JEE Standards for microservices
+..............................................................................................

@@ -1,5 +1,3 @@
-
-
 Tech Stack:
 ...........
 
@@ -179,8 +177,12 @@ Distributed Application Design Pattern:
 ..............................................................................................
 	        Microservices Application Design Patterns
 .............................................................................................
+Monolith to Micro services:
+...........................
+Cube Model to scale app
 
-Microservices are subdomain driven model.
+-Functional Decomposition : DDD model- 
+   Microservices are subdomain driven model. 
 
 
 Data Layer-(Data Management) Design patterns In Microservices:
@@ -191,7 +193,6 @@ Data Layer-(Data Management) Design patterns In Microservices:
 4.API Composition
 5.CQRS
 6.Domain event
-
 7.Event sourcing
 ...........................................................................................  
 
@@ -250,9 +251,8 @@ class DebitCardService {
 
 }
 ............................................................................................
-
-Object (Service) Communication:
-..............................
+				Object (Service) Communication:
+.............................................................................................
 Service Communication style Design Pattern
 
 1.Remote Procedure Invocation
@@ -260,6 +260,216 @@ Service Communication style Design Pattern
 3.Domain-specific protocol
 4.Idempotent Consumer
 ...........................................................................................
+				Service Communication and failures
+
+Distributed Services are subject to fail,slow.
+
+Eg:
+
+ Service-A calls Service-B --may call external systems like db,apis,message middlewares.
+
+Service-B may fail due to various reasons
+   -Network failure
+   -Latancy issues
+   -Exceptions and Errors
+
+Because of One Service Failure
+The entire system should not fail.
+..............................................................................................
+                           Micro Service Design pattern to handle failures
+			           (Realiability Patterns)
+.............................................................................................
+
+Incase failure happens, Reality Patterns gives alternate solution to the caller(clients).
+
+1.CircuitBreaker
+2.BulkHead
+3.ReateLimiter
+4.Retry
+5.TimeLimiter
+6.Fallbacks using cache
+..............................................................................................
+				   Service Identification and Communication
+..............................................................................................
+				
+If services are talking each other in network we need to know
+
+-location of the service and port address of the service.
+
+incase if services are running containers and cloud env, where ip address is dynamic, how services can collabrate using ip address/dns names.
+.............................................................................................
+			      Service Registry and Discovery Patterns
+...............................................................................................
+
+What is Service Registry?
+   
+   Middleware where services are registered before access them.  
+
+Service Registries are third party softwares
+
+1.Apache Zookeeper
+2.Consul
+3.Netflix eureka
+4.Redis
+etc......
+
+Why Service Registry?
+
+-Where are services are hosted in dynamic virtualized or containerized env where we cant identify the service instances.
+
+What is Discovery ? 
+  Looking up/Search services from Service Registry
+............................................................................................
+  		          Scalability and High Availablity
+............................................................................................
+
+What if i want to run the same instance multiple copies?
+ This is called horizintal scaling 
+
+When we scale apps, we need to indentifiy which instance will be served to the caller service.
+
+Load Balancer  is component which takes cares of selecting right instance based on algorthims provided by load balancer.
+
+Algorthims may be round robin,random,cpu usage based,sharding , latency based.
+..............................................................................................
+			     How to deploy microservices in production
+				     Deployment Patterns
+..............................................................................................
+
+1.Multiple services per host.
+2.Single Service instance per host
+3.Service instance per vm
+4.Service instance per container
+5.Servless Deployment
+6.Service Deployment Platforms
+..............................................................................................
+				 Development and Production Common things
+
+1.Configuration:
+   How to configure application properties
+   -Settings
+      db
+      web
+      security
+      app dynamic parameters
+
+We can maintain externalized / distribtued configuration system - Centeralized Configuration
+information
+ -database
+ -mailing
+ -registry
+ -payment gate
+ -passwords/ walets
+
+It can a server.
+ -ldap
+ -kubernets - config map
+ -apache zookeeper
+
+What ever key value server.
+.............................................................................................
+				Maintaince/Management patterns
+............................................................................................
+Monitoring /Managing Patterns:
+..............................
+
+1.Logging
+  Logs with in Services
+
+Log Types:
+-Console Logs
+-File Based logs
+-Database logs
+
+				How to log centeralized and anaylis
+
+1.ELK
+2.Graylog
+3.EFK
+4.Sys logs
+..............................................................................................
+					Mertics
+
+Perfomance Management:
+
+How to measure microservices performance?
+
+Memory,Process,threads....
+
+1.Prometheus
+2.DataDog
+3.MicroMeter
+..............................................................................................
+				  Tracing
+		
+How to trace service calls?
+ service to service call duration,response time.
+
+1.Zipkin
+2.Jaeger
+.............................................................................................
+				Health Patterns and Tools
+............................................................................................
+
+Health of
+-database
+-web end points
+-message server health
+
+1.Prometheus
+2.actuator 
+..............................................................................................
+				 External API GateWay
+
+Api Gate way can be used for connecting microservices in and outside world.
+
+Api gateways
+
+1.apigee way
+2.aws
+3.Netfilx api gateway
+4.Nginx
+.............................................................................................
+			          Micro Services Security
+............................................................................................
+
+Authentication and authorization
+
+In micro servies and gateways patterns, microservices consist of numerous services.
+The api gate way is the single entry point for client request.
+It authenticate requests, and forwards them to other services, which might in turn invoke other services
+
+In monlith systems, auth implemented via "Session Tokens" -  userid and password is exchanged
+via "cookie" header.
+............................................................................................
+				Implementation : JSON Web Token
+............................................................................................
+
+JWT is also token based pattern like "session Tokens" , where session tokens are very usefull only if the application is hosted in single server.
+
+Since session token cant be used to track apps running in different process. so we can use 
+JWT , Sticky Session from api gateway.
+.............................................................................................
+   		 Micro Service Pattern/Architecture Implementation
+............................................................................................
+
+Microservies can be implemented on any platform(os), on language - Platform,language indepand.
+
+Micro service implmentions On JVM:
+..................................
+
+1.Spring Framework provides an Project - Spring Cloud
+2.Quarkus Framework provides an project - MicroProfile ---SmallRye
+3.Ecplise Vertx
+4.MicroNaut - written in Kotlin
+5.Light4J
+etc.......
+..............................................................................................
+
+
+
+
+
 
 
 
