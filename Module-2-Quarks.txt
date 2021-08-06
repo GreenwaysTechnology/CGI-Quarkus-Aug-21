@@ -377,23 +377,26 @@ The aim is to align the native-image capabilities from GraalVM with OpenJDK and 
 Lab: Set up GraalVM : How to build native image?
 
 Steps:
-sudo apt-get update 
-sudo apt-get install gcc zlib1g-dev build-essential
 
-wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0.2/graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz
+1.sudo apt-get update 
 
-tar -xvzf graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz
-ls
+2.sudo apt-get install gcc zlib1g-dev build-essential
 
-sudo mkdir /usr/lib/jvm 
-sudo mv graalvm-ce-java11-21.0.0.2/ /usr/lib/jvm
+3.wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0.2/graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz
 
-echo 'export PATH=/usr/lib/jvm/graalvm-ce-java11-21.0.0.2/bin:$PATH' >> ~/.bashrc
+4.tar -xvzf graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz
+
+5.ls
+
+6.sudo mkdir /usr/lib/jvm 
+7.sudo mv graalvm-ce-java11-21.0.0.2/ /usr/lib/jvm
+
+8.echo 'export PATH=/usr/lib/jvm/graalvm-ce-java11-21.0.0.2/bin:$PATH' >> ~/.bashrc
 
 
-echo 'export JAVA_HOME=/usr/lib/jvm/graalvm-ce-java11-21.0.0.2' >> ~/.bashrc
+9.echo 'export JAVA_HOME=/usr/lib/jvm/graalvm-ce-java11-21.0.0.2' >> ~/.bashrc
 
-logout
+10.logout
 
 source ~/.bashrc
 
@@ -402,13 +405,14 @@ gu install native-image
 gu available 
 javac HelloWorld.java
 native-image HelloWorld
+ls
 ./helloworld
 .............................................................................................
 How to Run  Quarkus Application?
 
 
 1.Dev Mode
-
+  mvnw compile
 
 2.Production Mode
 
@@ -428,6 +432,34 @@ How to build native Image out of Quarks App
  mvnw package -Pnative
 
  To run this command we need GraalVM setup must be there in host machine or where we are building binary.
+
+.............................................................................................
+
+Lab : 
+
+- create simple project
+
+-Run
+ -dev
+package
+ - jar
+ -uber jar
+ -native image
+    -using docker build
+         mvnw package -Pnative  -Dquarkus.native.container-build=true  -Dquarkus.native.container-runtime=docker
+
+    -using graalvm native build
+	mvnw package -Pnative
+
+/home/ramya/myquarkusapps / getting-started
+
+
+
+
+
+
+
+
 
 
 
