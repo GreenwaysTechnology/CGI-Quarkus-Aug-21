@@ -260,8 +260,6 @@ jar file creation.
 Fat JAR:
 A Fat JAR is a single JAR file that contains all the compiled Java classes from your project, and all compiled Java classes from all JAR files your project depends on (see Maven Dependencies). ... Fat JARs are handy when you need to build an executable JAR file, e.g. a microservice executable
 
-A Fat JAR is a single JAR file that contains all the compiled Java classes from your project, and all compiled Java classes from all JAR files your project depends on (see Maven Dependencies). ... Fat JARs are handy when you need to build an executable JAR file, e.g. a microservice executable
-
 Packaging and running the application
 
 The application can be packaged using:
@@ -296,7 +294,7 @@ With JVM:
 
 Native App:
 
-How to convert Quarkus app into native binar and run ? without JVM
+How to convert Quarkus app into native binary and run ? without JVM
 
 
 How to build Native Image?
@@ -339,4 +337,106 @@ if you want to convert
 Building Native Image using Docker 
 
 mvnw package -Pnative  -Dquarkus.native.container-build=true  -Dquarkus.native.container-runtime=docker
+..............................................................................................
+				  GraallVM	
+.............................................................................................
+
+What is GraalVM?
+  GraalVM is the next generation compiler to compile java and other code into native binary
+to achive language interoperability.
+
+GRALLVM provides a compiler call "Grall" 
+
+ Grall is extension compiler works along with JVM - HOT SPOT
+
+java  --grall App
+
+GrallVM provides lot of tools to work with native images and other language
+
+1.sulong: 
+  Memory manager
+2.Truffle Framework
+   Language framework to run java like apps with out jvm,node,phython runtimes.
+3.Grall Compiler  
+    supports compiling java code statically, dynamically
+4.JVM COMPILER interface
+    to plugg grall compiler along with existing javac compiler
+5.Java hotpot jvm
+    Grallvm compiler + hot Spot + JIT + AOT
+
+.......................................................................................
+			      JVM
+Hello.java -->Hello.class--|--ClassLoader---|SM---|init---|invokeDynamic---|Refelcetion,proxy| --|Class Object(meta Object)-----instance Creation---lives in memory-heap---
+
+
+Mandrel
+Mandrel is a downstream distribution of the GraalVM community edition. Mandrel's main goal is to provide a native-image release specifically to support Quarkus. 
+The aim is to align the native-image capabilities from GraalVM with OpenJDK and Red Hat Enterprise Linux libraries to improve maintainability for native Quarkus applications.
+.........................................................................................
+
+Lab: Set up GraalVM : How to build native image?
+
+Steps:
+sudo apt-get update 
+sudo apt-get install gcc zlib1g-dev build-essential
+
+wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0.2/graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz
+
+tar -xvzf graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz
+ls
+
+sudo mkdir /usr/lib/jvm 
+sudo mv graalvm-ce-java11-21.0.0.2/ /usr/lib/jvm
+
+echo 'export PATH=/usr/lib/jvm/graalvm-ce-java11-21.0.0.2/bin:$PATH' >> ~/.bashrc
+
+
+echo 'export JAVA_HOME=/usr/lib/jvm/graalvm-ce-java11-21.0.0.2' >> ~/.bashrc
+
+logout
+
+source ~/.bashrc
+
+java -version 
+gu install native-image
+gu available 
+javac HelloWorld.java
+native-image HelloWorld
+./helloworld
+.............................................................................................
+How to Run  Quarkus Application?
+
+
+1.Dev Mode
+
+
+2.Production Mode
+
+-Running on JVM On host
+  -using Jar patterns
+-Running on JVM On Container which run on Host/Cloud
+
+-Running on Host without JVM
+   -Using Native Image
+How to build native Image out of Quarks App
+
+- Build native binary using Docker Container, Here docker is build system to build native
+   mvnw package -Pnative  -Dquarkus.native.container-build=true  -Dquarkus.native.container-runtime=docker
+
+-Build native binary using GrallVM Itself.
+
+ mvnw package -Pnative
+
+ To run this command we need GraalVM setup must be there in host machine or where we are building binary.
+
+
+
+
+
+
+
+
+
+
+
 
