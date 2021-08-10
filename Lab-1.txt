@@ -1,0 +1,30 @@
+
+Lab 1 : create REST api for the following urls
+
+http://example.com/api/orders
+http://example.com/api/orders/{orderId}
+http://example.com/api/orders/{orderId}/items
+http://example.com/api/orders/{orderId}/items/{itemId}
+
+Lab 2: Create REST API based on the below url
+
+
+Final Url , must be numbers 
+max length 5
+min length 3
+
+http://localhost:8080/users/finders/12345 - max 5
+http://localhost:8080/users/finders/123  -min 3
+
+
+invalid
+http://localhost:8080/users/finders/12
+http://localhost:8080/users/finders/123456
+
+Design Path based on the above req.
+
+Lab 3: Design Url for the given URI
+
+"/aaa111bbb"
+"/bill-02115"
+"foobill-02115bar"

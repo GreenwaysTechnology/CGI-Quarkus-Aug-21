@@ -286,7 +286,7 @@ Lab Side :
 2.Build fat 
 ./mvnw package -Dquarkus.package.type=uber-jar
 The application is now runnable using 
-`java -jar target/getting-started-1.0.0-SNAPSHOT-runner.jar`.
+$java -jar target/getting-started-1.0.0-SNAPSHOT-runner.jar
 
 .............................................................................................
 
@@ -398,14 +398,14 @@ Steps:
 
 10.logout
 
-source ~/.bashrc
+11.source ~/.bashrc
 
-java -version 
-gu install native-image
-gu available 
-javac HelloWorld.java
-native-image HelloWorld
-ls
+12.java -version 
+13.gu install native-image
+14.gu available 
+15.javac HelloWorld.java
+16.native-image HelloWorld
+17.ls
 ./helloworld
 .............................................................................................
 How to Run  Quarkus Application?
@@ -452,22 +452,598 @@ package
 	mvnw package -Pnative
 
 /home/ramya/myquarkusapps / getting-started
+..............................................................................................
+					Quarkus Modules
+..............................................................................................
+
+Modules:
+
+1.core
+2.web
+3.data
+4.microservies
+5.cloud
+6.security
+..............................................................................................
+					Web Module
+..............................................................................................
+
+Web Module : 
+
+ Restfull Web Services : HTTP based Micro Services
+
+Quarkus has been built on JEE Standards
+
+Web Service Standards:
+
+1.JAX-RS - Building Restfull api 
+2.JAX-WS - SOA -Soap and XML based Web Services
+
+JAX-RS 
+ Spec Doc url : https://download.oracle.com/otn-pub/jcp/jaxrs-2_0-fr-eval-spec/jsr339-jaxrs-2.0-final-spec.pdf?AuthParam=1628233398_2da58a3072d802256d822163050b633f
+
+Apache RestEasy Framework which implements JAX-RS spec.
+
+Apache RestEasy implements even MicroProfile Spec as well
+ -Config Spec
+ -WebClient Spec
+
+Quarkus abstracts or implements Apache RestEasy implementation.
+
+
+maven Dependancy:
+<dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+</dependency>
+
+RESTFull WebServices:
+.....................
+
+Representational State Transfer (REST)
+
+
+Representational :
+  The Data Format.
+  Data is encaspulted inside object , object can be transfered into format and send over network.
+
+  Java Object -----|XML /JSON(Representation)------send over network-----|Parsing---| Object
+
+   Object to String
+   String to Object
+
+
+State : 
+   Object state - OBject data
+
+Transfer 
+  Moving from one place to another.
+
+.............................................................................................
+
+How to begin Restfull Web Service based distributed App?
+
+1.Identifying Model(Object)-Domain Object
+
+ eg:
+  Customer,Order,Inventory,Products,Items
+
+2.Resources
+   
+    Program, having apis , gets exectued when ever request comes for accessing object.
+
+ In java Resource is class.
+
+   public class OrderResource{
+
+   }
+   public class CustomerResource{
+
+   }
+
+    public class ProductResource{
+
+   }
+
+Coding Standard according jax-rs spec
+
+  Any resource class must be 
+  
+  -meaningfull to the domain model
+     Order
+  -Noun
+      Order
+  -Should have suffix Resource
+      OrderResource  
+  
+
+3.Model URI
+
+ URI - Uniform Resource Identifier.
+
+ /api/orders
+ /api/customers
+ /api/orders/1
+ /api/products/1
+ 
+
+Client(Could be  humman being or anythoer system(app)) wants data from Distributed System.
+
+Client-----------request(want)---------System---Running on Another Software(WebContainer)---Runs Resources
+
+HTTP Protocal:
+..............
+
+What is Protocal?
+
+  In Computer, where ever you transfer data , there is protocal.
+
+http://identification:port/resource/subreource
+https://
+jdbc://
+soap://
+c:/
+ftp://
+ |
+scheme
+
+ 
+What is HTTP Protocal?
+  
+ It is set of rules for transfering web documents(html,img,videos,docs,pdf,json,xml) over internet.
+  -Type of web document identified by - application/xxx - Media Type
+
+How to represent http protocal?
+  
+is it software /hardware?
+
+HTTP is Program written in C langauge
+
+HTTP Program types
+
+1.HttpRequest.c
+2.HttpResponse.c
+3.HttpSocket.c
+
+Program contain two things:
+
+1.Variables 
+2.Methods/functions
+
+HTTP Program also contains 
+
+variables
+    - HTTP headers - content-type,auth,cookie,date.....
+methods
+    - functions are called HTTP methods
+
+ get,post,put,delete,trace,options,head............
+
+ void main(){
+
+     int * get(args) {
+	logic.... for get-- read operations
+     }
+ }
+
+Web Server:
+  It is program which calls http functions
+
+Flow of HTTP
+
+Client GET /api/resource----------------|WebServer----function get() { 
+							return "something" // response
+						       }
+
+
+HTTP Programming Models:
+
+In 1996, Many Companies wanted to abstract http  layer to build http driven distributed apps
+
+- J2EE -  Servlet--- Abstraction on HTTP Core apis
+- ASP - Microsoft
+- PHP
+
+REST also uses exsiting http arch.
+
+JAX-RS is spec to design REST based web app using annotations.
+
+
+JAX-RS Annotations:
+
+1.Resource Identifier
+ 
+@Path
+
+2.HTTP Method Binding
+ 
+@GET,@POST,@PUT,@DELETE,@TRACE
+
+
+
+REST Resource:
+
+package org.cgi.getting.started;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/hello")
+public class GreetingResource {
+    @GET
+    public String sayHello() {
+        return "Hello";
+    }
+}
+
+PATH Design
+Responses
+Negotiation
+
+ -Content - json,xml...
+ -Language
+ -Encoding
+..............................................................................................
+
+HTTP Resources and Methods:
+...........................
+
+Use case :  How to design Resource with HTTP methods.
+
+
+@Path:
+
+ -Annotation can be used at class Level - Root Resource
+ -Annotation can be used at method level - Nested Resource
+
+/mainresource/subresource
+  |             |
+class         method
+
+GET:
+  GET is a read-only operation. 
+  It is used to query the server for specific information.
+  It is both an idempotent and safe operation. 
+
+Idempotent means that 
+  no matter how many times you apply the operation, the result is always the same.
+
+Safe means that
+invoking a GET does not change the state of the server at all. This means that, other
+than request load, the operation will not affect the server.
 
 
 
 
+Client asks that give me some thing (document,image,pdf,data).
+
+Client sends request(instruction)----------http----------------|WebServer - will call method 							-Get Method(function)---will do some 							 io operation --read image file----
+							 Write into outputstream(response)
+Client will Recive Response <-----------------------------------------
+    
 
 
+Every Resource must have mapped at least one http method mapping.
 
 
+package com.cgi.rest;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/users")
+public class UserResource {
+
+    @GET
+    public String getUser(){
+        return "Subramanian";
+    }
+}
 
 
+Without @GET, it will cause an error.
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/users")
+public class UserResource {
+
+    
+    public String getUser(){
+        return "Subramanian";
+    }
+}
+
+What if a uri points multiple methods having Same Request HTTP Method.
+
+@Path("/users")
+public class UserResource {
+
+    @GET
+    public String getUser(){
+        return "Subramanian";
+    }
+
+    @GET
+    public String getInfo(){
+        return "Info";
+    }
+}
+
+Look at console
+2021-08-09 13:42:48,400 WARN  [org.jbo.res.res.i18n] (executor-thread-0) RESTEASY002142: Multiple resource methods match request "GET /users". Selecting one. Matching methods: [public java.lang.String com.cgi.rest.UserResource.getUser(), public java.lang.String com.cgi.rest.UserResource.getInfo()]
+
+Resoult would be last method result.
+
+info
+
+How to use @Resource at method level and class Level
+
+package com.cgi.rest;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/users")
+public class UserResource {
+
+    @GET
+    public String getUser(){
+        return "Subramanian";
+    }
+
+    @GET
+    @Path("/info")
+    public String getInfo(){
+        return "Info";
+    }
+}
+
+What if @Path is not used at class level?
+
+package com.cgi.rest;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+public class UserResource {
+
+    @GET
+    @Path("/users")
+    public String getUser(){
+        return "Subramanian";
+    }
+
+    @GET
+    @Path("/info")
+    public String getInfo(){
+        return "Info";
+    }
+}
+
+//http://localhost:8080/users
+
+We will get 404 -Resource Not Found Error.
+..........................................................................................
+
+PUT:
+    Requests that the server store the message body sent with the request under
+the location provided in the HTTP message.
+
+It is usually modeled as an insert or update.
+It is also idempotent.
+
+POST
+    POST is the only nonidempotent and unsafe operation of HTTP.
+
+Each POST method is allowed to modify the service in a unique way.
+You may or may not send information with the request.
+You may or may not receive information from the response.
+
+DELETE
+  DELETE is used to remove resources. 
+  It is idempotent as well.
 
 
+HEAD
+  HEAD is exactly like GET except that instead of returning a response body, it
+returns only a response code and any headers associated with the request.
+
+OPTIONS
+
+ OPTIONS is used to request information about the communication options of the
+resource you are interested in. 
+It allows the client to determine the capabilities of a server and a resource without triggering any resource action or retrieval.
 
 
+package com.cgi.rest;
+
+import javax.ws.rs.*;
+
+@Path("/users")
+public class UserResource {
+
+    @GET
+    public String getUser(){
+        return "Subramanian";
+    }
+
+    @GET
+    @Path("/info")
+    public String getInfo(){
+        return "Info";
+    }
+
+    @PUT
+    public String updateUser(){
+        return "Updated";
+    }
+
+    @POST
+    public String save(){
+        return  "saved";
+    }
+    @DELETE
+    public String remove(){
+        return "Removed";
+    }
+}
+..............................................................................................
+				  JAX-RS Injection
+.............................................................................................
+
+What is injection?
+
+ JAX-RS is pulling information from an HTTP request and injecting it into a java method.
+
+We can get information after injection
+
+-Fragement of incoming URI
+-QueryString in a URI.
+-The client might be sending some critical HTTP headers(request Header) or cookie values.
+
+How to inject jax-rs annotations.
+
+-@PathParam
+-@MatrixParam
+-@QueryParam
+-@HeaderParam
+-@FormParam
+-@CookieParam
+-@Context
 
 
+@PathParam: 
+  is used to form dynamic URI
+/products/1 - here 1 is dynamic
+i want to return product information having id 1.
+
+@Path("{id}")
+@Path("/products/{id}")
+
+
+Use case : how to use path param , inject pathparam and read values
+package com.cgi.res.params.path;
+
+
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/library")
+public class LibraryResource {
+
+    @GET
+    public String getBooks(){
+        return "Books";
+    }
+
+    //library/book/123345
+    @GET
+    @Path("/book/{isbn}")
+    public String getBookyById(@PathParam("isbn") String isbn){
+        return "Book by isbn" + isbn;
+    }
+   
+}
+
+Use case : if path param uri looks like different but which shares same url pattern
+
+Note : Method Selection always based on URL Patterns not method signature
+
+
+  @GET
+    @Path("/book/{isbn}")
+    public String getBookyById(@PathParam("isbn") int isbn){
+        return "Book by isbn" + isbn;
+    }
+    @GET
+    @Path("/book/{authorName}")
+    public String getAuthor(@PathParam("authorName") String authorName){
+        return "Author - " + authorName;
+    }
+
+This code will match always the first one , second one will be skipped.
+
+package com.cgi.res.params.path;
+
+
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/library")
+public class LibraryResource {
+
+    @GET
+    public String getBooks(){
+        return "Books";
+    }
+
+    //library/book/123345
+    @GET
+    @Path("/book/{isbn}")
+    public String getBookyById(@PathParam("isbn") int isbn){
+        return "Book by isbn" + isbn;
+    }
+    @GET
+    @Path("/book/author/{authorName}")
+    public String getAuthor(@PathParam("authorName") String authorName){
+        return "Author - " + authorName;
+    }
+}
+.............................................................................................
+			    Path Design using Regular Expressions
+.............................................................................................
+
+Regular expression is one of the most popular text processing patterns
+
+https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
+
+
+The @Path template variable is not limited to a fixed string expression, we can also use regular expressions for them. The regex must be a valid expression per Java regex specs.
+
+By default, the URI variable must match the regular expression "[^/]+?".
+
+That means a path of one or more characters value will match, also the leading '/' is always ignored, so it's not necessary to always put a leading '/' in path variable names.
+
+Syntax for using regex
+@Path("fixedPart/{variable: regex}")
+
+The following example restrict user name to be only of lowercase and uppercase alphanumeric characters.
+
+@Path("users/{username: [a-zA-Z][a-zA-Z_0-9]*}")
+
+
+package com.cgi.rest.params;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+@Path("/users")
+public class UserResource {
+
+    /**
+     *@Path("list/{userName:[a-zA-Z][a-zA-Z_0-9]*}")
+     * valid urls
+     * localhost:8080/users/list/Subramanian
+     * localhost:8080/users/list/SUBRAMANIAN
+     * localhost:8080/users/list/SUBRAM12333ANIAN
+     *  @Path("list/{userName:[a-zA-Z]*}")
+     *  valid urls:
+     *  localhost:8080/users/list/SUBRAMANIAN
+     */
+    @GET
+    //@Path("list/{userName:[a-zA-Z][a-zA-Z_0-9]*}")
+    @Path("list/{userName:[a-zA-Z]*}")
+    public String getUser(@PathParam("userName") String userName) {
+        return "User Name Regex" + userName;
+    }
+}
 
 
 
