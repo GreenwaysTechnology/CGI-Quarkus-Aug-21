@@ -1044,7 +1044,125 @@ public class UserResource {
         return "User Name Regex" + userName;
     }
 }
+.............................................................................................
+				    Query Parameters
+.............................................................................................
+
+@QueryParam :
+ It is used to read request parameter which was supplied via Query Strings
+
+ GET /books?num=5
+ GET /customers?start=1&size=10
+package com.cgi.rest.params;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+
+@Path("/queryresource")
+public class QueryParamResource {
+
+//localhost:8080/queryresource?num=10&start=1&size=100
+    @GET
+    public String getQueryParam(@QueryParam("num") int num, @QueryParam("start") int start, @QueryParam("size") int size) {
+        return "Query Params" + num + " " + start + " " + size;
+    }
+}
+........................................................................
+What if i have more parameters? i have to inject into method in order to access all parameters
+We have short cut to read all parameters using One Object.
+............................................................................................
+				  Context Object
+............................................................................................
+
+Context Object represents "container". Using context object we can access many information.
+
+Information:
+
+javax.ws.rs.core
+1.HttpHeaders
+2.UriInfo
+3.Request
+4.HttpServletRequest - ServletRequest
+5.HttpServletResponse
+6.ServletConfig
+7.ServletContext
+8.SecurityContext
+............................................................................................
+                             Accssing Query Params using Context
+.............................................................................................
+
+
+package com.cgi.rest.params;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+
+@Path("/queryresource")
+public class QueryParamResource {
+    @GET
+    public String getQueryParam(@QueryParam("num") int num, @QueryParam("start") int start, @QueryParam("size") int size) {
+        return "Query Params" + num + " " + start + " " + size;
+    }
+
+    //localhost:8080/queryresource/ctx?num=10&start=1&size=100
+    @GET
+    @Path("ctx")
+    public String getQueryParamUsingContext(@Context UriInfo uriInfo){
+        String num = uriInfo.getQueryParameters().getFirst("num");
+        String start =uriInfo.getQueryParameters().getFirst("start");
+        String size = uriInfo.getQueryParameters().getFirst("size");
+        return "Query Params using ctx " +  num + " " + start + " " + size;
+    }
+}
+..............................................................................................
+				 Matrix Parameters
+
+Matrix Parameter is used along with Path Parameter, in order to add more values for given path.
+
+Car Information:
+
+/car/{make}/{model}/{year}
+
+/car/mercedes/e55;color=black/2008
+		    |
+		 Matrix Parameter
+
+To read Matrix Parameter value @MatrixParam("color") String color
+
+package com.cgi.rest.params;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.MatrixParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+@Path("/car/{make}")
+public class CarResource {
+
+    //localhost:8080/car/mercedes/e55;color=black/2008
+    @GET
+    @Path("/{model}/{year}")
+    public String getCarInfo(@MatrixParam("color") String color,
+                             @PathParam("make") String make,
+                             @PathParam("model") String model,
+                             @PathParam("year") String year
+    ) {
+
+        return "Car " + color + make + model + year;
+    }
+}
+..............................................................................................
 
 
 
+
+
+
+
+
+	
 

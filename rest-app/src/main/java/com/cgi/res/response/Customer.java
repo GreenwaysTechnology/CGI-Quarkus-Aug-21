@@ -1,5 +1,8 @@
 package com.cgi.res.response;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "customer")
 public class Customer {
     private  int id;
 

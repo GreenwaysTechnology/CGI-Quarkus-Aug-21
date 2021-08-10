@@ -20,7 +20,7 @@ public class CustomerResource {
 //    }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML} )
     public Response getCustomer() {
         Customer customer = new Customer();
         customer.setId(1);
@@ -28,13 +28,14 @@ public class CustomerResource {
         return Response.ok(customer).build();
     }
 
-//    @GET
-//    @Path("/list")
-//    public List<Customer> getCustomers() {
-//        Customer customer = new Customer();
-//        customer.setId(1);
-//        customer.setName("Subramanian");
-//        List<Customer> customers = Arrays.asList(customer);
-//        return customers;
-//    }
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Customer> getCustomers() {
+        Customer customer = new Customer();
+        customer.setId(1);
+        customer.setName("Subramanian");
+        List<Customer> customers = Arrays.asList(customer);
+        return customers;
+    }
 }
