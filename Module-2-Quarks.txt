@@ -1156,6 +1156,247 @@ public class CarResource {
     }
 }
 ..............................................................................................
+				Header Parameter
+                                  @HeaderParam
+
+This annotation is used to inject http request header values.
+For eg : Server is interested to know or read all client http request headers
+like content type,accept,language,encoding,client details....
+
+package com.cgi.rest.params;
+
+import org.jboss.resteasy.annotations.jaxrs.HeaderParam;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import java.util.Set;
+
+@Path("/headers")
+public class HeaderParamResource {
+
+    @GET
+    public String getHeaderInfo(@HeaderParam("Content-Type") String contentType ,@HeaderParam("Accept") String acceptType){
+            return "Header" + contentType + " " + acceptType;
+    }
+    @GET
+    @Path("/all")
+    public String getAllHeaders(@Context HttpHeaders httpHeaders){
+        //print only headers and not values - keySet returns only key portion
+        httpHeaders.getRequestHeaders().keySet().forEach(header->{
+            System.out.println(header);
+        });
+         return "all";
+    }
+}
+.................................................................................................
+				Cookie Params
+.............................................................................................
+
+if you want to read cookie and send cookie
+
+we can use @CookieParam to read cookie value.
+
+cookie is used to exchange information between client and server for unquie identification.
+
+
+Steps:
+
+1.Server should send cookie to the client
+
+2.Client should send the same cookie to the server
+  
+From the server , if i want read cookie sent by client -@CookieParam 
+
+package com.cgi.rest.params;
+
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+
+@Path("/login")
+public class CookieParamResource {
+
+    //send cook
+    @GET
+    @Path("/createcookie")
+    public Response createCookie(@QueryParam("userName") String userName) {
+//        NewCookie cookie = new NewCookie("userName", "Subramanian");
+        NewCookie cookie = new NewCookie("userName", userName);
+
+        //send cookie to the client
+        return Response.ok("cookie sent").cookie(cookie).build();
+    }
+
+    @GET
+    public String getCookie(@CookieParam("userName") String userName) {
+        return "Cookie Name " + userName;
+    }
+
+}
+.............................................................................................
+				 Sending Data via Forms
+.............................................................................................
+
+
+Form data can be sent to the server , via "Payload-body".
+
+When the input request body is of the type "application/x-www-form-urlencoded" , aka html form,you can collect data into one single payload looks like an object, send to the the server.
+
+Now server can extract form parameters from the "Payload" using @FormParam
+
+<form method="post" action="resource/form">
+   <input type="text" name="firstName">
+   <input type="text" name="lastName">
+</form>
+We are going to use post man to send form data.
+
+
+package com.cgi.rest.params;
+
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
+@Path("/register")
+public class RegisterationFormResource {
+
+
+    @POST
+    @Path("/save")
+        public String save(@FormParam("firstName") String firstName, @FormParam("lastName") String lastName) {
+        return "Form saved" + firstName + lastName;
+    }
+
+}
+...........................................................................................
+				 @DefaultValue
+...........................................................................................
+@DefaultValue is a parameter annotation that can be combined with any of the other @*Param
+annotations to define a default value when the HTTP request item does not exits.
+
+eg:
+
+GET /book?num=10 
+
+public ReturnType getBook(@QueryParam("num") int num) {
+
+
+}
+
+package com.cgi.rest.params;
+
+import javax.ws.rs.*;
+
+@Path("/book")
+public class DefaultParamResource {
+
+    @GET
+    public String getQueryParam(@QueryParam("num") @DefaultValue("10") int num) {
+        return "Query " + num;
+    }
+
+//    @GET
+//    @Path("{id}")
+//    public String getPathParam(@PathParam("id") @DefaultValue("100") int id) {
+//        return id + "";
+//    }
+}
+.............................................................................................
+			        Resource Locators and Sub Resources
+............................................................................................
+
+Main resource:
+
+ShoppingApp.java
+package com.cgi.rest.resourcelocators;
+
+import javax.ws.rs.Path;
+
+@Path("/cgi/api")
+public class ShoppingApp {
+
+    @Path("/customers")
+    public CustomerResource getCustomer() {
+        return new CustomerResource();
+    }
+
+    @Path("/payments")
+    public PaymentResource getPayment() {
+        return new PaymentResource();
+    }
+}
+
+CustomerResource.java
+package com.cgi.rest.resourcelocators;
+
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+public class CustomerResource {
+
+    @GET
+    public String getCustomers() {
+        return "customers resource";
+    }
+
+    @GET
+    @Path("{id}")
+    public String getCustomerById(@PathParam("id") String id) {
+        return "customers resource by id" + id;
+    }
+}
+
+PaymentResource.java
+package com.cgi.rest.resourcelocators;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+public class PaymentResource {
+    @GET
+    public String getPayment() {
+        return "Payment resource";
+    }
+
+    @GET
+    @Path("{id}")
+    public String getPayment(@PathParam("id") String id) {
+        return "Payment resource by id" + id;
+    }
+
+    @Path("/creditcard")
+    public CreditCardResource getCreditCard(){
+          return new CreditCardResource();
+    }
+
+}
+
+CreditCardResource.java
+package com.cgi.rest.resourcelocators;
+
+import javax.ws.rs.GET;
+
+public class CreditCardResource {
+    @GET
+    public String getCreditCardDetails() {
+        return "Credit Details";
+    }
+}
+..............................................................................................
+
+How to send data to Server?
+
+1.via Parameters - path,query,matrix,cookie
+2.via forms - payload(body)
+3.via payloads- submit xml,json...
 
 
 
@@ -1164,5 +1405,6 @@ public class CarResource {
 
 
 
-	
+
+
 
