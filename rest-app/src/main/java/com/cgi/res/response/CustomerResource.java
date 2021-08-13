@@ -30,7 +30,7 @@ public class CustomerResource {
 
     @GET
     @Path("/list")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML} )
     public List<Customer> getCustomers() {
         Customer customer = new Customer();
         customer.setId(1);

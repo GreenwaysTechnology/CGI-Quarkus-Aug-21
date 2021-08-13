@@ -1392,12 +1392,691 @@ public class CreditCardResource {
 }
 ..............................................................................................
 
-How to send data to Server?
+How to send data(information) to Server?
 
-1.via Parameters - path,query,matrix,cookie
+1.via Parameters - path,query,matrix,cookie,headers
 2.via forms - payload(body)
 3.via payloads- submit xml,json...
 
+-Responses
+-Negotation
+-Exception
+..............................................................................................
+				   Responses
+
+What is Response?
+    
+ Information + its Meta Data
+ 
+Information can be any thing from data to static files(image,vid,docs)...
+
+Information if it is state of the resource eg - customer,product,payment.....
+
+As Per REST concept, Server can send any type of Format approvied by Rest spec.
+
+eg Json,xml,html,plain text,image.......
+
+
+Meta Data : data about data:
+...........................
+
+Headers - carry meta data.
+
+Response code -  can be success,failure....
+Data type(contentType/media type)- plaintext ,html,xml,json.........
+
+.............................................................................................
+
+RestEasy can return data using String,Domain Object,Response Object
+
+
+@GET
+public String getInfo(){ 
+     
+    return "Hello"  //Plain Text /Ascii Text
+}
+
+@GET
+public Customer getCustomer(){ 
+     
+    return new Customer();  Object need to converted into String form(Special String types- 			    XML,JSON)
+}
+
+
+@GET
+public Response getCustomer(){ 
+     
+    return Response.status.(200).ok(new Customer()).build()
+       //Here you can add more and more meta information as part of Response
+				  
+}
+............................................................................................
+
+If you are getting the error like below, when you access an resource
+
+Could not find MessageBodyWriter for response object of type: com.cgi.rest.responses.User of media type:application/octet-stream
+
+Server says, hey i am not able to process your(client) request , because i dont know how to convert User into something client understand
+
+Quarkus is opionied framework, which looks up converter(Object to String) in the classpath.
+Quarkus offers an extension(dependency) for converting Object to String(JSON).
+
+pom.xml
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jsonb</artifactId>
+    </dependency>
+
+
+if you want to send xml as response
+
+<dependency>
+     <groupId>io.quarkus</groupId>
+     <artifactId>quarkus-resteasy-jaxb</artifactId>
+</dependency>
+
+package com.cgi.rest.responses;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/responses")
+public class ResponseResources {
+
+    @GET
+    @Path("/plain")
+    public String sendPlainResponse() {
+        return "Hello";
+    }
+
+    @GET
+    @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User sendUserJSONResponse() {
+        User user = new User(1, "admin", "admin");
+        return user;
+    }
+
+    @GET
+    @Path("/user/xml")
+    @Produces(MediaType.APPLICATION_XML)
+    public User sendUserXmlResponse() {
+        User user = new User(1, "admin", "admin");
+        return user;
+    }
+    
+    
+
+}
+..............................................................................................
+Response:
+
+Response class is abstract class contains two category of api
+
+public abstract Object getEntity();
+public abstract int getStatus();
+
+
+Builder Class:
+
+public static ResponseBuilder status(int status)
+public static ResponseBuilder ok()
+public static ResponseBuilder ok(Object entity)
+public static ResponseBuilder created()
+public static ResponseBuilder accepted()
+public static ResponseBuilder noContent()
+etc..
+
+
+Builder is a design pattern through which you can chain methods and create instances on fly.
+
+"hello".trim().toUppercase().toLowercase() - builder pattern
+
+
+How to create Response Object?
+
+javax.ws.rs.core.Response  class is abstract class, we cant create object directly, only possible via builder
+
+Resonse.ok().build() -returns Response
+ 
+
+package com.cgi.rest.responses;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/responses")
+public class ResponseResources {
+
+    @GET
+    @Path("/plain")
+    public String sendPlainResponse() {
+        return "Hello";
+    }
+
+    @GET
+    @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User sendUserJSONResponse() {
+        User user = new User(1, "admin", "admin");
+        return user;
+    }
+
+    @GET
+    @Path("/user/xml")
+    @Produces(MediaType.APPLICATION_XML)
+    public User sendUserXmlResponse() {
+        User user = new User(1, "admin", "admin");
+        return user;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response sendResponse() {
+        //Type of data to be sent
+        return Response
+                .ok("Hello Response")
+                .header("myheader", "myheadervalue")
+                .build();
+    }
+
+
+}
+................................................................................................				Status Codes And RestFul Api Design
+..............................................................................................
+Status Code : 100 to 500
+
+1XX Information Responses
+
+100 Continue
+101 Switching Protocols
+102 Processing
+103 Early Hints
+
+2XX Success
+
+200 OK
+201 Created
+202 Accepted
+203 Non-Authoritative Information
+204 No Content
+205 Reset Content
+206 Partial Content
+207 Multi-Status
+208 Already Reported
+226 IM Used
+
+3XX Redirection
+300 Multiple Choices
+301 Moved Permanently
+302 Found
+303 See Other
+304 Not Modified
+305 Use Proxy
+306 Switch Proxy
+307 Temporary Redirect
+308 Permanent Redirect
+
+4XX Client errors
+
+400 Bad Request
+401 Unauthorized
+402 Payment Required
+403 Forbidden
+404 Not Found
+405 Method Not Allowed
+406 Not Acceptable
+407 Proxy Authentication Required
+408 Request Timeout
+409 Conflict
+410 Gone
+411 Length Required
+412 Precondition Failed
+413 Payload Too Large
+414 URI Too Long
+415 Unsupported Media Type
+416 Range Not Satisfiable
+417 Expectation Failed
+418 I'm a teapot
+420 Method Failure
+421 Misdirected Request
+422 Unprocessable Entity
+423 Locked
+424 Failed Dependency
+426 Upgrade Required
+428 Precondition Required
+429 Too Many Requests
+431 Request Header Fields Too Large
+451 Unavailable For Legal Reasons
+
+5XX Server errors
+500 Internal Server error
+501 Not Implemented
+502 Bad Gateway
+503 Service Unavailable
+504 gateway Timeout
+505 Http version not supported
+506 Varient Also negotiate
+507 Insufficient Storage
+508 Loop Detected
+510 Not Extended
+511 Network Authentication Required
+
+
+.............................................................................................
+package com.cgi.rest.responses;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/responses")
+public class ResponseResources {
+
+    @GET
+    @Path("/plain")
+    public String sendPlainResponse() {
+        return "Hello";
+    }
+
+    @GET
+    @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User sendUserJSONResponse() {
+        User user = new User(1, "admin", "admin");
+        return user;
+    }
+
+    @GET
+    @Path("/user/xml")
+    @Produces(MediaType.APPLICATION_XML)
+    public User sendUserXmlResponse() {
+        User user = new User(1, "admin", "admin");
+        return user;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response sendResponse() {
+        //Type of data to be sent
+
+        //OK -200 status - success
+//        return Response
+//                .ok("Hello Response")
+//                .header("myheader", "myheadervalue")
+//                .build();
+
+//        return Response
+//                .status(200)
+//                .entity("Hello Response!!!")
+//                .header("myheader", "myheadervalue")
+//                .build();
+//        return Response
+//                .status(Response.Status.OK)
+//                .entity("Hello Response!!!")
+//                .header("myheader", "myheadervalue")
+//                .build();
+        return Response
+                .status(Response.Status.OK)
+                .entity("Hello Response!!!")
+                .header("myheader", "myheadervalue")
+                .build();
+    }
+    //Some Status code
+    @POST
+    public Response save(){
+        return Response.status(201).entity("Saved").build();
+    }
+
+
+}
+..............................................................................................
+				  Negoation
+..............................................................................................
+
+What is Negoation?
+ Agreeement between server and client what they can serve.
+
+if client asks server that give me xml, means the server should able to give xml, if not it will give  response- not able to process your.
+
+Content negotiation allows for an HTTP server to respond to different types of clients.
+
+Many modern clients expect a JSON response, but there may be a need to format responses differently, maybe XML for older clients or a binary format for newer ones.
+
+
+If the server is unable to provide the desired format, it will respond with a status code of 406, “Not Acceptable.”
+
+Types of Negoation:
+
+1.Content-Negotation
+2.Language Negoation
+3.Encoding Negoation
+
+
+How to implement  Negotation?
+
+Via Headers
+
+
+Accept-*
+
+Content Negotation
+Accept: application/json,application/xml;
+
+Language Negotation:
+Accept-Language: fr
+
+Encoding Negotation:
+Accept-Encoding : gzip,deflate
+..............................................................................................
+
+Negotitation is just like a dialog between client and server.
+
+
+At a high level, the conversation looks like this:
+
+Client:
+Hey Server!
+I’d like to look at https://api.example.com/user/123.
+I need your response in JSON.
+
+	Server:
+No Problem Client! Here is that response…​
+
+
+Client:
+Hey Server! I need https://api.example.com/user/123, preferably in JSON!
+But, 😩 I’ll take XML if that’s all you have.
+I also need the info in English or French.
+Oh, please zip up the contents too.
+
+GET /user/123 HTTP/1.1
+Accept: application/json,application/xml;q=0.9
+Accept-Encoding: gzip
+Accept-Language: en,fr
+Host: api.example.com
+User-Agent: Client/2.0
+
+
+Server:
+Hey Client!
+All I have is XML (sorry about that), the response is in English,
+and I was able to zip it; here you go…​
+
+                                        HTTP/1.1 200 OK
+                                        Content-Type: application/xml
+                                        Content-Encoding: gzip
+                                        Content-Language: en
+
+                                        <user id="123">
+                                          ...
+                                        </user>
+
+..............................................................................................
+Negotiation is bi directional.
+
+Client ask with help of "Accept -*" Headers, Server will resonse with "Content-*" Headers
+
+Content Negotation:
+
+package com.cgi.rest.negotiation;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/negotiation")
+public class ContentNegotiationResource {
+
+    //ContentNegation
+    /**
+     * GET  /negotiation/content Accept:application/json or Accept:application/xml
+     */
+    @GET
+    @Path("/content")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response negotiateContent() {
+        User user = new User(1, "admin", "admin");
+        return Response.ok(user).build();
+    }
+
+}
+.............................................................................................
+
+How to send Data from the client to server (in the form of string(json,xml),binary?
+
+How server negotiate with client to accept data?
+
+Payload-body
+
+package com.cgi.rest.negotiation;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/negotiation")
+public class ContentNegotiationResource {
+
+      /**
+     * POST negotation/create
+     * body
+     * content-type : Application/json / Application/xml
+     */
+    @POST
+    @Path("/create")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response create(User user) {
+        System.out.println(user);
+        return Response.status(201).entity("Created").build();
+    }
+
+
+}
+..............................................................................................						HTTP encoding
+.............................................................................................
+
+What is Content Encoding?
+
+ if Server sends data, it can send directly
+
+Compression Algorthim:
+
+1.gzip
+2.deflate
+
+How to enable compression algorithm in quarkus?
+
+application.properties
+#quarkus.http.enable-compression=true
+#quarkus.resteasy.gzip.enabled=true
+#quarkus.resteasy.gzip.max-input=10M
+
+
+If you want to compress everything then we recommended that you use the quarkus.http.enable-compression=true setting instead to globally enable compression support.
+
+
+Response would be:
+
+content-encoding:gzip
+content-length:64
+..............................................................................................
+
+					Language Negotitation
+..............................................................................................
+
+if you ask the server that give me data in fr.
+
+Accept-language : de /en
+
+package com.cgi.rest.negotiation;
+
+import org.jboss.resteasy.annotations.GZIP;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.util.List;
+import java.util.Locale;
+
+@Path("/negotiation")
+public class ContentNegotiationResource {
+
+    // GET /negotiation/lang 
+    //Accept-language : en
+
+    @Path("/lang")
+    @GET
+    public Response getLang(@Context Request request) {
+        List<Variant> variants = Variant.VariantListBuilder
+                .newInstance()
+                .languages(Locale.ENGLISH, Locale.GERMAN)
+                .build();
+        Variant variant = request.selectVariant(variants);
+        if (variant == null) {
+            return Response.notAcceptable(variants).build();
+        }
+        String language = variant.getLanguageString();
+        return Response.ok(language)
+                .header(HttpHeaders.CONTENT_LANGUAGE, language)
+                .build();
+    }
+
+
+}
+..............................................................................................
+					Exception Handling
+..............................................................................................
+
+Errors can be reported to a client either by creating and returning the appropriate
+Response object or by throwing an exception.
+
+Response Types:
+
+1.SUCCESS Response
+2.ERROR Response
+
+How to handle / Convert ERRORS/Exceptions into HTTP Response Object?
+
+ public Response getResponse(){
+
+     return Response.ok().build();
+ }
+
+According to Application, Exception can be
+
+1.System Exception :
+  Exception thrown by jvm - NumberFormat,NullPointerException,ClassCastException.
+
+2.Application Exception
+   
+  UserNotFoundException
+  PasswordMissMatchException
+  ...
+public boolean validate(){
+
+  if(passwordmatch){
+
+
+  }
+  else{ 
+       throw new PasswordMismatchException("password does not match");
+  } 
+}
+JAX-RS also provides the javax.ws.rs.WebApplicationException. 
+This can be thrown by application code and automatically processed by JAX-RS without
+having to write an explicit mapper.
+
+WebApplicationException can be converted into Response Object.
+
+Thrown exceptions are handledby the JAX-RS runtime if you have registered an exception mapper. 
+Exception mappers can convert an exception to an HTTP response. 
+If the thrown exception is not handledby a mapper, it is propagated and handled by the container (i.e., servlet) JAX-RS is running within.
+
+How to write biz exception in jax rs?
+
+
+package com.cgi.rest.exceptionhandling;
+
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
+@Path("/myerrros")
+public class ErrorResource {
+
+    @GET
+    @Path("{id}")
+    public Response getResponse(@PathParam("id") String id) {
+        if (id.equals("100")) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return Response.ok("Sucess" + id).build();
+    }
+}
+
+When you run this code with "localhost:8080/myerrros/100"
+
+Server will show exception like below?
+rs.WebApplicationException: HTTP 404 Not Found
+        at com.cgi.rest.exceptionhandling.ErrorResource.getResponse(ErrorResource.java:17)
+        at com.cgi.rest.exceptionhandling.ErrorResource_Subclass.getResponse$$superforward1(ErrorResource_Subclass.zig:94)
+        at com.cgi.rest.exceptionhandling.ErrorResource_Subclass$$function$$1.apply(ErrorResource_Subclass$$function$$1.zig:33)
+        at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:54)
+        at io.quarkus.arc.runtime.devconsole.InvocationInterceptor.proceed(InvocationInterceptor.java:62)
+        at io.quarkus.arc.runtime.devconsole.InvocationInterceptor.monitor(InvocationInterceptor.java:49)
+        at io.quarkus.arc.runtime.devconsole.InvocationInterceptor_Bean.intercept(InvocationInterceptor_Bean.zig:521)
+        at io.quarkus.arc.impl.InterceptorInvocation.invoke(InterceptorInvocation.java:41)
+        at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:41)
+        at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:32)
+        at com.cgi.rest.exceptionhandling.ErrorResource_Subclass.getResponse(ErrorResource_Subclass.zig:158)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+
+
+how to convert this error into response and send to client?
+
+package com.cgi.rest.exceptionhandling;
+
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
+@Path("/myerrros")
+public class ErrorResource {
+
+    @GET
+    @Path("{id}")
+    public Response getResponse(@PathParam("id") String id) {
+        if (id.equals("100")) {
+            throw new WebApplicationException("Id " + id + "Not Found");
+        }
+        return Response.ok("Sucess" + id).build();
+    }
+}
+.............................................................................................
+
+Configuration Managment - MicroProfile Configuration
+CDI
+Database Integration
+Logger
 
 
 
@@ -1405,6 +2084,43 @@ How to send data to Server?
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 

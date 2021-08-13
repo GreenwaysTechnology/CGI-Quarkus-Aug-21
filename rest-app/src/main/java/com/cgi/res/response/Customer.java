@@ -1,10 +1,14 @@
 package com.cgi.res.response;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "customer")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Customer {
-    private  int id;
+    @XmlAttribute
+    private int id;
+    @XmlElement
+    private String name;
 
     public int getId() {
         return id;
@@ -21,7 +25,5 @@ public class Customer {
     public void setName(String name) {
         this.name = name;
     }
-
-    private  String name;
 
 }
