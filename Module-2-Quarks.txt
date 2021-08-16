@@ -2072,29 +2072,435 @@ public class ErrorResource {
     }
 }
 .............................................................................................
+				Context and Dependency Injection
+					(CDI)
+..........................................................................................
 
-Configuration Managment - MicroProfile Configuration
-CDI
-Database Integration
-Logger
+Object Composition: - HAS -A relationship
+
+package com.cgi.hasa;
+
+public class Product {
+    private int productId;
+    private String name;
+
+    public Product() {
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    public Product(int productId, String name) {
+        this.productId = productId;
+        this.name = name;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+package com.cgi.hasa;
+
+public class Order {
+    private int orderId;
+    private double orderValue;
+    //has-a - dependancy
+    private Product product;
+
+    public Order() {
+    }
+
+    public Order(Product product) {
+        this.product = product;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", orderValue=" + orderValue +
+                ", product=" + product +
+                '}';
+    }
+
+    public Order(int orderId, double orderValue, Product product) {
+        this.orderId = orderId;
+        this.orderValue = orderValue;
+        this.product = product;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public double getOrderValue() {
+        return orderValue;
+    }
+
+    public void setOrderValue(double orderValue) {
+        this.orderValue = orderValue;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+}
+
+package com.cgi.hasa;
+
+public class Main {
+    public static void main(String[] args) {
+        //Steps :
+        //1.create objects
+        //2.Link the objects
+        Product product = new Product(1,"Book");
+        Order order = new Order(1,1000,product);
+        System.out.println(order);
+    }
+}
+
+Here , what if there are more objects we need to create, and link them accordingly.
+
+Product product = new Product(1,"Book");
+Order order = new Order(1,1000,product);
+
+Two complexity in enterprise computing:
+
+1.creating objects
+2.linking objects 
+
+How to deal this complixity?
+
+2000 ,Rod Johnson  who identified this problem - book - j2ee one on one design and developement.
+   -how to reduce creating objects and links
+
+He thought to write some automation software? he introduced a design pattern
+ -IOC -  Inversion of Control.
+
+What is IOC?
+
+inversion - do opposit
+of control -management
+
+Developer has control for creating objects and link them -  we have to invert this task from developer
+ 
+According to ioc, dont create object and link via coding. 
+
+Who has to take care?
+  -Automation software  ---- IOC Container.
+
+Based on IOC Container idea,Rod who developed a framework in spring season "Spring Framework".
+
+Spring Framwork abstracts away "creating objects and linking them from the developer".
+............................................................................................. 
+
+What is dependency Injection?
+  
+  Dependency -Object
+  Injection - Injecting into Object
+
+Objects are created by containers, available to programers for use.
+..............................................................................................
+How to get dependencies inside program? or How depedency Injection is happening?
+
+-dependencies are injected via setter methods
+-dependencies are injected via constructor methods
+-dependencies are injected via "fiedls"  -J2EE CDI 
+..............................................................................................
+Core Concepts:
+
+1.Bean :
+  
+
+What is Bean?
+   
+  Bean is terminallogy coined by SUN Micro System to name java object.
+
+Object vs Bean?
+
+ -Same but Bean has some special characteristics  which was proposed by SUN micro system via 
+"Java Bean Spec"
+
+It is java class, based Java Bean standards
+ 	-class should be public
+ 	-properties should be private
+ 	-set and get methods - Accessors and mutators
+	-constructors
+
+Why Bean Spec?
+  - in order to standarize the java dev process- Coding Standards.
+
+Many frameworks,containers,tools,compilers follow the bean standards only
+eg: spring framework,ecplise,idea....
+
+..............................................................................................
+
+class Order {
+
+}
+
+class MyServlet extends HttpServlet{
+
+}
+MyServlet my=new MyServlet(); 
+  -Extra features will be injected by container
+    -lifecycles
+    -thread managment
+    -attching with http protocal
+
+Order order=new Order()
+..............................................................................................
+
+Bean Types:
+
+1.POJO Bean
+   eg : order
+2.Container Managed Bean
+
+ - Container provides basic services
+     - lifecycle callabacks,intercepters
+     - creation,destroying
+     - bean depdency lookup
+
+Why Container Managed Bean?
+   -Dev can focus only Applicaition logic...
+............................................................................................
+                                 Quarkus and Dependency Injection
+............................................................................................
+
+Quarkus uses MicroProfile CDI2.0 Spec, which intern refers 
+  JSR 365: Contexts and Dependency Injection for JavaTM 2.0.
+
+How Quarkus implements this spec?
+ Quarkus ArC is a build-time oriented dependency injection based on CDI 2.0. 
+
+.............................................................................................
+
+                CDI is built on the concept of  "loose coupling,String Typing" 
+
+
+                         Beans are loosely coupled but strongly typed
+
+
+Apis in cdi:
+
+1.javax.inject
+2.javax.enterprise.inject - core di apis
+3.javax.enterprise.context - scope and contextuaal apis
+4.javax.enterprise.events -  publishing events and listening events-  container wide event driven programming
+5.javax.enterprise.util
+6.javax.interceptor
+
+Common Annoations:
+
+1.@Inject  
+2.@Qualifer
+3.LifeCycle of Bean
+   @ApplicationScoped
+   @SessionScoped
+   @RequestScoped
+   @SingleTon
+ 
+4.@Observes - event listner
+..............................................................................................
+
+DI : Simple
+
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+
+//bean
+@ApplicationScoped
+public class HelloService {
+
+      public String sayHello(){
+           return "Hello Service Bean";
+      }
+}
 
 
 
+package com.cgi;
+
+import com.cgi.di.HelloService;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+
+@Path("/hello")
+public class HelloResource {
+
+    @Inject
+    HelloService helloService;
+
+    @GET
+    public Response sayHello() {
+        return Response.ok(helloService.sayHello()).build();
+    }
+}
+
+............................................................................................
+				Bean Creation Exception-UnsatisfiedResolutionException
+
+
+avax.enterprise.inject.UnsatisfiedResolutionException: Unsatisfied dependency for type com.cgi.di.HelloService and qualifiers [@Default]
+	- java member: com.cgi.HelloResource#helloService
+	- declared on CLASS bean [types=[java.lang.Object, com.cgi.HelloResource], qualifiers=[@Default, @Any], target=com.cgi.HelloResource]
+	at io.quarkus.arc.processor.Beans.resolveInjectionPoint(Beans.java:492)
+	at io.quarkus.arc.processor.BeanInfo.init(BeanInfo.java:463)
+
+
+This exception is thrown when bean is not created -  
+  due to 
+    -no bean class  not present in the class path
+    -you may forgot to annotate using lifecycle annotations -@ApplicationScoped...
+
+
+eg:
+public class HelloService {
+
+      public String sayHello(){
+           return "Hello Service Bean";
+      }
+}
+ @Inject
+ HelloService helloService;
+
+
+.............................................................................................
+                              Types of Injection in Quarkus  -Inection Points
+
+1.Field Injection
+2.Setter Injection
+3.Constructor injection
 
 
 
+1.Field Injection
+1. @Inject
+    HelloService helloService;
 
 
+2.Setter Injection
+
+    HelloService helloService;
+
+    @Inject
+    public void setHelloService(HelloService helloService) {
+        this.helloService = helloService;
+    }
+3.Constructor injection
+
+  @Inject
+    public HelloResource(HelloService helloService) {
+        this.helloService = helloService;
+    }
+ without @Inject annotation is also fine
+   public HelloResource(HelloService helloService) {
+        this.helloService = helloService;
+    }
+..............................................................................................
+			   Service has its dependencies
+..............................................................................................
 
 
+ Resource-----Service-----Utility Bean
+ Resource -----Service----Repository
 
 
+interface:
+package com.cgi.di;
+
+public interface NumberGenerator {
+    //Generate ISBN Number
+    String generateNumber();
+}
+
+Implementation
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.Random;
+
+@ApplicationScoped
+public class IsbnGenerator implements NumberGenerator {
+    @Override
+    public String generateNumber() {
+        return "15-87654" + Math.abs(new Random().nextInt());
+    }
+}
 
 
+package com.cgi.di;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+@ApplicationScoped
+public class BookService {
 
+    //Inject interface
+    @Inject
+    NumberGenerator numberGenerator;
 
+    //biz method
+    public Book createBook() {
+        Book book = new Book("Quarks In Action", 1000f, "Subramanian");
+        book.setIsbn(numberGenerator.generateNumber());
+        return book;
+    }
+}
+
+package com.cgi;
+
+import com.cgi.di.BookService;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+
+@Path("/books")
+public class BookResource {
+
+    @Inject
+    BookService bookService;
+
+    @GET
+    public Response createBook(){
+        return Response.ok(bookService.createBook()).build();
+    }
+}
 
 
 
