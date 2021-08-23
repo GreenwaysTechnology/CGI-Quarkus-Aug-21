@@ -2072,7 +2072,7 @@ public class ErrorResource {
     }
 }
 .............................................................................................
-				Context and Dependency Injection
+			Context and Dependency Injection
 					(CDI)
 ..........................................................................................
 
@@ -2302,7 +2302,7 @@ How Quarkus implements this spec?
 
 .............................................................................................
 
-                CDI is built on the concept of  "loose coupling,String Typing" 
+                CDI is built on the concept of  "loose coupling,Strong Typing" 
 
 
                          Beans are loosely coupled but strongly typed
@@ -2370,7 +2370,7 @@ public class HelloResource {
 }
 
 ............................................................................................
-				Bean Creation Exception-UnsatisfiedResolutionException
+			Bean Creation Exception-UnsatisfiedResolutionException
 
 
 avax.enterprise.inject.UnsatisfiedResolutionException: Unsatisfied dependency for type com.cgi.di.HelloService and qualifiers [@Default]
@@ -2398,7 +2398,7 @@ public class HelloService {
 
 
 .............................................................................................
-                              Types of Injection in Quarkus  -Inection Points
+                             Types of Injection in Quarkus  -Inection Points
 
 1.Field Injection
 2.Setter Injection
@@ -2501,32 +2501,934 @@ public class BookResource {
         return Response.ok(bookService.createBook()).build();
     }
 }
+.................................XXXXXXXXXXXXXX...............................................
+                               Interface and its multiple implementation
+..............................................................................................
+
+public interface myInterface{
+    String mymethod();
+
+}
+public class Myclass1 implements MyInterface {
+   public String mymethod(){
+           return "Mymethod-1";
+   }
+}                         
+public class Myclass2 implements MyInterface {
+   public String mymethod(){
+           return "Mymethod-2";
+   }
+}                         
+
+@Inject
+MyInterface myinter;
+
+myinter.mymethod();
+
+
+avax.enterprise.inject.AmbiguousResolutionException: Ambiguous dependencies for type com.cgi.di.NumberGenerator and qualifiers [@Default]
+	- java member: com.cgi.di.BookService#numberGenerator
+	- declared on CLASS bean [types=[java.lang.Object, com.cgi.di.BookService], qualifiers=[@Default, @Any], target=com.cgi.di.BookService]
+	- available beans:
+
+Here error because , container cant understand what bean you want to inject.
+
+How to solve this problem?
+
+Qualifiers
+   Injecting Qualified beans which you want bean implemenation you want.
+
+Is there any default qualifier?
+
+Yes
+
+@Default
+
+if there is only one implementation, injection works using @Default qualifier.
+
+if there is more than one implementation , container will throw AmbiguousResolutionException
+
+How to write Qualifier?
+
+We have to write custom  Qualifer annotation
+
+
+Steps:
+
+1.For isbn generator class
+package com.cgi.di;
+
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Qualifier
+@Retention(RUNTIME)
+@Target({FIELD,TYPE,METHOD})
+public @interface ThirteenDigitQualifier {
+}
+
+2.For issbn geneartor
+
+package com.cgi.di;
+
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Qualifier
+@Retention(RUNTIME)
+@Target({FIELD,TYPE,METHOD})
+public @interface EightDigitQualifier {
+}
+
+
+3.Annotate The Implementation classes
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.Random;
+
+@ThirteenDigitQualifier
+@ApplicationScoped
+public class IsbnGenerator implements NumberGenerator {
+    @Override
+    public String generateNumber() {
+        return "15-87654" + Math.abs(new Random().nextInt());
+    }
+}
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.Random;
+
+@EightDigitQualifier
+@ApplicationScoped
+public class ISSNGenerator implements NumberGenerator {
+    @Override
+    public String generateNumber() {
+        return "8 -" + Math.abs(new Random().nextInt());
+    }
+}
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+
+@ApplicationScoped
+public class BookService {
+
+    //Inject - default
+//    @Inject @Default
+//    NumberGenerator numberGenerator;
+
+//    @Inject @EightDigitQualifier
+//    NumberGenerator numberGenerator;
+
+    //Without Inject Annotation itself
+    @EightDigitQualifier
+    NumberGenerator numberGenerator;
+    //biz method
+    public Book createBook() {
+        Book book = new Book("Quarks In Action", 1000f, "Subramanian");
+        book.setIsbn(numberGenerator.generateNumber());
+        return book;
+    }
+}
+
+............................................................................................
+				 Injecting Alternate Beans
+............................................................................................
+
+Qualifiers help us to select multiple implementations of an interface development time
+But sometimes you want to inject an implemenation depending on  a particular deployment scenario.
+
+For for test environment i wanto use mockgenertor api.
+
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+
+@Alternative
+@ApplicationScoped
+public class MockGenerator implements NumberGenerator {
+    @Override
+    public String generateNumber() {
+        return "MOCK ";
+    }
+}
+
+Note:
+By default alternatives are disable and need to be enabled to make them available for instantiation and injecton
+
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Default;
+
+@Alternative
+@ApplicationScoped
+@Default
+public class MockGenerator implements NumberGenerator {
+    @Override
+    public String generateNumber() {
+        return "MOCK ";
+    }
+}
+
+This is alternate bean for "Default Injection" meaning that only one implemenation.
+
+...........................................................................................
+				Bean Scopes
+...........................................................................................
+
+
+
+1.@ApplicationScoped
+     Bean is created and kept entire life of application
+     Only one time is created - singleton
+     
+2.Request,Session
+   -A bean can be bound to single request cycle-  mostly used in old dynamic webapps
+    eg: Spring MVC,Struts
+   -Session scope 
+     single user multiple requests.
+
+3.@SingleTon
+      -only one instance per container
+
+Applicationscope vs singleton
+
+-singleton beans are eagerly created
+--application beans are lazy - uses a factory -client proxy
+-singleton is some what performance good.Applicationscope uses delegation pattern to delegate objects to proxy classes
+-Singletons cant be used to create Mock using QuarksMock under test
+..............................................................................................
+			Types of beans with respect to data injection
+..............................................................................................
+
+1.class beans
+  
+...variables and methods itself can be treated as dependency
+2.Producer methods
+3.Producer fields
+.....................
+4.Syntenetics beans
+
+
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import java.util.ArrayList;
+import java.util.List;
+
+@ApplicationScoped
+public class Producers {
+
+    //instance variable
+    @Produces
+    double price = 1000.90;
+
+    @Produces
+    List<String> topics(){
+        List<String> topics = new ArrayList<>();
+        topics.add("cdi");
+        topics.add("configuration");
+        topics.add("RestEasy");
+        return topics;
+    }
+
+
+}
 
 
 
 
+package com.cgi.di;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.List;
+
+@ApplicationScoped
+public class BookService {
+
+    //Inject - default
+//    @Inject @Default
+//    NumberGenerator numberGenerator;
+
+//    @Inject @EightDigitQualifier
+//    NumberGenerator numberGenerator;
+
+    //Without Inject Annotation itself
+    @EightDigitQualifier
+    NumberGenerator numberGenerator;
+
+    @Inject
+    double price;
+
+    @Inject
+    List<String> topics;
+
+    //biz method
+    public Book createBook() {
+        Book book = new Book("Quarks In Action", 1000f, "Subramanian");
+        book.setIsbn(numberGenerator.generateNumber());
+        return book;
+    }
+
+    public double calculatePrice() {
+        return price;
+    }
+
+    public List<String> getTopics() {
+        return topics;
+    }
+}
+..............................................................................................
+					Life Cycle Hooks
+..............................................................................................
+
+init and destory
+
+package com.cgi.di;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.List;
+
+@ApplicationScoped
+public class BookService {
+
+    //Inject - default
+//    @Inject @Default
+//    NumberGenerator numberGenerator;
+
+//    @Inject @EightDigitQualifier
+//    NumberGenerator numberGenerator;
+
+    //Without Inject Annotation itself
+    @EightDigitQualifier
+    NumberGenerator numberGenerator;
+
+    @Inject
+    double price;
+
+    @Inject
+    List<String> topics;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Init is called");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("Destroy is called");
+    }
+
+    //biz method
+    public Book createBook() {
+        Book book = new Book("Quarks In Action", 1000f, "Subramanian");
+        book.setIsbn(numberGenerator.generateNumber());
+        return book;
+    }
+
+    public double calculatePrice() {
+        return price;
+    }
+
+    public List<String> getTopics() {
+        return topics;
+    }
+}
+..............................................................................................
+			        Interceptors :Cross Cutting Concerns
+.............................................................................................
+
+What is concern?
+   concern means features like transaction,security,logging
+
+Cross cutting means, removing these concerns from the application logic.
+
+How to cross cutting concerns?
+ There is spec all "java interceptors" 
 
 
+How to define intercetor
+
+@Interceptor
+public class MyInterceptor {
+
+ //logic : concern
+
+ public Object loggerInvocation(InvocationContext ctx) {
+     //log here
+     Object res= ctx.proceed();
+    //log here
+
+    return res
+ }
 
 
+}
+
+Implemenation:
+package com.cgi.di;
+
+import com.cgi.di.interceptors.LogEvent;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.List;
+
+@ApplicationScoped
+public class BookService {
+
+    //Inject - default
+//    @Inject @Default
+//    NumberGenerator numberGenerator;
+
+//    @Inject @EightDigitQualifier
+//    NumberGenerator numberGenerator;
+
+    //Without Inject Annotation itself
+    @EightDigitQualifier
+    NumberGenerator numberGenerator;
+
+    @Inject
+    double price;
+
+    @Inject
+    List<String> topics;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Init is called");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("Destroy is called");
+    }
+
+    //biz method
+    @LogEvent
+    public Book createBook() {
+        Book book = new Book("Quarks In Action", 1000f, "Subramanian");
+        book.setIsbn(numberGenerator.generateNumber());
+        return book;
+    }
+
+    public double calculatePrice() {
+        return price;
+    }
+
+    public List<String> getTopics() {
+        return topics;
+    }
+}
+
+..............................................................................................
+                           Private keyword on Dependency field
+
+Quarkus and its native image generation performs better
+CDI work without private members. Dependency injection requires a
+lot of Reflection API usage, which is very expensive. In the interest of
+generating better-performing native images, don’t use the private
+modifier for fields. Stick with package-level access for class-level
+variables.
+......................................
+Quarkus-Only Enhancements to CDI Quarkus enriches its implementation of CDI in ArC, by adding the following features, among others.
+
+..............................................................................................
+				Micro services Pattern implementation
+..............................................................................................
+
+                                 Distributed Configuration
+
+How to configure The application?
+
+with in the application scope
+application.properties
+application.yaml
+
+outside application scope
+distributed config store
+-consul
+-appache zoo keeper
+
+Quarkus uses microprofile configuration spec, Which implemented in SmallRye Config.
+
+By default, Quarkus reads configuration properties from several sources.
 
 
+Config sources
+
+1.Property file -  application.properties
+2.Environment variable - export myenv=value
+3.system variable
+4. .env file
+5.external systems- config servers
+ -kubernets
+ -consl
+  
+In MicroProfile Config, a ConfigSource represents a Map<String, String> of property names to
+values, and a Config represents a sequence of ConfigSources, ordered by priority.
+
+The priority of a ConfigSource is given by an ordinal (represented by an int), with a higher value indicating a higher priority.
+
+For a given property name, the ConfigSources are searched in order until a value is found.
+
+MicroProfile Config mandates the presence of the following ConfigSources:
+1. a ConfigSource based on System.getProperties() (ordinal = 400)
+2. a ConfigSource based on System.getenv() (ordinal = 300)
+3. a ConfigSource for each META-INF/microprofile-config.properties file on the ClassPath, separately
+configurable via a config_ordinal property inside each file (default ordinal = 100)
+
+1. Config Sources
+By default, Quarkus reads configuration properties from multiple sources (by descending ordinal):
+
+(400) System properties
+
+(300) Environment variables
+
+(295) .env file in the current working directory
+
+(260) Quarkus Application configuration file in $PWD/config/application.properties
+
+(250) Quarkus Application configuration file application.properties in classpath
+
+(100) MicroProfile Config configuration file META-INF/microprofile-config.properties in classpath
+.............................................................................................
+
+How to read Configuration from application.properties ?
+
+Properties are key-value pair structure.
+
+key is based on dns naming standard
+com.cgi.myapp.greeter.message=Hello
+
+or 
+greeter.message
 
 
+How to read property?
+
+@Inject @ConfigProperty(name="greeter.message")
+String message;
 
 
+Eg:
 
+application.properties
+greeter.message=Hello,I am From Property File
 
+package org.acme;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+@Path("/hello")
+public class GreetingResource {
 
+//    @Inject @ConfigProperty(name="greeter.message")
+    @ConfigProperty(name="greeter.message")
+    String message;
 
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return message;
 
+    }
+} 
+..........................................................................................
 
+What if the property is not supplied? - no property is present?
 
+-You will get 
 
+java.util.NoSuchElementException: SRCFG00014: The config property greeter.message is required but it could not be found in any config source
+	at io.smallrye.config.SmallRyeConfig.convertValue(SmallRyeConfig.java:307)
+	at io.smallrye.config.inject.ConfigProducerUtil.getValue(ConfigProducerUtil.java:81)
+	at io.quarkus.arc.runtime.ConfigRecorder.validateConfigProperties(ConfigRe
+
+Solution : 
+
+default Value
+
+What if i have more propeties?
+
+greeter.message=Hello,From Property
+greeter.name=Subramanian
+greeter.date=today
+
+package org.acme;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/hello")
+public class GreetingResource {
+
+    //    @Inject @ConfigProperty(name="greeter.message")
+    @ConfigProperty(name = "greeter.message", defaultValue = "Hello RestEasy!")
+    String message;
+    @ConfigProperty(name = "greeter.name", defaultValue = "foo")
+    String name;
+    @ConfigProperty(name = "greeter.date", defaultValue = "some value")
+    String date;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return name + " " + message + " " + date;
+
+    }
+}
+............................................................................................
+
+Programmetic way of reading properties.
+
+ConfigProvider.getConfig().getValue("propertyName",String.class)
+
+application.property
+myuser.name=Subramanian
+
+  @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/greet")
+    public String greet() {
+        String userName = ConfigProvider.getConfig().getValue("myuser.name", String.class);
+        return userName;
+
+    }
+.............................................................................................
+
+System Properties:
+
+ System properties are supplied through -D flag during startup.
+
+Dev Mode:
+
+ mvn  compile quarkus:dev  -Dgreeter.message=Hello,FromSystem
  
+Production Mode
+ -JVM- Runnar Jar
+    java -Dgreeter.message=Hello,FromSystem -jar target/quarkus-app/quarkus-run.jar
+
+-Native Mode
+    export GREETER_MESSAGE=Hello,FromSystem;   ./target/myapp-runner 
+
+eg:
+>mvn compile quarkus:dev -Dgreeter.message=Hello,FromSystem
+
+
+package org.acme;
+
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/hello")
+public class GreetingResource {
+
+    //    @Inject @ConfigProperty(name="greeter.message")
+    @ConfigProperty(name = "greeter.message", defaultValue = "Hello RestEasy!")
+    String message;
+    @ConfigProperty(name = "greeter.name", defaultValue = "foo")
+    String name;
+    @ConfigProperty(name = "greeter.date", defaultValue = "some value")
+    String date;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return name + " " + message + " " + date;
+
+    }
+
+    //how to read property via configProvider
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/greet")
+    public String greet() {
+        String userName = ConfigProvider.getConfig().getValue("myuser.name", String.class);
+        return userName;
+
+    }
+
+
+}
+
+Output:
+
+http://localhost:8080/hello
+Subramanian Hello,FromSystem today
+..............................................................................................
+			How to read Properties from Envinonment Variables
+..............................................................................................
+
+In Unix/Linux,Mac, How to set env variables
+
+export VariableName=value
+
+In windows
+
+SET VariableName=value
+
+...........................................................................................
+
+Use case : Property file config and Env Variable
+
+
+steps:
+
+1.mvn clen
+2.mvn package -DskipTests=true
+3.SET GREETER_MESSAGE=Hello,FromEnv
+4.java -jar target/quarkus-app/quarkus-run.jar
+5.http://localhost:8080/hello
+output:
+Subramanian HelloFromENv today
+
+What if i have 
+.greeter.message property in application.property file
+and supply via Env variable
+and supply via system property 
+
+Which property value will be displayed?
+  -system property.
+..............................................................................................
+			     	.env file
+
+env files isloate all env variables and group into single source of the trugh
+
+.env file in the current working directory
+
+QUARKUS_DATASOURCE_PASSWORD=youshallnotpass 
+The name QUARKUS_DATASOURCE_PASSWORD the same conversion rules used for Environment variables.
+For dev mode, this file can be placed in the root of the project, but it is advised to not check it in to version control.
+
+
+steps:
+
+1.create .env file inside project root dir
+
+config-app
+src
+target
+.env
+
+2.Add config information inside .env file
+ -Name of the Property should be UPPERCASE_UPPERCASE=value like Env variable
+
+.env
+GREETER_MESSAGE=Hello,FromENVFILE
+
+
+3.build app and run test
+
+http://localhost:8080/hello
+Subramanian Hello,FromENVFILE today
+..............................................................................................
+		      Can We have multiple application.properties 
+............................................................................................
+
+Yes , we can multiple application.properties files
+
+
+Locations:
+ 
+1.
+src
+ |
+ main
+  |
+  resources
+     application.proprties
+
+2.App-name - config-app
+   
+  config
+	|
+     application.properties
+
+ src
+ |
+ main
+  |
+  resources
+     application.proprties
+
+You have to run in production mode , for the first file options
+
+-mvn clean
+-mvn package
+-java -jar target/quarkus-app/quarkus-run.jar
+.............................................................................................
+		How to externalize the property injections into Separate Program
+.............................................................................................
+
+Use case:
+
+import javax.ws.rs.Path;
+
+@Path("/customer")
+public class CustomerResource {
+
+    @ConfigProperty(name = "firstName")
+    String firstName;
+    String city;
+    String state;
+    String lastName;
+
+}
+Grouping properties with @ConfigurationProperties
+
+package org.acme;
+
+
+import io.quarkus.arc.config.ConfigProperties;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+//import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+@ConfigProperties(prefix = "cust")
+public class CustomerConfiguration {
+    @ConfigProperty(name = "name", defaultValue = "default Customer Name")
+    public String name;
+}
+
+application.properties
+cust.name=foo
+
+
+package org.acme;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/customer")
+public class CustomerResource {
+
+    @Inject
+    CustomerConfiguration custConfig;
+
+    @GET
+    public String customerInfo() {
+        //  return custConfig.firstName;
+        return custConfig.name + "Hello";
+    }
+}
+..............................................................................................
+					Profiles
+.............................................................................................
+
+Profiles:
+  The environment where the application is running
+
+1.dev
+2.test
+3.prod
+
+Profile in the the property name:
+
+%{profile-name}.config.name
+
+Profile Names in Qurakus:
+
+dev - development
+prod - production profile
+test -  test profile
+
+profile specification configuration:
+
+application.properties
+
+%dev.message.greet=messagefrom dev
+%prod.message.greet=messagefromprod
+
+.env file
+_{PROFILE}_CONFIG_KEY=VALUE
+
+_DEV_MESSAGE_GREET=VALUE
+
+eg:
+
+1.application.properties
+%dev.greeter.message=Hello,From Property Development
+%prod.greeter.message=Hello,From Property Production
+
+
+profile aware files
+
+application-profile.properties
+
+application-dev.properties
+application-prod.properties
+
+
+YAML
+
+Third party config servers- config sources
+
+qaurkus built in propreties
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
