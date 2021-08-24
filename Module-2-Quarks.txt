@@ -3356,6 +3356,139 @@ public class CustomerResource {
         return custConfig.name + "Hello";
     }
 }
+.............................................................................................
+
+@ConfigProperties has been deprecated: dont use in latest Quarkus implementations:
+...................................................................................
+
+Use @ConfigMapping annotation on interface level
+
+application.properties
+cust.name=Subramanian
+
+@ConfigMapping(prefix="cust")
+public interface CustomerConfiguration {
+
+   //name
+    String name();
+
+}
+package org.acme;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/customer")
+public class CustomerResource {
+
+    @Inject
+    CustomerConfiguration custConfig;
+    @GET
+    public String customerInfo() {
+        return custConfig.name();
+    }
+}
+
+Res:
+http://localhost:8080/customer
+
+Subramanian
+.............................................................................................
+How to configure default values in the @ConfigMapping annotation
+
+@ConfigMapping(prefix = "cust")
+public interface CustomerConfiguration {
+    String name();
+}
+
+There is type provided by java " java.util.Optional<T>":
+
+Optional class helps to convert null into usefull defaults.
+
+Java has the very problem is NullPointerException.
+
+
+ eg:
+    Customer customer= service.findById(10)
+    log.info(customer.getCity());
+
+   The result would be
+   -Customer
+       or
+   -null
+if there is no customer which throws null pointer exception?
+
+How to solve this problem?
+
+Way - 1
+  if(customer!=null){ 
+     log.info(customer.getCity());
+  }else{
+
+     log.info("customer not found")
+  }
+
+Way -2
+
+     String city = service.findById(10).orElse("Default City")
+
+..........................................................................................
+application.properties
+#cust.name=Subramanian
+
+@ConfigMapping(prefix = "cust")
+public interface CustomerConfiguration {
+    Optional<String> name();
+}
+
+@GET
+ public String customerInfo() {
+        return custConfig.name().orElse("default Name");
+   }
+}
+.............................................................................................
+				   Nested properties
+
+application.properties
+cust.address.city=coimbatore
+
+@ConfigMapping(prefix = "cust")
+public interface CustomerConfiguration {
+    Optional<String> name();
+    Address address();
+    //inner type
+    interface Address {
+        Optional<String> city();
+    }
+}
+    public String customerInfo() {
+        String city = custConfig.address().city().orElse("coimbatore");
+        return custConfig.name().orElse("default Name") + " " + city;
+    }
+}
+.............................................................................................
+Programmetic access
+
+SmallRyeConfig config = ConfigProvider.getConfig.unWrap(SmallRyeConfig.class);
+CustomerConfiguration cust=config.getConfigMapping(CustomerConfiguration.class);
+............................................................................................
+What if application.properties key name is different from programmetic name
+
+application.properties
+cust.firstName=Subramanian
+
+
+@ConfigMapping(prefix = "cust")
+public interface CustomerConfiguration {
+    @WithName("firstName")
+    Optional<String> name();
+    Address address();
+    //inner type
+    interface Address {
+        Optional<String> city();
+    }
+}
 ..............................................................................................
 					Profiles
 .............................................................................................
@@ -3403,27 +3536,539 @@ application-profile.properties
 application-dev.properties
 application-prod.properties
 
+eg:
 
-YAML
+Steps:
+1.Add application-prod.properties inside src/main/resources folder
+greeter.message=Hello,From Property Production&&&
 
-Third party config servers- config sources
+2.run in dev mode and test it
 
-qaurkus built in propreties
-
-
-
-
-
-
-
-
-
-
+3.run in production mode and test it.
+..............................................................................................
+						YAML
+..............................................................................................
+YAML Getting started:
+https://www.redhat.com/en/topics/automation/what-is-yaml
 
 
+How to enable yaml configurations?
+
+mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-config-yaml
+
+<dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-config-yaml</artifactId>
+</dependency>
+
+old properties- application.properties
+%dev.greeter.message=Hello,From Property Development!!!
+#%prod.greeter.message=Hello,From Property Production
+greeter.name=Subramanian
+greeter.date=today
+myuser.name=Subramanian
+cust.firstName=Subramanian
+cust.address.city=Chennai
+
+application.yaml
+
+"%prod":
+  greeter:
+    message: The Message From Production
+
+"%dev":
+  greeter:
+    message: The Message From Development
+"%test":
+  greeter:
+    message: The message From Test
+greeter:
+  name: Subramanian
+  message: Hello,From YAML
+  date: Today
+myuser:
+  name: Myuser
+cust:
+  firstName: Subramanian
+  address:
+    city: Delhi
+..............................................................................................
+				Quarkus built in properties
+
+
+Quarkus properties begin with "qurakus.modulename.property"
+
+
+"%prod":
+  greeter:
+    message: The Message From Production
+  quarkus:
+    http:
+      port: 3001
+
+"%dev":
+  greeter:
+    message: The Message From Development
+    # Update existing quarkus related properties
+    quarkus:
+      http:
+        port: 3000
+
+"%test":
+  greeter:
+    message: The message From Test
+greeter:
+  name: Subramanian
+  message: Hello,From YAML
+  date: Today
+myuser:
+  name: Myuser
+cust:
+  firstName: Subramanian
+  address:
+    city: Delhi
+
+Yaml files:
+
+application.yaml
+application-prod.yaml
+config/application.yaml
+..............................................................................................
+				Centeralized Configuration
+..............................................................................................
+
+What if i want to  keep the general  configuration data across the microservices?
+
+-Centeralized config store.
+
+There are lot of configuration server applications are there.
+
+1.Hashicorp vault
+2.Consul
+3.Spring cloud
+...........................................................................................
+				  Consul: Reading Properties
+.............................................................................................
+
+Requirement:
+
+1.Your application
+2.Consul Server - You need to run consul server separtly.
+
+
+Project Setup:
+
+mvn io.quarkus:quarkus-maven-plugin:2.1.3.Final:create \
+    -DprojectGroupId=org.acme \
+    -DprojectArtifactId=config-consuleapp \
+    -DclassName="org.acme.GreetingResource" \
+    -Dpath="/greeting" \
+    -Dextensions="consul-config"
+cd config-consuleapp
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-consul-config</artifactId>
+    </dependency>
+
+Lets start coding:
+
+1.Have simple config property, return the value
+
+package org.acme;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/hello")
+public class GreetingResource {
+
+    @ConfigProperty(name = "greeting.message", defaultValue = "Hello RESTEasy")
+    String message;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return message;
+    }
+}
+
+Getting Property from consul server:
+
+Steps:
+
+1.start consul server.
+
+-Via Docker
+open cmd prompt and run this
+
+$ docker run --rm --name consul -p 8500:8500 -p 8501:8501 consul:1.7 agent -dev -ui -client=0.0.0.0 -bind=0.0.0.0 --https-port=8501
+
+2.browse consul page.
+  http://localhost:8500/ui/dc1/kv/create
+As of now , dont enter any thing.
+
+3.You have to connect application with consul server, for that you need to configure via application.properties or application.yaml
+
+
+application.properties
+
+#greeting.message=Hello,application.properties
+#application name: We have to use this name as the application name that was
+# configured when standing up the config server
+quarkus.application.name=consul-app
+#enable retrieval of configuration from the consule -this is by default is disabled
+quarkus.consul-config.enabled=true
+#Key in Consul's KV store that the Quarkus application will read and try to extract properties from
+quarkus.consul-config.properties-value-keys=config/${quarkus.application.name}
+.............................................................................................
+                            Advanced Consul Configuration
+...........................................................................................
+
+quarkus.consul-config.enabled
+
+If set to true, the application will attempt to look up the configuration from Consul
+
+boolean
+
+false
+
+quarkus.consul-config.agent.host-port
+
+Consul agent host
+
+host:port
+
+localhost:8500
+
+quarkus.consul-config.agent.use-https
+
+Whether or not to use HTTPS when communicating with the agent
+
+boolean
+
+false
+
+quarkus.consul-config.agent.token
+
+Consul token to be provided when authentication is enabled
+
+string
+
+quarkus.consul-config.agent.trust-store
+
+TrustStore to be used containing the SSL certificate used by Consul agent Can be either a classpath resource or a file system path
+
+Show more
+path
+
+quarkus.consul-config.agent.trust-store-password
+
+Password of TrustStore to be used containing the SSL certificate used by Consul agent
+
+string
+
+quarkus.consul-config.agent.key-store
+
+KeyStore to be used containing the SSL certificate for authentication with Consul agent Can be either a classpath resource or a file system path
+
+Show more
+path
+
+quarkus.consul-config.agent.key-store-password
+
+Password of KeyStore to be used containing the SSL certificate for authentication with Consul agent
+
+string
+
+quarkus.consul-config.agent.key-password
+
+Password to recover key from KeyStore for SSL client authentication with Consul agent If no value is provided, the key-store-password will be used
+
+Show more
+string
+
+quarkus.consul-config.agent.trust-certs
+
+When using HTTPS and no keyStore has been specified, whether or not to trust all certificates
+
+boolean
+
+false
+
+quarkus.consul-config.agent.connection-timeout
+
+The amount of time to wait when initially establishing a connection before giving up and timing out. Specify 0 to wait indefinitely.
+
+Show more
+Duration 
+
+10S
+
+quarkus.consul-config.agent.read-timeout
+
+The amount of time to wait for a read on a socket before an exception is thrown. Specify 0 to wait indefinitely.
+
+Duration 
+
+60S
+
+quarkus.consul-config.prefix
+
+Common prefix that all keys share when looking up the keys from Consul. The prefix is not included in the keys of the user configuration
+
+Show more
+string
+
+quarkus.consul-config.raw-value-keys
+
+Keys whose value is a raw string. When this is used, the keys that end up in the user configuration are the keys specified her with '/' replaced by '.'
+
+Show more
+list of string
+
+quarkus.consul-config.properties-value-keys
+
+Keys whose value represents a properties file. When this is used, the keys that end up in the user configuration are the keys of the properties file, not these keys
+
+Show more
+list of string
+
+quarkus.consul-config.fail-on-missing-key
+
+If set to true, the application will not start if any of the configured config sources cannot be located
+
+.............................................................................................
+					
+Other Implementations:
+-if you have spring cloud config server.
+.............................................................................................
+				   Data Sources
+.............................................................................................
+
+Data sources;
+
+1.sql
+2.nosql
+
+How to connect with sql Data Sources?
+
+1.JDBC
+  Core 
+2.DataSource Object is abstraction on JDBC
+
+Quarkus Datasouces:
+
+1.Agroal Non Reactive Datasource driver
+   Agroal library allows the definition of java.sql.DataSource with connection pooling
+2.Vert.x Reactive Drivers
+
+How to setup datasources?
+
+1.configure single datasource or multiple datasource
+2.how to obtain datasource object in code
+3.how to work with datasources
+
+
+Zero Config Setup (Dev Services)
+.................................
+
+1.Postgresql (container)
+2.MySQL (container)
+3.MariaDB (container)
+4.H2 (in-process)
+5.Apache Derby (in-process)
+6.DB2 (container) (requires license acceptance)
+7.MSSQL (container) (requires license acceptance)
+
+container- separate running outside app
+in-process - as part of application.
+
+
+Datasource configuration in application.properties/yaml
+
+Add the agroal extension plus one of jdbc-db2, jdbc-derby, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle or jdbc-postgresql.
+
+Then configure your datasource:
+
+quarkus.datasource.db-kind=postgresql 
+quarkus.datasource.username=<your username>
+quarkus.datasource.password=<your password>
+
+quarkus.datasource.jdbc.url=jdbc:postgresql://localhost:5432/hibernate_orm_test
+quarkus.datasource.jdbc.max-size=16
+
+
+Default datasource
+quarkus.datasource.db-kind=h2 
+
+db-kind: short name to refer database configuration information
+
+DAtabase kinds
+We currently include these built-in database kinds:
+
+DB2: db2
+Derby: derby
+H2: h2
+MariaDB: mariadb
+Microsoft SQL Server: mssql
+MySQL: mysql
+Oracle: oracle
+PostgreSQL: postgresql, pgsql or pg
+
+..
+Drivers:
+
+DB2 - jdbc-db2
+
+Derby - jdbc-derby
+
+H2 - jdbc-h2
+
+MariaDB - jdbc-mariadb
+
+Microsoft SQL Server - jdbc-mssql
+
+MySQL - jdbc-mysql
+
+Oracle - jdbc-oracle
+
+PostgreSQL - jdbc-postgresql
+.............................................................................................
+
+How to use datasource inside code?
+
+DI:
+
+Consuming the datasource
+@Inject
+AgroalDataSource defaultDataSource;
+............................................................................................
+				Micro Service Data Management Pattern
+............................................................................................
+
+How quarkus supports Microservice datata management pattern?
+
+1.Database per service
+2.Shared database
+
+1.Database per service.
+
+  We need to configure multiple datasources.
+
+Quarkus supports multi datasource configuration
+
+default Database:
+
+quarkus.datasource.db-kind=h2
+quarkus.datasource.username=username-default
+quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost/mem:default
+quarkus.datasource.jdbc.max-size=13
+
+I have User service, which needs user db.
+
+Syntax:
+
+quarkus.datasource.serviceName.db-kind
+
+quarkus.datasource.users.db-kind=h2
+quarkus.datasource.users.username=username1
+quarkus.datasource.users.jdbc.url=jdbc:h2:tcp://localhost/mem:users
+quarkus.datasource.users.jdbc.max-size=11
+
+quarkus.datasource.inventory.db-kind=h2
+quarkus.datasource.inventory.username=username2
+quarkus.datasource.inventory.jdbc.url=jdbc:h2:tcp://localhost/mem:inventory
+quarkus.datasource.inventory.jdbc.max-size=12
 
 
 
+DI
+@Inject
+AgroalDataSource defaultDataSource;
+
+@Inject
+@DataSource("users")
+AgroalDataSource usersDataSource;
+
+@Inject
+@DataSource("inventory")
+AgroalDataSource inventoryDataSource;
+
+public class UserService {
+
+@Inject
+@DataSource("users")
+AgroalDataSource usersDataSource;
+}
+.............................................................................................
+
+Eg:
+
+Plain JDBC Code using Datasource
+
+Set up Project :
+
+     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-agroal</artifactId>
+    </dependency>
+
+
+package org.acme;
+
+import io.agroal.api.AgroalDataSource;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+@Path("/hello")
+public class GreetingResource {
+
+
+    @Inject
+    AgroalDataSource defaultDataSource;
+
+    @GET
+    public Response getConnectionStatus() {
+        try {
+            Connection conn = defaultDataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate("CREATE TABLE TABLE1(id INT NOT NULL,  title VARCHAR(50))");
+            stmt.executeUpdate("INSERT INTO TABLE1 " + "VALUES (100, 'Subramanian')");
+            ResultSet rs = stmt.executeQuery("select * from table1");
+            while (rs.next()) {
+                System.out.println(rs.getInt(1) + "  " + rs.getString(2));
+            }
+            stmt.close();
+            conn.close();
+        } catch (Exception es) {
+            System.out.println("Database error" + es.getMessage());
+        }
+        return Response.ok().build();
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "Hello RESTEasy";
+    }
+}
 
 
 

@@ -1,0 +1,31 @@
+"%prod":
+  greeter:
+    message: The Message From Production
+  quarkus:
+    http:
+      port: 3001
+
+"%dev":
+  greeter:
+    message: The Message From Development
+    # Update existing quarkus related properties
+    quarkus:
+      http:
+        port: 3000
+
+"%test":
+  greeter:
+    message: The message From Test
+greeter:
+  name: Subramanian
+  message: Hello,From YAML
+  date: Today
+myuser:
+  name: Myuser
+cust:
+  firstName: Subramanian
+  address:
+    city: Delhi
+
+
+

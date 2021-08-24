@@ -12,9 +12,10 @@ public class CustomerResource {
 
     @GET
     public String customerInfo() {
-        //  return custConfig.firstName;
-//        return custConfig.name().orElse("default");
-        String city = custConfig.address().city().orElse("cbe");
-        return custConfig.name().orElse("defult") + " " + city;
+//        //  return custConfig.firstName;
+////        return custConfig.name().orElse("default");
+        String city = custConfig.address().city().orElse("coimbatore");
+//        return custConfig.name().orElse("defult") + " " + city;
+        return custConfig.name().orElse("default Name") + " " + city;
     }
 }
