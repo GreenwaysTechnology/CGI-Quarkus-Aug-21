@@ -4069,8 +4069,516 @@ public class GreetingResource {
         return "Hello RESTEasy";
     }
 }
+..............................................................................................
+			        Quarkus-ORM
+			   JPA,Hibernate,Panache
+..............................................................................................
 
 
+What is JPA?
+  JPA is JEE Standard to build object relational mapping technologies.
+
+History of ORM:
+
+-ORM Technology introduced in EJB 
+   Entity Bean
+Because of drawback of Entity Beans,The developer who created a framework based ejb entity bean called "Hibernate"
+
+
+How Hibernate works?
+
+Object ----is mapped in xml-->loaded into hibernateEngine---Will start all persistency.
+
+
+Object is mapped via annotations--loaded into hibernateEngine---Will start persistency
+
+				   App Java Apps
+					|
+				     Objects
+					|
+				    xml or Annotation
+					|
+				   Hibernate Engine(Will translate SQL QUERES)
+					 |
+				     DataSource
+				          |
+				    JDBC Driver
+
+
+Once ORM Technologies started becoming popular JCP, started standarzing ORM, who relased spec
+"JPA"
+
+What is JPA?
+  STANDARD can be used by developer who can use any persistency implementation-Hibernate,X,Y..
+
+
+				    ORM APPS
+					|
+				       JPA 
+				-----------------------
+			        |        |     |      
+			   Hibernate  IBatis  Toplink
+..............................................................................................
+				Quarkus and JPA
+
+Quarkus provides two abstraction on JAP
+
+1.JPA - Hibernate
+					APP
+					 |
+					JPA
+					 |
+				      Hibernate
+
+2.JPA - Panche - Hibernate
+
+					 APP
+					  |
+					 JPA
+					  |
+					PANCHE
+					  |
+				       HIBERNATE
+
+
+............................................................................................
+
+1.JPA - Hibernate
+
+
+JPA Entity:
+
+What is Entity?
+ Object,which lives in only main memory
+ Object which lives beyond main memory- persistable/seriazliable  -Enity
+
+@Entity
+@Table( name = "EVENTS" )
+public class Event {
+    ...
+}
+
+table:
+ columns
+   each column will have type,rules
+identity column
+domain columns
+every table must have id.
+
+@Id
+@GeneratedValue(generator="increment")
+@GenericGenerator(name="increment", strategy = "increment")
+public Long getId() {
+    return id;
+}
+
+column mapping :
+
+class fields are mapped to table columns and its type is mapped to column datatype.
+if i want to overiride column name
+
+public String getTitle() {
+    return title;
+}
+
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name = "EVENT_DATE")
+public Date getDate() {
+    return date;
+}
+
+Basic rules for entity as per jpa spec
+
+1.class must be public
+2.fields must be declared private
+3.setter and getters
+4.may have additional constructors
+.............................................................................................
+				Manipulating JPA Entity
+............................................................................................
+
+CURD Operations:
+.................
+
+JPA and Hibernate objective is not write any sql statements.who provides api to send data and read data from the database
+
+CREATE:/SAVE - Insert Query
+
+EntityManager entityManager = sessionFactory.createEntityManager();
+entityManager.getTransaction().begin();
+entityManager.persist( new Event( "Our very first event!", new Date() ) );
+entityManager.persist( new Event( "A follow up event", new Date() ) );
+entityManager.getTransaction().commit();
+entityManager.close();
+
+LIST: Select Query
+
+entityManager = sessionFactory.createEntityManager();
+entityManager.getTransaction().begin();
+List<Event> result = entityManager.findAll()
+for ( Event event : result ) {
+	System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
+}
+entityManager.getTransaction().commit();
+entityManager.close();
+.............................................................................................
+
+Project Setup:
+
+pom.xml
+    <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm</artifactId>
+        </dependency>
+
+   <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-jackson</artifactId>
+        </dependency>
+
+
+application.properties
+
+
+Enity class
+package org.acme.enity;
+
+import javax.persistence.*;
+import java.util.Date;
+
+@Entity
+@Table(name = "events")
+public class Event {
+    @Id
+    @SequenceGenerator(name = "eventseq", sequenceName = "event_id_seq", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(generator = "eventseq")
+    private int eventId;
+    @Column(name = "event_title")
+    private String title;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "event_date")
+    private Date eventDate;
+
+    public Event() {
+    }
+
+    public Event(String title, Date eventDate) {
+        this.title = title;
+        this.eventDate = eventDate;
+    }
+
+    public int getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
+    }
+}
+
+Service:
+package org.acme.service;
+
+import org.acme.enity.Event;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
+
+@ApplicationScoped
+public class EventService {
+
+    @Inject
+    EntityManager entityManager;
+
+    public List<Event> findAll() {
+        //JPQL - Java Persistency Query Language
+        return entityManager.createQuery("SELECT e FROM Event e", Event.class).getResultList();
+    }
+
+    @Transactional
+    public void createEvent() {
+        Event event = new Event("Our very first event!", new Date());
+        //entityManager.getTransaction().begin();
+        entityManager.persist(event);
+        //entityManager.getTransaction().commit();
+    }
+}
+
+package org.acme;
+
+import org.acme.service.EventService;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/events")
+public class EventResource {
+
+    @Inject
+    EventService eventService;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listEvents() {
+        return Response.ok(eventService.findAll()).build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createEvent() {
+        eventService.createEvent();
+        return Response.status(201).entity("Event Created").build();
+    }
+}
+
+Testing
+
+POST /localhost:8080/events
+
+GET /localhost:8080/events
+............................................................................................
+				JPA-Hibernate-Panche
+...........................................................................................
+
+Panche:
+ Panche is just wrapper on top of JPA-Hibernate.
+
+
+Panche Entities:
+
+@Entity
+public class Event extends PancheEntity {
+
+}
+
+-It becomes eventity and also apis to manipulate Entity
+
+Panche PRogramming can be written using two design patterns
+
+1.Active Record pattern
+2.DAO Patter or Repository Pattern
+
+Panche Entity Rules
+
+1.variables are declared using public keyword with no setters and getters
+
+2.id property , identifier logic not necessary by default.
+
+3.State and behaviour in the same class
+   public String name; -state
+   findByName()-behaviour   
+4.Simplied query operations
+    using JPQL but simplified syntax.
+
+@Entity
+public class Event extends PancheEntity {
+
+}
+
+if you want to customize id generation 
+@Entity
+public class Event extends PancheEntityBase {
+
+}
+
+1.Active Record pattern:
+  You can use entity instance directly into Service/Resources
+
+ Event.findAll()
+ Event.findById(id)
+ Event.persist()
+ Event.delete()
+ Event.update()
+
+2.Repository Pattern/DAO pattern
+
+-Create Entity separatly : follow all jpa entity rules
+
+@Enity
+public class Event {
+  private int id;
+  private String title
+  //setters and getters
+}
+-Create Repository class
+ @ApplicationScoped
+ public class EventRepository implements PanacheRepository<Event> {
+  
+ }
+
+-Dependency Injection into Service or Resource
+
+@ApplicationScoped
+public class EventService{
+
+    @Inject
+    EventRepository eventRepo
+
+}
+...............................................................................................
+
+Eg:
+
+package org.acme.entity;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
+
+@Entity
+@Table(name = "events")
+public class Event extends PanacheEntity {
+    @Column(name = "event_title")
+    public String title;
+    @Column(name = "event_date")
+    public Date eventDate;
+
+    //custom api
+    public static Event findByTitle(String title) {
+        return find("title", title).firstResult();
+    }
+}
+............................................................................................
+package org.acme;
+
+import org.acme.entity.Event;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.transaction.Transactional;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+import java.net.URI;
+import java.util.Date;
+import java.util.List;
+
+@Path("/events")
+@Produces(MediaType.APPLICATION_JSON)
+public class EventResource {
+
+    @GET
+    public List<Event> list() {
+        return Event.listAll();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Event get(@PathParam("id") Long id) {
+        Event event = Event.findById(id);
+        if (event == null) {
+            throw new WebApplicationException("Event with Id of " + id + " Not Found");
+        }
+        return event;
+    }
+
+    @GET
+    @Path("/search/{name}")
+    public Event search(@PathParam("name") String name) {
+        Event event = Event.findByTitle(name);
+        if (event == null) {
+            throw new WebApplicationException("Event with Name of " + name + " Not Found");
+        }
+        return event;
+    }
+
+    @GET
+    @Path("/count")
+    public Response countEvents(@PathParam("name") String name) {
+        return Response.ok(Event.count()).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public void removeEvent(@PathParam("id") Long id) {
+        Event event = Event.findById(id);
+        if (event == null) {
+            throw new WebApplicationException("Event with Id of " + id + " Not Found");
+        }
+        event.delete();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public Response updateEvent(@PathParam("id") Long id, Event event) {
+        Event foundEvent = Event.findById(id);
+        if (foundEvent == null) {
+            throw new WebApplicationException("Event with Id of " + id + " Not Found");
+        }
+        //update
+        foundEvent.title = event.title;
+        return Response.ok(foundEvent.id + foundEvent.title + "has been modified").build();
+    }
+
+    @POST
+    @Transactional
+    public Response createEvent(Event event) {
+        event.eventDate = new Date();
+        event.persist();
+        return Response.created(URI.create("/events/" + event.id)).build();
+    }
+
+    //inner class
+    @Provider
+    public class ErrorMapper implements ExceptionMapper<Exception> {
+        @Override
+        public Response toResponse(Exception exception) {
+            return Response.status(500).entity(exception.getMessage()).build();
+        }
+    }
+}
+..............................................................................................
+				Panche DAO /Repository Pattern
+.............................................................................................
+
+Loggers
+Service Interaction -  HTTP Services
+ReactiveProgamming -Muntiny
+Vertx - Event driven architectures- EventBus
+
+
+
+   
+  
 
 
 
