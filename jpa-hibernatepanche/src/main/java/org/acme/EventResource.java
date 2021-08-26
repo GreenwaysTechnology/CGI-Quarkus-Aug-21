@@ -32,6 +32,7 @@ public class EventResource {
         return event;
     }
 
+   
     @GET
     @Path("/search/{name}")
     public Event search(@PathParam("name") String name) {

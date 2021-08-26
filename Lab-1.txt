@@ -72,7 +72,36 @@ Req:
   that user not found
 -Api should have implemented content-negotation - json and xml
 -Should have used Resource and SubResource concept.
+.............................................................................................
 
+Lab 6: Using Rest Client:
+
+Build Two App.
+
+1.Event App
+   - should have all curd operations jpa-hibernate-panche - using h2/postgre/mysql
+ should run in port 3000
+
+build this app 
+java -jar target/....
+ 
+2.Authors App
+- should have all curd operations jpa-hibernate-panche - using h2/postgre/mysql
+  should run in port 3001
+
+java -jar target/....
+ 
+
+3.EventManagementApp
+
+  Query information from Event app
+  Query Information fro  Authors app
+ should run in port 8080
+
+events/rest/v1/list
+
+java -jar target/....
+ 
 
 
 

@@ -3951,7 +3951,7 @@ AgroalDataSource defaultDataSource;
 				Micro Service Data Management Pattern
 ............................................................................................
 
-How quarkus supports Microservice datata management pattern?
+How quarkus supports Microservice data management pattern?
 
 1.Database per service
 2.Shared database
@@ -4121,7 +4121,7 @@ What is JPA?
 ..............................................................................................
 				Quarkus and JPA
 
-Quarkus provides two abstraction on JAP
+Quarkus provides two abstraction on JPA
 
 1.JPA - Hibernate
 					APP
@@ -4384,12 +4384,12 @@ public class Event extends PancheEntity {
 
 }
 
--It becomes eventity and also apis to manipulate Entity
+-It becomes entity and also apis to manipulate Entity
 
 Panche PRogramming can be written using two design patterns
 
 1.Active Record pattern
-2.DAO Patter or Repository Pattern
+2.DAO Pattern or Repository Pattern
 
 Panche Entity Rules
 
@@ -4566,20 +4566,334 @@ public class EventResource {
         }
     }
 }
+............................................................................................
+				   Multi Datasource and Panche
+.............................................................................................
+
+It is the implementation of per service and per database.
+
+Service--------One Db
+
+
+Use case  :
+
+1.Event Service can store data in h2 db
+2.Author Service can store data in postgres db.
+
+
+Steps:
+
+1.driver depdenency
+ <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+    </dependency>
+
+2.application.properties
+
+#Event 
+quarkus.datasource.db-kind=h2
+quarkus.datasource.jdbc.url=jdbc:h2:mem:myDB
+
+#Author
+quarkus.datasource.author.db-kind=postgresql
+quarkus.datasource.author.username=hibernate
+quarkus.datasource.author.password=hibernate
+quarkus.datasource.author.jdbc.url=jdbc:postgresql://localhost:5432/hibernate_db
+
+3.In the code , we have to inject @Datasource("author")
+
+@Entity
+@DataSource("author")
+public class Author extends PanacheEntity {
+    public String name;
+    public String city;
+}
+
+
+4.docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name quarkus_test -e POSTGRES_USER=quarkus_test -e POSTGRES_PASSWORD=quarkus_test -e POSTGRES_DB=quarkus_test -p 5432:5432 postgres:11.5
+
+
 ..............................................................................................
 				Panche DAO /Repository Pattern
 .............................................................................................
 
-Loggers
-Service Interaction -  HTTP Services
-ReactiveProgamming -Muntiny
-Vertx - Event driven architectures- EventBus
+Repository Pattern
+
+Steps
+
+1.Entity class
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+public class Person {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String name;
+    private String city;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+}
+
+2.Define Repository class
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.acme.entity.Person;
+
+import javax.enterprise.context.ApplicationScoped;
+package org.acme.repo;
+
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.acme.entity.Person;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class PersonRepository implements PanacheRepository<Person> {
+
+    //your custom methods
+    public Person findByName(String name) {
+        return find("name", name).firstResult();
+    }
+}
+
+...........................................................................................
+
+package org.acme;
+
+import org.acme.entity.Person;
+import org.acme.repo.PersonRepository;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+@Path("/person")
+public class PersonResource {
+
+    @Inject
+    PersonRepository repository;
+
+    @GET
+    public List<Person> findAll() {
+        return repository.findAll().list();
+    }
+
+    @POST
+    @Transactional
+    public Response createAuthor(Person person) {
+        repository.persist(person);
+        return Response.created(URI.create("/person/" + person.getId())).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response findById(@PathParam("id") Long id) {
+        Optional<Person> optional = repository.findByIdOptional(id);
+        return Response.ok(optional.orElse(new Person())).build();
+    }
+
+}
+..............................................................................................
+				 Micro Service Pattern
+				 Service Communication
+.............................................................................................
+
+In Micro services, services are built in isloated , who need to communicate them.
+
+1.Remote Procedure Invocation
+2.Messaging
+3.Domain-specific protocol
+4.Idempotent Consumer
+
+1.Remote Procedure Invocation:
+
+1.REST
+2.gRPC
+3.Apache Thrift
+..............................................................................................
+				1.REST Style
+..............................................................................................
+
+MicroProfile Rest Client:
+The MicroProfile Rest Client provides a "type-safe approach" to invoke RESTful services over HTTP.
+As much as possible the MP Rest Client attempts to use Jakarta RESTful Web Services 2.1 APIs for consistency and easier re-use.
+
+SmallRye RestClient is the reference implementation to talk to REST API over http.
+
+Quarkus uses this implementation to achive Service communication.
+...................
+
+Steps:
+
+1.we need dependency
+
+quarkus-rest-client
+quarkus-rest-client-jackson
+
+Work Flow:
+.........
+
+Application-Service-A --------communicate over http ------------Application-Service-B
 
 
+Service-A may
+ -Request Data
+    all,byid,byname
+ -Send data for update,delete,insert
 
+  JSON
+   |
+  JSON
+
+Service-B may
+  Return data
+  accept data
+
+
+Service A Receive data in the json form, we need to serialze and store in model object
+Service B Receive data in the json form, we need to serialze and store in model object
    
-  
 
+package org.acme.models;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Country {
+    public String name;
+    public String alpha2Code;
+    public String capital;
+    public List<Currency> currencies;
+
+    public static class Currency {
+        public String code;
+        public String name;
+        public String symbol;
+    }
+}
+.............................................................................................
+					Proxy Class Implementation
+.............................................................................................
+Proxy class is bridge class between two services.
+Takes care of serizlation and deserizalation , marshalling,demarshalling
+MicroProfile Rest Client takes generating proxy classes on fly. we need to provide high level information via interface.
+
+
+Interface which exposes apis which communcates remote services
+
+package org.acme.rest.client;
+
+
+import org.acme.models.Country;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.ws.rs.Path;
+import java.util.Set;
+
+@Path("/v2")
+@RegisterRestClient
+public interface CountryService {
+    //api to invoke third party
+    @Path("/name/{name}") 
+    @GET
+    Set<Country> getByName(@PathParam String name);
+}
+...........................................................................................
+				  Rest Configuration in application.properties
+............................................................................................
+
+Syntax:
+serviceName/mp-rest/url=url
+serviceName/mp-rest/scope=javax.inject.SingleTon
+
+org.acme.rest.client.CountryService/mp-rest/url=https://restcountries.eu/rest
+org.acme.rest.client.CountryService/mp-rest/scope=javax.inject.Singleton
+
+
+
+package org.acme;
+
+import org.acme.models.Country;
+import org.acme.rest.client.CountryService;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import java.util.Set;
+
+@Path("/country")
+public class CountryResource {
+
+    @Inject
+    @RestClient
+    CountryService countryService;
+
+    @GET
+    @Path("/name/{name}")
+    public Set<Country> findByCountry(@PathParam("name") String name) {
+        return countryService.getByName(name);
+    }
+
+}
+                                      Simiplifcation
+
+@Path("/v2")
+@RegisterRestClient(configKey = "country-api")
+public interface CountryService {
+    //api to invoke third party
+    @Path("/name/{name}")
+    @GET
+    Set<Country> getByName(@PathParam String name);
+}
+application.properties
+
+country-api/mp-rest/url=https://restcountries.eu/rest
+country-api/mp-rest/scope=javax.inject.Singleton
+.............................................................................................
+
+  
 
 
 
