@@ -4877,7 +4877,7 @@ public class CountryResource {
     }
 
 }
-                                      Simiplifcation
+                                      Simiplification
 
 @Path("/v2")
 @RegisterRestClient(configKey = "country-api")
@@ -4892,10 +4892,993 @@ application.properties
 country-api/mp-rest/url=https://restcountries.eu/rest
 country-api/mp-rest/scope=javax.inject.Singleton
 .............................................................................................
+				Reactive and non blocking Micro services 
+.............................................................................................
 
+IO:
+ 
+
+What is Blocking?
+
+
+What Non Blocking?
+............................................................................................
+			      Reactive Programming
+............................................................................................
+
+Reactive Programming uses streaming
+
+Quarkus coimbines Reactive(mutiny/rxjava) + Non blocking.
+.............................................................................................
+
+What is reactive programming?
+
+
+it is one of the  Programming Paradigm(way).
+
+Reactive programming is collection of many programming paradigm best parts and principles.
+
+Reactive programming is collection of oo , functional, event driven......principles
+
+ReactiveX is a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming.
+
+..........................................................................................
+				Reactive Programming languages:
+................................................................................................
+
+There is no such separate pl which adopts reactive programming alone.
+
+rather which is eXtended by other languages : 
+
+Reactive programming is just like plugin, which has been pluged in inside languages via libs and frameworks.
+
+Libs for java :
+1.Rxjava 1,2,3
+2.Project Reactor.
+3.Mutiny
+
+What is Reactive?
+
+  Oxford dictionary defines reactive  as "showing a response to a stimulus"
+
+Showing a response to a stimulus
+...................................
+
+1.1 (Physiology) Showing an immune response to a specific antigen
+
+1.2 (of a disease or illness) caused by a reaction to something: ‘reactive
+depression’
+
+Acting in response to a situation rather than creating or controlling it
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Reactive Architecture / Software /System
+.........................................
+
+A software showing responses to stimuli(event/actions)
+
+
+Stimuli could be
+● Events, Messages, Requests, Failures, Measures, Availability…
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Reactive Architecture / Software /System
+.........................................
+
+A software showing responses to stimuli(event/actions)
+
+
+Stimuli could be
+● Events, Messages, Requests, Failures, Measures, Availability…
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+          In Reactive systems, Application is controlled by events.
+
+                  Software controls other softwares.
+
+	  In Non Reactive Systems, Applications are controlled by method calls
+
+		How systems interact ?
+			   Object Communication
+
+           Object-A calls method on Object-B , Object-B Returns data to Object A
+				(method calls) 
+
+...........................................................................................    
+History of Reactive Programming:
+
+Reactive Programming introuced by Micro Soft , Inside C#
+
+In java Reactive Programming Implemented by Netflix : Rxjava
+
+
+Core Ideas behind Reactive Programming :
+
+Object:
+  -setters - write
+  -getters - read
+
+getters
+   -single value - scallar values -number,strings,booleans,object
+   -iteralble value(many values) - array , collection-list,map,set
+
+
+Iterations:
+ IEnumerable ,IEnumerator 
+
+IEnumerator 
+   - bridge interface which is used to iterate collection
+
+  Producer                             Consumer/subscriber Caller(requester)
+  moveNext():boolean -------------------->  give me a value /error
+
+Based this we define programming model called "Pull based"
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+.............................................................................................
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+				Reactive Streams Spec
+
+This spec talks about data streamming problems and how to solve - to be dicussed later
+............................................................................................
+Core Ideas behind Reactive Programming :
+
+Object:
+  -setters - write
+  -getters - read
+
+getters
+   -single value - scallar values -number,strings,booleans,object
+   -iteralble value(many values) - array , collection-list,map,set
+
+
+Iterations:
+ IEnumerable ,IEnumerator 
+
+IEnumerator 
+   - bridge interface which is used to iterate collection
+
+  Producer                             Consumer/subscriber Caller(requester)
+  moveNext():boolean -------------------->  give me a value /error
+
+Based this we define programming model called "Pull based"
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+how to reduce sql query exection on database engine, how to add query features inside apps via language.
+-Query language-SQL Like language- inside programming language.
+
+
+  			    That is birth of LINQ
+
+It is microsoft "Language-Integrated Query (LINQ)" is the name for a set of technologies based on the integration of query capabilities directly into the C# language.
+
+
+                   // Specify the data source.
+                 int[] scores = new int[] { 97, 92, 81, 60 };
+
+        // Define the query expression.
+      IEnumerable<int> scoreQuery = from score in scores  where score > 80  select score;
+
+                    "select score from scores where score > 80" -SQL Query
+
+
+Reactive Programming added new style of apis based functional programming principles
+
+1.Pure function
+   function never modifies data memory
+2.immutablity
+   create new copy of object every time
+3.function composition
+    chaining functions
+4.Higher order Function
+   function as parameter
+4.declarative programming
+   dont write much code , write less
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+			     Reactive Programming Implemntations
+..............................................................................................
+
+Reactive programming invented by Microsoft.
+
+NetFlix inspired Reactive programming, who designed the first lib for java - Rxjava.
+.........................................................................................
+				Reactive Programming standards
+->The Reactive Manifesto:https://www.reactivemanifesto.org/
+
+   It is standard, published to build and ensure that system is fully reactive.
+
+
+Principles of Best Reactive System:
+
+1.Responsive:
+   Reactive Systems should be responsive : Quick/Timely result.
+
+2.Resilient:
+   Any System is subject to fail, You must have failure work around.
+   failures and how to fallback, provides high availability
+
+3.Elastic : scalability
+   In case of load, how to scale application by increasing and decreasing resources(Softwares)
+
+4.Message Driven
+   The Programs sends and receives data via events- event driven.
+   
+				
+
+2.Reactive Streams
+https://www.reactive-streams.org/
+
+How to write best reactive implementations on jvm.
+............................................................................................
+				 Reactive Programming implementation
+
+
+1.Rxjava - Netflix but now is under community.
+2.Project Reactor -Pivtol
+3.Mutiny -red hat
+............................................................................................
+
+Three Important things
+
+1.producer - who sends events and data
+2.consumer- who listens for data
+3.operators- for observing/processing streams
+
+In Reactive Programming these things are represented as objects and methods
+
+-Producer is object
+-Consumer is object
+-Operators are functions/methods
+............................................................................................
+
+1.Mutiny Publisher Objects
+
+1.Uni ----Mono
+2.Multi ---Flux
+
+Any object can emit event(data +signal)
+
+Events
+ -data event
+ -error event
+ -complete event
+
+What is Uni and Multi?
+ Both are objects can emit event.
+
+Uni can emit only one event either data,error,or comple
+ 0 to 1
+
+Multi 
+  Can emit sequence of more events
+ 0 to N events.
+
+Where can i use mutiny?
+ Mutiny has integreated with quarkus- quarkus-mutiny extension, mutiny has integrated with vertx.
+
+setup:
+
+    <dependencies>
+        <dependency>
+            <groupId>io.smallrye.reactive</groupId>
+            <artifactId>mutiny</artifactId>
+            <version>0.19.2</version>
+        </dependency>
+    </dependencies>
+ 
+Functinal programming concepts:
+
+1.pure function:
+ function which never modifes the state of the application
+
+list = [1,2]
+ list.add(3)
+list = [1,2,3]
+
+2.immutablity
+  always new data is returned when ever we modify the original datastructure.
+
+ list.add(3)
+list = [1,2,3] - new list
+
+3.Higher order function
+  function is passed as parameter to another function.
+
+which enables declarative programming.
+
+4.Builder pattern/command chain pattern
+ 
+ "hello".trim().toString();
+ 
   
+Create Uni from Various Sources
+
+ list.add(3)
+list = [1,2,3]
+
+T> {
+
+    /**
+     * Creates a new {@link Uni} from various sources such as {@link CompletionStage},
+     * {@link UniEmitter}, direct values, {@link Exception}...
+     *
+     * <p>
+     * Examples:
+     * </p>
+     *
+     * <pre>
+     * {@code
+     * Uni.createFrom().item(1); // Emit 1 at subscription time
+     * Uni.createFrom().item(() -> x); // Emit x at subscription time, the supplier is invoked for each subscription
+     * Uni.createFrom().completionStage(cs); // Emit the item from this completion stage
+     * Uni.createFrom().completionStage(() -> cs); // Emit the item from this completion stage, the stage is not created before subscription
+     * Uni.createFrom().failure(exception); // Emit the failure at subscription time
+     * Uni.createFrom().deferred(() -> Uni.from().value(x)); // Defer the uni creation until subscription. Each subscription can produce a different uni
+     * Uni.createFrom().item(null); // Emit null at subscription time
+     * Uni.createFrom().nothing(); // Create a Uni not emitting any signal
+     * Uni.createFrom().publisher(publisher); // Create a Uni from a Reactive Streams Publisher
+     * }
+     * </pre>
+     *
+     * @return the factory used to create {@link Uni} instances.
+     * @see UniCreate
+     */
+    static UniCreate 
 
 
+package com.cgi.reactive.mutiny.core;
 
+import io.smallrye.mutiny.Uni;
+
+public class HelloMutiny {
+    public static void main(String[] args) {
+        //Create Uni Object from Item
+        //item which represents data source
+        Uni.createFrom()
+                .item("hello")
+                .subscribe().with(data -> System.out.println(data)); //lambda expression
+        //create uni object from the item which will be emitted when ever subscribe is called
+        Uni.createFrom().item(1)
+                .subscribe().with(System.out::println); // method reference
+        //if you dont call subscribe , item never will be emitted -
+        //items will be emitted only on subscription
+        Uni.createFrom().item("welcome");
+
+        //emit error
+        Uni.createFrom().failure(new RuntimeException("something went wrong"))
+                .subscribe().with(data -> {
+                    System.out.println("data");
+                }, err -> {
+                    System.out.println("error");
+                    System.out.println(err.getMessage());
+                });
+
+    }
+}
+............................................................................................
+
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Uni;
+
+public class NullEmitter {
+    public static void main(String[] args) {
+       Uni.createFrom().nullItem().subscribe().with(System.out::println);
+    }
+}
+
+Emitter:
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Uni;
+
+public class UniFromEmitter {
+    public static void main(String[] args) {
+        Uni.createFrom()
+                .emitter(uniEmitter -> {
+                    uniEmitter.complete("Hello"); // push event
+                    //this will not be emitted becuase it is uni
+                    uniEmitter.complete("Hai");
+                    uniEmitter.complete("Welcome");
+                })
+                .subscribe().with(System.out::println, System.out::println);
+    }
+}
+..............................................................................................
+					Transformation
+
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Uni;
+
+public class UniDataProcessing {
+    public static void main(String[] args) {
+        Uni.createFrom()
+                .item("Hello")
+                //data processing pipe lines
+                .onItem().transform(item -> item + " Mutiny")
+                // .onItem().transform(item->item.toUpperCase())
+                .onItem().transform(String::toUpperCase)
+                .subscribe().
+                with(System.out::println);
+
+        Uni.createFrom().item(100).onItem().transform(i -> i * 10).subscribe().
+                with(System.out::println);
+    }
+}
+.........................................................................................
+				Multi
+..........................................................................................
+
+A Multi represents a stream of data.
+A stream can emit 0,1, n or infinte number of items.
+
+Multi Type
+
+- emits 0...n item events
+- emits failure event
+- emit completion event for bounded streams.
+
+Terminal events:
+ once events are emitted , we cant re emit values
+
+eg
+ failure,complete
+
+Multi is also lazy by nature, to trigger computation only on subscription
+
+package com.cgi.reactive.mutiny.core;
+
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Multi;
+
+public class MultiStream {
+    public static void main(String[] args) {
+        Multi.createFrom().items(1, 2, 3, 4, 5)
+                .subscribe().with(onData -> {
+                    System.out.println("on Data " + onData);
+                }, onError -> {
+                    System.out.println("On Error" + onError);
+                }, () -> {
+                    System.out.println("Completed");
+                });
+        Multi.createFrom().emitter(multiEmitter -> {
+            //push values ,errors, complete events
+            multiEmitter.emit("Hello");
+            multiEmitter.emit("hai");
+            multiEmitter.fail(new RuntimeException("OOps"));
+            multiEmitter.emit("welcome");
+            multiEmitter.complete();
+
+        }).subscribe().with(onData -> {
+            System.out.println("on Data " + onData);
+        }, onError -> {
+            System.out.println("On Error" + onError);
+        }, () -> {
+            System.out.println("Completed");
+        });
+
+        Multi.createFrom().failure(new RuntimeException("oops")).subscribe().with(onData -> {
+            System.out.println("on Data " + onData);
+        }, onError -> {
+            System.out.println("On Error" + onError);
+        }, () -> {
+            System.out.println("Completed");
+        });
+        //can we emit null in multi: you cant emit null values
+        Multi.createFrom().empty().subscribe().with(onData -> {
+            System.out.println("on Data " + onData);
+        }, onError -> {
+            System.out.println("On Error" + onError);
+        }, () -> {
+            System.out.println("Completed");
+        });
+
+    }
+}
+............................................................................................
+				UnBounded Stream- inifinte Streams
+............................................................................................
+
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Multi;
+
+import java.time.Duration;
+
+public class UnBoundedValues {
+    public static void main(String[] args) {
+        Multi.createFrom()
+                .ticks()
+                .every(Duration.ofMillis(1000))
+                .subscribe().with(System.out::println);
+    }
+}
+.............................................................................................
+
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Multi;
+
+public class RangeStream {
+    public static void main(String[] args) {
+        Multi.createFrom()
+                .range(1, 100)
+                .onItem().transform(i -> i * 2)
+                .subscribe().with(System.out::println);
+
+    }
+}
+.........................................................................................
+				  Filtering
+..........................................................................................
+
+package com.cgi.reactive.mutiny.core;
+
+import io.smallrye.mutiny.Multi;
+
+public class FitlerStreaming {
+    public static void main(String[] args) {
+        Multi.createFrom().range(1, 100)
+                .select()
+                .where(i -> i > 50)
+                .select()
+                .last(10)
+                .select()
+                .where(i -> i % 2 != 0)
+                .subscribe().with(System.out::println);
+    }
+}
+..............................................................................................
+		Quarkus Reactive Programming and Blocking and Non blocking
+............................................................................................
+
+Threading Models:
+
+1.io threads /Event loop threads
+   Event loop threads provided by vertx engine.
+ In General vertx provides per cpu core 2 threads - lets say i have 12 cores - 12 *2 =24 threads.- 
+  In order to handle non blocking io, any one of the 24 threads will be used.
+
+2.Worker pool threads
+    Threads are used to handle blocking operations.
+  
+Worker poll threads vs Event loop threads
+
+Event loop threads are reusable threads, it is not blocked for a particular io operation.
+
+Worker pool threads are dedicated threads, it cant be used by other tasks, it is blocked until that task is completed.
+
+All reactive implementations are handled by event loop threads.
+
+
+What can be blocking code?
+Thread.sleep()
+Waiting on a lock
+Waiting on a mutex or monitor (e.g. synchronized section)
+Doing a long lived database operation and waiting for a result
+Doing a complex calculation that takes some significant time.
+Spinning in a loop
+.............................................................................................
+
+Getting Reactive,Non Blocking,Async RestEasy 
+
+         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive</artifactId>
+        </dependency>
+
+In Quarkus(Vertx), Event loop thread can be blocked for 2000ms by default.
+
+...........................................................................................
+
+package org.acme;
+
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.time.Duration;
+
+@Path("/hello")
+public class ReactiveGreetingResource {
+
+    @Inject
+    GreeterService greeterService;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "Hello RESTEasy Reactive";
+    }
+
+    //react end point
+    @GET
+    @Path("/reactive")
+    public Uni<String> hai() {
+        System.out.println("Hai is running in : " + Thread.currentThread().getName());
+        return Uni.createFrom().item("Hai,Reactive").onItem().transform(String::toLowerCase);
+    }
+
+    @GET
+    @Path("/blocking")
+    @Blocking //Vertx.executeBlocking(code)
+    public String blockingMe() {
+        System.out.println("Blocking Thread : " + Thread.currentThread().getName());
+        return greeterService.sayHello();
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/greeting/{count}/{name}")
+    public Multi<String> greetings(int count, String name) {
+        System.out.println("greetings is running in : " + Thread.currentThread().getName());
+        return Multi.createFrom().ticks().every(Duration.ofSeconds(1))
+                .onItem().transform(n -> String.format("hello %s - %d", name, n))
+                .select().first(count);
+
+    }
+
+
+}
+
+package org.acme;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class GreeterService {
+
+    public String sayHello() {
+        //i am blocking the event loop
+        try {
+            //instead of thread.sleep, you may call third party apis.
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "Hello,I am delayed";
+    }
+}
+.............................................................................................
+			Reactive Extension-Hibernate-panche
+.............................................................................................
+
+Panche has extended Mutiny for sending stream of data.
+
+      <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-reactive-panache</artifactId>
+        </dependency>
+     <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-reactive</artifactId>
+        </dependency>
+
+  <!-- Hibernate Reactive uses the reactive-pg-client with PostgreSQL under the hood -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-reactive-pg-client</artifactId>
+        </dependency>
+
+  <!-- We are using RESTEasy Reactive in this quickstart -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+        </dependency>
+.............................................................................................
+
+Rest api, Hibernate,Jdbc drivers all are non blocking
+............................................................................................
+
+
+Reactive Enitity:
+
+package org.acme.hibernate.orm.panache;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+
+@Entity
+@Cacheable
+public class Fruit extends PanacheEntity {
+
+    @Column(length = 40, unique = true)
+    public String name;
+
+    public Fruit() {
+    }
+
+    public Fruit(String name) {
+        this.name = name;
+    }
+
+}
+
+
+package org.acme.hibernate.orm.panache;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+
+@Entity
+@Cacheable
+public class Fruit extends PanacheEntity {
+
+    @Column(length = 40, unique = true)
+    public String name;
+
+    public Fruit() {
+    }
+
+    public Fruit(String name) {
+        this.name = name;
+    }
+
+}
+
+
+package org.acme.hibernate.orm.panache;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.panache.common.Sort;
+import io.smallrye.mutiny.CompositeException;
+import io.smallrye.mutiny.Uni;
+import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestPath;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+import java.util.List;
+
+import static javax.ws.rs.core.Response.Status.*;
+
+@Path("fruits")
+@ApplicationScoped
+@Produces("application/json")
+@Consumes("application/json")
+public class FruitResource {
+
+    private static final Logger LOGGER = Logger.getLogger(FruitResource.class.getName());
+
+    @GET
+    public Uni<List<Fruit>> get() {
+        return Fruit.listAll(Sort.by("name"));
+    }
+
+    @GET
+    @Path("{id}")
+    public Uni<Fruit> getSingle(@RestPath Long id) {
+        return Fruit.findById(id);
+    }
+
+    @POST
+    public Uni<Response> create(Fruit fruit) {
+        if (fruit == null || fruit.id != null) {
+            throw new WebApplicationException("Id was invalidly set on request.", 422);
+        }
+
+        return Panache.withTransaction(fruit::persist)
+                .replaceWith(Response.ok(fruit).status(CREATED)::build);
+    }
+
+    @PUT
+    @Path("{id}")
+    public Uni<Response> update(@RestPath Long id, Fruit fruit) {
+        if (fruit == null || fruit.name == null) {
+            throw new WebApplicationException("Fruit name was not set on request.", 422);
+        }
+
+        return Panache
+                .withTransaction(() -> Fruit.<Fruit>findById(id)
+                        .onItem().ifNotNull().invoke(entity -> entity.name = fruit.name)
+                )
+                .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
+                .onItem().ifNull().continueWith(Response.ok().status(NOT_FOUND)::build);
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Uni<Response> delete(@RestPath Long id) {
+        return Panache.withTransaction(() -> Fruit.deleteById(id))
+                .map(deleted -> deleted
+                        ? Response.ok().status(NO_CONTENT).build()
+                        : Response.ok().status(NOT_FOUND).build());
+    }
+
+    /**
+     * Create a HTTP response from an exception.
+     * <p>
+     * Response Example:
+     *
+     * <pre>
+     * HTTP/1.1 422 Unprocessable Entity
+     * Content-Length: 111
+     * Content-Type: application/json
+     *
+     * {
+     *     "code": 422,
+     *     "error": "Fruit name was not set on request.",
+     *     "exceptionType": "javax.ws.rs.WebApplicationException"
+     * }
+     * </pre>
+     */
+    @Provider
+    public static class ErrorMapper implements ExceptionMapper<Exception> {
+
+        @Inject
+        ObjectMapper objectMapper;
+
+        @Override
+        public Response toResponse(Exception exception) {
+            LOGGER.error("Failed to handle request", exception);
+
+            Throwable throwable = exception;
+
+            int code = 500;
+            if (throwable instanceof WebApplicationException) {
+                code = ((WebApplicationException) exception).getResponse().getStatus();
+            }
+
+            // This is a Mutiny exception and it happens, for example, when we try to insert a new
+            // fruit but the name is already in the database
+            if (throwable instanceof CompositeException) {
+                throwable = ((CompositeException) throwable).getCause();
+            }
+
+            ObjectNode exceptionJson = objectMapper.createObjectNode();
+            exceptionJson.put("exceptionType", throwable.getClass().getName());
+            exceptionJson.put("code", code);
+
+            if (exception.getMessage() != null) {
+                exceptionJson.put("error", throwable.getMessage());
+            }
+
+            return Response.status(code)
+                    .entity(exceptionJson)
+                    .build();
+        }
+
+    }
+}
+
+..............................................................................................
+				  Vertx Concepts 
+.............................................................................................
+
+Event Bus:
+ -Event bus is object through which we can exchange messages async.
+ -Event bus is just like message broker which in memory message broker
+ -Event bus uses queue to store messages
+ -Event bus communicates via tcp protocal
+ -Event bus can exchange any type of data- including json.
+ -Event can be used to send and receive messages across the system.
+
+Event Bus has its own in memory Event queue where all message published.
+
+How consumer and publisher are connectected?
+
+ Via address :Messages are sent on the event bus to an address.
+address should be unique, can follow dns naming model
+
+ cgi.order
+ cgi.order.inventory
+
+Types of message Delivery:
+
+1.point to point -  
+  send messages to only one consumer.
+2.Publisher/Subscriber  - pub sub model
+  One publisher many subscribers
+3.request/reply
+    send messages to only one consumer with ack.
+
+How to use vertx Event inside Quarkus?
+
+-vertx
+
+ <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-vertx</artifactId>
+        </dependency>
+............................................................................................
+Programming Steps:
+
+1.Consumer Code
+   -The Service which is listening for messages
+
+Pure vertx code
+EventBus eb = vertx.eventBus();
+
+eb.consumer("news.uk.sport", message -> {
+  System.out.println("I have received a message: " + message.body());
+});
+
+In Quarkus, we have annotation
+
+@ConsumeEvent
+
+
+Api :
+event.request -  request-reply
+eventbus.send -  point to point
+eventbus.publish - pub -sub
+
+............................................................................
+				Point to Point
+
+
+package org.acme.vertx.eventbus;
+
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.JsonObject;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+@Path("/eventbus")
+public class EventBusResource {
+
+    @Inject
+    EventBus eventBus;
+
+    @GET
+    @Path("{name}")
+    public String greetMe(@PathParam(value = "name") String name) {
+        //publish message - fire and forgot - eventbus.send -  point to point
+        JsonObject jsonObject = new JsonObject().put("name",name);
+        eventBus.send(EventBusAddress.CGI_GREETINGS, jsonObject);
+        return "Processed";
+    }
+}
+
+package org.acme.vertx.eventbus;
+
+import io.quarkus.vertx.ConsumeEvent;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class GreetingConsumer {
+
+    //method which
+    @ConsumeEvent(EventBusAddress.CGI_GREETINGS)
+    public void handler(Message<JsonObject> name) {
+        System.out.println(name.body().encodePrettily());
+    }
+}
 
 
