@@ -1,0 +1,5104 @@
+					Spring Boot
+..............................................................................................
+
+What is Spring Boot?
+
+Spring Boot is JVM framework to build distributed application.
+
+What is Spring Framework?
+ -Spring Framework makes it easy to create java Enterprise applications.
+
+Early 2000, Java Started becoming more popular in distributed application dev.
+
+Distributed Apps:
+-Monolith Apps
+-MicroService Apps
+
+How Java  Works? Who Provides Java Standarization?
+
+JCP - Java Community Process
+ Who standarize the entire Java Technology.
+
+Types of Java Tech
+JSE 
+  Standard Edition
+-Java Programming language
+-JVM 
+What is spec
+   Rules and regualations how things are working.
+
+What is implementation
+Product which implements specs.
+
+JVM -  Hot Spot(oracle),OpenJdk
+
+JEE -Enterprise Specification
+..............................
+JEE Platform spec : containers /app containers/tools
+
+WebTechnology spec
+ Java servlet
+ JSP
+ JSF
+ Websocket
+ JSTL
+ EL
+Enterprise Application spec
+EJB
+JPA -ORM
+JMS
+JTA
+DI
+Context and DI
+Concurrency Util
+
+Web Services
+
+SOAP based  -JAX-WS
+REST Based  -JAX-RS
+
+Management and Security technologies
+Java EE Security spec
+Java Auth
+Java authorzation
+JAVA EE additional spec
+JMX -Jmeter,Spring Actuator
+
+JME
+....
+ Building Device apps -Mobile Apps
+.............................................................................................
+                            Complixty of JEE Spec and implementation
+.............................................................................................
+
+////////////////////////////////////////////////////////////////////////////
+
+JEE enterprise application:
+............................
+
+Client Layer         Web Layer      Biz layer      Data Layer/Persistency
+
+Browser             Servlet/JSP      EJB               Entity Beans
+
+EJB :Enterprise Java Bean
+  Java Object can support distributed biz operations
+eg: incase of shopping cart
+  I have a bean(java object) which has three apis addToCart,Checkout,Payment)
+
+Api classifications:
+1.Session Bean  - to represent biz logic---jdbc--dml
+2.Enitity bean  -ORM - Object to Table mapping-First orm solution---Hibernate
+3.Message Driven Bean - Message driven systems-RabbitMQ,Kaffka,JMS
+
+Rod  was working in enterprise banking application with jee, he faced lot of complexity in designing ejb driven systems, so he decided to move ejb from JEE application, he wrote book called expert  J2EE ONE ON ONE design and development.
+
+
+
+He proposed a model  that model later on came as The project in "Spring Season" - Spring Framework.
+
+Client Layer         Web Layer      Biz layer                Data Layer/Persistency
+
+Browser             Spring MVC        Spring Services              Spring-orm - Spring-data
+
+Spring development objective is "POJO". (Plain Old Java Object)
+
+When you build enterprise java apps, no plumbing(bolier plate code),Spring framework takes care that plumbing.
+
+..............................................................................................
+				Enterprise application challanges
+..............................................................................................
+
+Java is Object Oriented Programming language.
+
+Apps built on java collection of objects.
+
+Object Oriented Principles:
+...........................
+
+1.Abstraction
+2.Encapsulation
+3.Hierarchy
+4.Typing
+5.Modularity
+----------------------
+6.Concurrency
+7.Persistency
+
+
+
+1.Object Management :Hierarchy
+
+Object Relationship
+
+-HAS-A -  Composition
+-IS-A - Inheritance.
+
+Enterprise application challanges:
+
+1.Object Management
+
+IOC : Inversion of Control
+ Inversion -Do opposit
+ of Control -Management
+
+In enterprise application object creation and linking objects are so complex that should be removed from the developer.
+
+Someone should take care object creation and linking= 
+  =>This process is called as IOC.
+The IOC suggest the automation program,that program called as IOC Container.
+
+The first IOC Container
+1.PICO Container
+2.Spring container : It was born as enterprise container.
+
+Spring container takes care of object creations and object linking .
+Which is other wise called as "Dependency Injection" .
+ Dependency - HAS-A
+    injection - linking objects
+
+
+Spring Application:
+   The application is written in java technology, executed on Spring Container which is runtime for spring applications.spring container runs on jvm
+
+			  Spring Application
+				 |
+			   Spring Container
+				 |
+				JVM
+...................
+
+what is framework?
+   One Stop Solution
+ Collection of tools and technologies provided in one place to build end to end applications mostly.
+  
+What spring framework offers?
+
+ Spring offers collection of many projects.
+
+
+1.Core:
+
+IoC container,
+Events, 
+Resources, 
+i18n,
+Validation,
+Data Binding,
+Type Conversion, 
+SpEL,
+AOP.
+
+Core Project
+1.XML driven
+2.Java Config Driven
+3.Boot Driven
+
+
+2.Web
+Web Servlet	
+ Spring MVC, WebSocket, SockJS, STOMP messaging.
+
+Web Reactive	
+  Spring WebFlux, WebClient, WebSocket.
+
+
+3.Data Access
+  SQL, NOSQL
+SQL:
+Transactions, DAO support, JDBC, ORM, Marshalling XML.
+NOSQL
+Mongodb....
+
+
+Integration	
+  Remoting, JMS, JCA, JMX, Email, Tasks, Scheduling, Cache.
+
+Languages	
+     Kotlin, Groovy, Dynamic languages.
+
+Microservices
+
+Reactive
+
+Cloud 
+
+Event Driven
+
+Serverless
+.............................................................................................
+				   Tools For Spring Application Development
+.............................................................................................
+
+1.JDK 8 - 11
+   HotSpot or OpenJDk
+2.Build Tools
+   Maven,Gradle
+3.Docker
+
+Spring Versions and features
+
+2004 - Spring Framework 1.0 released
+– Champions dependency injection
+– Encourages POJOs
+– Uses XML files to describe application
+  configuration
+– Becomes popular quickly as an EJB
+  alternative
+
+• Spring 2.0 (2006):
+ – XML simplification, async JMS, JPA, AspectJ support
+
+• Spring 2.5 (2007, last release 2.5.6)
+  – Requires Java 1.4+ and supports JUnit 4
+  – Annotation DI, @MVC controllers, XML namespaces
+
+• Spring 3.x (3.2.17 released July 2013)
+
+   – Environment & Profiles, @Cacheable, @EnableXXX …
+   – Requires Java 1.5+ and JUnit 4.7+
+   – REST support, JavaConfig, SpEL, more annotations
+
+• Spring 4.x (released Dec 2016)
+    – Support for Java 8, @Conditional, Web-sockets
+
+• Spring 5.x (2017)
+  MicroService driven Dev features
+   – Reactive programming focus
+   - Functional Programming
+   - Cloud Functionality
+   - Container support
+...............................................................................................
+
+Spring Core Concepts:
+
+1.Spring Bean.
+
+What is Bean?
+   
+  Bean is terminallogy coined by SUN Micro System to name java object.
+
+Object vs Bean?
+
+ -Same but Bean has some special characteristics  which was proposed by SUN micro system via 
+"Java Bean Spec"
+
+It is java class, based Java Bean standards
+ 	-class should be public
+ 	-properties should be private
+ 	-set and get methods - Accessors and mutators
+	-constructors
+
+Why Bean Spec?
+  - in order to standarize the java dev process- Coding Standards.
+
+class Customer {
+  public int id;
+  private String name;
+}
+
+Spring  follows java bean spec in order to create object and links objects.
+
+class CustomerService {
+
+   private CustomerRespository rep;
+
+   CustomerService(){
+
+   }
+   set /get
+
+}
+class CustomerRespository{
+
+
+}
+
+Spring Bean is Java Object follows Bean Specification and also managemented by Spring Container.
+
+.............................................................................................
+				   Spring Bean Creation(Object)
+.............................................................................................
+
+Who creates Spring Beans?
+
+ -Spring Container
+
+ Spring container is java object, which manages object(bean) life cycle like   create,use,destroy.
+
+How spring beans are created?
+
+-> you must have bean definitions outside application biz logic
+-> sp container reads that bean definitions, initalizes the beans.
+
+Architecture:
+
+			POJO Classes(Bean)
+				 |
+    Spring-Application <====>SpringContainer
+      config file		 |
+		       Fullyconfigured System
+
+
+Spring Bean Definitions(file) instructs Spring Container how to create objects(order of creations) and how to link (DI) objects
+............................................................................................
+			Spring Application Configuration Managment
+............................................................................................
+
+Spring Application can be configured in many ways
+
+1.XML files  -  Old and Legacy.
+
+2.Java Config + Annotations
+
+2.1 Java Config -Manual - Write Configuration and logic
+
+ Here Dev need to write Configuration and biz logic , which makes app dev slower.
+
+Just Focus logic, automate configuration itself - AutoConfig
+
+3.AutoConfig:
+    Framework must take care of configuration based on various condtions like
+ i want web and jpa , messaging.
+                        "Birth of Spring Boot"
+
+.............................................................................................
+				Spring Project Setup 
+			    
+
+What are the required components to setup Spring Project.
+
+1.IDE,mvn,java
+
+2.Project layout
+
+
+Spring Project requires
+
+Infra Structure:
+ 1.Project libraries
+
+ 2.Project Configurations
+
+Application Structure
+
+1.Application code
+2.assets - imgs,docs
+3.App Configuration
+
+mvn or gradel
+.............................................................................................
+				    Spring Project Creations
+............................................................................................
+
+Whether you build app using Boot or Old Spring Framework Two things you have to take care
+
+1.Project Dependency -  Libraries- core,web,data,cloud,logger....
+  You have to manage
+  Spring have to manage - Boot via starters
+
+2.Application Configuration
+   -Bean defintions -  xml
+   
+
+
+Spring Project Using Spring Framework method:
+
+
+
+Steps:
+
+1.create Plain Maven Project
+
+pom.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>spring-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.9</version>
+        </dependency>
+    </dependencies>
+</project>
+
+2.place beans.xml in the class path - resources/beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="hello" class="com.valtech.spring.beans.HelloWorld">
+    </bean>
+</beans>
+
+package com.valtech.spring.app;
+
+import com.valtech.spring.beans.HelloWorld;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class HelloApp {
+    public static void main(String[] args) {
+        //Object Creation : Without Spring
+        HelloWorld helloWorld = new HelloWorld();
+        helloWorld.setMessage("Hello Spring");
+        System.out.println(helloWorld.getMessage());
+        //Object creation : Using Spring
+        //Create Spring Container
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        //access bean
+        HelloWorld bean = context.getBean(HelloWorld.class);
+        //set message
+        bean.setMessage("Hello Spring Bean");
+        //get message
+        System.out.println(bean.getMessage());
+
+
+    }
+}
+.............................................................................................
+				 Dependency Injection
+............................................................................................
+
+What is dependency Injection?
+
+  Linking objects
+  Setting Object Property values
+
+  Setting Object references with Object who refers it.
+
+Dependency Injection on reference types and Primitives
+
+eg:
+  OrderService needs OrderRepository
+
+
+Types of DI:
+
+1.Setter
+    Linking objects after objects created
+2.Constructor
+    Linking objects, During object creation.
+
+When to use Setter vs Constructor?
+
+Note: 
+ Constructor properties are initlized during object creations
+ Settter properties are initlized after object creations
+
+Spring supports both.You can mix and match.
+
+Constructors:
+  ->Enforce mandatory dependencies
+
+Setters:
+ 1.Allow optional dependenices
+
+Eg:
+package com.valtech.spring.beans.di;
+
+public class Customer {
+    private int customerId;
+    private String name;
+    private Address address;
+
+    public Customer() {
+    }
+
+    public Customer(int customerId, String name) {
+        this.customerId = customerId;
+        this.name = name;
+    }
+
+    public Customer(Address address) {
+        this.address = address;
+    }
+
+    public Customer(int customerId, String name, Address address) {
+        this.customerId = customerId;
+        this.name = name;
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId=" + customerId +
+                ", name='" + name + '\'' +
+                ", address=" + address +
+                '}';
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+}
+
+package com.valtech.spring.beans.di;
+
+public class Address {
+    private String city;
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "city='" + city + '\'' +
+                '}';
+    }
+
+    public Address() {
+    }
+
+    public Address(String city) {
+        this.city = city;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+}
+
+package com.valtech.spring.beans.di;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class CustomerDIApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        //access bean
+        Customer customer = context.getBean("customer",Customer.class);
+//        customer.setCustomerId(1);
+//        customer.setName("subramanian");
+//        customer.getAddress().setCity("Coimbatore");
+        System.out.println(customer);
+
+        Customer customer1 = context.getBean("newCustomer",Customer.class);
+        System.out.println(customer1);
+
+
+    }
+
+}
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="hello" class="com.valtech.spring.beans.HelloWorld">
+    </bean>
+    <bean id="customer" class="com.valtech.spring.beans.di.Customer">
+        <property name="customerId" value="1"/>
+        <property name="name" value="Subramanian"/>
+        <!--Setter Injection-->
+        <property name="address" ref="address"/>
+    </bean>
+    <bean id="newCustomer" class="com.valtech.spring.beans.di.Customer">
+        <property name="customerId" value="1"/>
+        <property name="name" value="default Name"/>
+        <!--Constructor injection !-->
+        <constructor-arg ref="address"></constructor-arg>
+    </bean>
+    <bean id="address" class="com.valtech.spring.beans.di.Address">
+        <property name="city" value="coimbatore"/>
+    </bean>
+</beans>
+............................................................................................
+			 Program to Super Type - Interface Driven DI
+............................................................................................
+
+
+beans.xml
+    <bean id="inmemory" class="com.valtech.spring.beans.di.interfaces.CustomerInMemoryRepositoryImpl"></bean>
+    <bean id="jpaimpl" class="com.valtech.spring.beans.di.interfaces.CustomerJPARepositoryImpl"></bean>
+    <bean id="customerservice" class="com.valtech.spring.beans.di.interfaces.CustomerService">
+        <constructor-arg ref="inmemory"/>
+    </bean>
+
+
+package com.valtech.spring.beans.di.interfaces;
+
+public interface CustomerRepository {
+    String findAll();
+}
+package com.valtech.spring.beans.di.interfaces;
+
+public class CustomerInMemoryRepositoryImpl implements  CustomerRepository{
+    @Override
+    public String findAll() {
+        return "CustomerInMemoryRepositoryImpl";
+    }
+}
+package com.valtech.spring.beans.di.interfaces;
+
+public class CustomerJPARepositoryImpl implements CustomerRepository {
+    @Override
+    public String findAll() {
+        return "CustomerJPARepositoryImpl";
+    }
+}
+package com.valtech.spring.beans.di.interfaces;
+
+public class CustomerService {
+    //di with interface
+    private CustomerRepository repository;
+
+    public CustomerService(CustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    public CustomerService() {
+    }
+
+    public CustomerRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(CustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    public String findAll() {
+        return repository.findAll();
+    }
+}
+
+package com.valtech.spring.beans.di.interfaces;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class CustomerInterfaceApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        CustomerService customerService = context.getBean("customerservice", CustomerService.class);
+        System.out.println(customerService.findAll());
+    }
+}
+.............................................................................................
+DI Values:
+ You can inject primtives / scaller such as int,sting,char,boolean
+ You can inject Objects(reference types) - Customer,Order,Address,Repository
+ You can inject Collection types - such as List,Map,Set...
+
+Proerty can have child elements:List
+<property name="shippingAddress">
+	<list>
+		<ref bean="address" />
+		<ref bean="address" />
+		<ref bean="address" />
+		<ref bean="address" />
+		<ref bean="address" />
+		<ref bean="address" />
+	</list>
+</property>
+or via constructor
+	<constructor-arg name="orders">
+			<list>
+				<ref bean="orderA" />
+				<ref bean="orderB" />
+				<ref bean="orderC" />
+			</list>
+		</constructor-arg>
+
+<list> -ArrayList
+............................................................................................
+How to add List as dependency?
+
+beans.xml
+ <bean id="customer" class="com.valtech.spring.beans.di.Customer">
+        <property name="customerId" value="1"/>
+        <property name="name" value="Subramanian"/>
+        <!--Setter Injection-->
+        <property name="address" ref="address"/>
+
+        <constructor-arg>
+              <list>
+                  <ref bean="orderA" />
+                  <ref bean="orderB" />
+                  <ref bean="orderC" />
+              </list>
+        </constructor-arg>
+    </bean>
+
+package com.valtech.spring.beans.di;
+
+import java.util.List;
+
+
+package com.valtech.spring.beans.di;
+
+public class Order {
+    private int orderId;
+    private float orderValue;
+
+    public Order() {
+    }
+
+    public Order(int orderId, float orderValue) {
+        super();
+        this.orderId = orderId;
+        this.orderValue = orderValue;
+    }
+
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public float getOrderValue() {
+        return orderValue;
+    }
+
+    public void setOrderValue(float orderValue) {
+        this.orderValue = orderValue;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", orderValue=" + orderValue +
+                '}';
+    }
+}
+
+
+public class Customer {
+    private int customerId;
+    private String name;
+    private Address address;
+    private List<Order> orders;
+
+
+    public Customer(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Customer() {
+    }
+
+    public Customer(int customerId, String name) {
+        this.customerId = customerId;
+        this.name = name;
+    }
+
+    public Customer(Address address) {
+        this.address = address;
+    }
+
+    public Customer(int customerId, String name, Address address) {
+        this.customerId = customerId;
+        this.name = name;
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId=" + customerId +
+                ", name='" + name + '\'' +
+                ", address=" + address +
+                '}';
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+}
+package com.valtech.spring.beans.di;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class CustomerDIApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        System.out.println(customer.getOrders());
+
+
+    }
+
+}
+.......................................................................................
+
+Bean Definitions:
+1.How to create bean 
+   class,factory-method
+
+2.How to name beans?
+   id,name,alias
+
+3.scope of the beans? : visibility of the bean
+   singleton,prototype,
+   request,session,application,websocket
+
+4.Dependence Injections
+   constructor
+   setter
+   autowire
+
+5.Lazy initialization mode
+ controlling bean creations
+  eagar-default
+  lazy-ondemand
+  lazy-init="true"
+
+5.How to simplify bean injections? 
+   Autowiring mode 
+ no,byName,byType,constructor   
+.............................................................................................
+					Bean Creation
+............................................................................................
+
+1.Via class  
+   Spring creates using new Operator
+  new Order()
+
+2.Via Factory Pattern
+
+-if constructor marked private
+   via factory factory api
+
+
+beans.xml
+    <bean id="authService" class="com.valtech.spring.beans.creation.AuthService" factory-method="getInstance" />
+
+
+package com.valtech.spring.beans.creation;
+
+public class AuthService {
+    private String userName = "admin";
+    private String password = "admin";
+
+    private AuthService() {
+    }
+
+    // Factory Api
+    public static AuthService getInstance() {
+        return new AuthService();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Biz Api
+    public boolean login(String userName, String password) {
+        if (this.getUserName().equals(userName) && this.getPassword().equals(password)) {
+
+            return true;
+        }
+        return false;
+    }
+}
+
+
+package com.valtech.spring.beans.creation;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class FactoryMainApp {
+    public static void main(String[] args) {
+        ApplicationContext factory = new ClassPathXmlApplicationContext("beans.xml");
+        AuthService auth=factory.getBean("authService",AuthService.class);
+        auth.setUserName("admin");
+        auth.setPassword("admin");
+        boolean isAuth = auth.login("admin", "admin");
+        System.out.println(isAuth ? "Valid" : "Not Valid");
+    }
+}
+.............................................................................................
+					Bean Scopes
+.............................................................................................
+Generally, you can create multiple instance from bean definition.
+  some times if you want to control that bean creation
+you can use bean creation scope.
+
+Spring supports 6 scopes:
+
+1.singleton
+ (Default) Scopes a single bean definition to a single object instance for each Spring IoC container.
+ if you call getBean no of time, spring returns the only one instance at any point of time.
+This is default scope.
+
+package com.valtech.spring.beans.scopes;
+
+public class ClientService {
+    public void findAll() {
+        System.out.println("Client Service-findAll");
+    }
+}
+
+
+    <bean id="clientService" class="com.valtech.spring.beans.scopes.ClientService" scope="singleton" >
+    </bean>
+
+
+package com.valtech.spring.beans.scopes;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class ScopeMain {
+    public static void main(String[] args) {
+        ApplicationContext factory = new ClassPathXmlApplicationContext("beans.xml");
+        ClientService clientService = null;
+        clientService = factory.getBean("clientService", ClientService.class);
+        System.out.println(clientService.hashCode());
+
+        clientService = factory.getBean("clientService", ClientService.class);
+        System.out.println(clientService.hashCode());
+
+        clientService = factory.getBean("clientService", ClientService.class);
+        System.out.println(clientService.hashCode());
+
+    }
+}
+
+2.prototype:
+a new bean instance every time a request for that specific bean is made 
+that is, the bean is injected into another bean or you request it through a getBean() method call on the container.
+
+    <bean id="clientService" class="com.valtech.spring.beans.scopes.ClientService" scope="prototype" >
+    </bean>
+
+package com.valtech.spring.beans.scopes;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class ScopeMain {
+    public static void main(String[] args) {
+        ApplicationContext factory = new ClassPathXmlApplicationContext("beans.xml");
+        ClientService clientService = null;
+        clientService = factory.getBean("clientService", ClientService.class);
+        System.out.println(clientService.hashCode());
+
+        clientService = factory.getBean("clientService", ClientService.class);
+        System.out.println(clientService.hashCode());
+
+        clientService = factory.getBean("clientService", ClientService.class);
+        System.out.println(clientService.hashCode());
+
+    }
+}
+Web Scope:
+3.request 
+ <bean id="flight" class="com.ae.trip.entity.Fight" scope="request"/>
+	HttpServletRequest req;
+	req.setAttribute("flight",flight)
+	
+	->Servlet--->Servlet---Servlet---NServlet---jsp
+	->Servlet----jsp---Servlet--->Servlet--Jps....
+4.session
+	Single User multiple request,storing data about single User
+	HttpSession session;
+	session.setAttribute("flight",flight)
+      <bean id="flight" class="com.ae.trip.entity.Fight" scope="session"/>
+	User---ShoppingCart
+	User---CheckoutScreen
+	User---PaymentScren
+5.application
+	Global Data, eg Offers for all users in the web site
+	ServletContext ctx;
+	ctx.setAttribute("flight",flight)
+	<bean id="offer" class="com.ae.trip.entity.Offer" scope="application"/>
+6.websocket
+
+ ->The request, session, application, and websocket scopes are available only if you use a web-aware Spring ApplicationContext implementation (such as XmlWebApplicationContext)
+............................................................................................
+				DI automations
+............................................................................................
+autowire:
+
+////////////////////////////////////////////////////////////////////////////
+Dependency Injections:
+ ->property - setter injections
+ ->constructor-arg ref ->constructor injections
+ 
+->autowire 
+Which is not new injection type, but it simplifies property and constructor injections
+
+     no ->Explicit via property or constructor-arg
+     byName - Implicit via property
+     byType - Implicit via type + property
+     constructor - Implicit via constructor
+
+Lab:
+
+Customer
+    |
+    Account
+    Address ---->via autowire
+
+
+eg:
+ <bean id="cust" autowire="byType" class="com.valtech.spring.beans.di.autowire.Customer">
+        <property name="id" value="1"/>
+        <property name="name" value="default"/>
+    </bean>
+    <bean id="address" class="com.valtech.spring.beans.di.autowire.Address">
+        <property name="city" value="coimbatore"/>
+    </bean>
+
+package com.valtech.spring.beans.di.autowire;
+
+public class Customer {
+    private int id;
+    private String name;
+    //address is variable which has to match against byName
+    private Address address1;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress1() {
+        return address1;
+    }
+
+    public void setAddress1(Address address1) {
+        this.address1 = address1;
+    }
+    //    public Customer() {
+//    }
+//
+//    public Customer(Address address) {
+//        this.address = address;
+//    }
+//
+//    public Customer(int id, String name, Address address) {
+//        this.id = id;
+//        this.name = name;
+//        this.address = address;
+//    }
+//
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+////    public Address getAddress() {
+////        return address;
+////    }
+////
+////    public void setAddress(Address address) {
+////        this.address = address;
+////    }
+}
+package com.valtech.spring.beans.di.autowire;
+
+public class Address {
+    private String city;
+
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+}
+package com.valtech.spring.beans.di.autowire;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class AutoWireMain {
+    public static void main(String[] args) {
+        ApplicationContext factory = new ClassPathXmlApplicationContext("beans1.xml");
+        Customer customer=factory.getBean("cust",Customer.class);
+        System.out.println(customer.getAddress1().getCity());
+
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+Bean life cycles:
+.................
+init
+destroy
+
+Points:
+1.if you want to initalize the resources,
+ Resources:
+   Resource is nothing but ,something outside jvm
+    ex: FileSystem,Databases,Network sockets,Graphics context....
+  Resources must be mananaged properly , if not , it will give you
+ memory leaks.
+
+In general , resources are initialized inside Class constructors
+eg:Establishing database,socket connections, create file points,open file
+
+According to spring best practices, dont do it inside constructor
+ Why
+   WHich hindrences the bean intialization, which will drop app startup performance.
+
+then where can i initlaize
+ spring provides life cycle hooks
+   ->init-method="initmethod"
+   ->destroy-method="destroymethod" - Resouce clean up
+
+
+    <bean id="custService" init-method="init" destroy-method="destroy" class="com.valtech.spring.beans.lifecycle.CustomerService"/>
+
+
+package com.valtech.spring.beans.lifecycle;
+
+public class CustomerService {
+    public void init(){
+        System.out.println("init");
+    }
+    public void destroy(){
+        System.out.println("destory");
+    }
+}
+package com.valtech.spring.beans.lifecycle;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class LifeMain {
+    public static void main(String[] args) {
+        ApplicationContext factory = new ClassPathXmlApplicationContext("beans1.xml");
+        factory.getBean("custService",CustomerService.class);
+
+    }
+
+}
+.............................................................................................
+How to call destroy hook method on bean?
+
+BeanFactory
+ |
+org.springframework.context.ApplicationContext
+ |
+->org.springframework.context.ConfigurableApplicationContext
+   |
+  registerShutdownHook();------->destroy method
+
+beans.xml
+    <bean id="custService" init-method="init" destroy-method="destroy" class="com.valtech.spring.beans.lifecycle.CustomerService"/>
+.............................................................................................
+				 Container Extensions Points
+............................................................................................
+
+Typically, an application developer does not need to subclass  ApplicationContext implementation classes.
+ Instead, the Spring IoC container can be extended by plugging in implementations of special integration interfaces. 
+
+Typically, an application developer does not need to subclass  ApplicationContext implementation classes.
+ Instead, the Spring IoC container can be extended by plugging in implementations of special integration interfaces. 
+
+Spring core System:
+
+		  Spring Application
+			|	
+ 	    Configuration Management System
+		 (tools-XML,Annotations)
+		-------------------------
+		|			|
+		| Spring IOC Container  |
+		------------------------
+			|
+		       JVM
+
+ How to add extensions(plugins) on to the Existing Spring Container?
+
+
+ 		 Spring Application
+			|	
+ 	    Configuration Management System
+		 (tools-XML,Annotations)
+		-------------------------
+		|			|--->Extensions
+					|    1.BeanPostProcessor 
+		|			|
+		|			|
+		| 			|
+		| Spring IOC Container  |
+		|			|
+		|			|	
+		|			|
+		|		        |
+		------------------------
+			|
+		       JVM
+
+Feature
+1.How to instrument beans
+2.How to instrument containers
+
+
+BeanPostProcessor: Extensions
+..................
+  BeanPostProcessor are classes that tells Spring what should be done after beans are created.
+
+
+How to implement extension?
+
+Steps:
+1.Declare class
+public class BeanPostProcessorExtension {
+
+}
+2.implement BeanPostProcessor interface
+package com.ae.spring.extensions;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+public class BeanPostProcessorExtension implements BeanPostProcessor {
+
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		System.out.println("postProcessAfterInitialization : " + bean + " " + beanName);
+		return bean;
+	}
+
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		System.out.println("postProcessBeforeInitialization : " + bean + " " + beanName);
+		return bean;
+	}
+
+}
+
+beans.xml
+<bean class="com.ae.spring.extensions.BeanPostProcessorExtension"/>
+2.BeanFactoryPostProcessor : Container Extension, where we instrument container itself.
+
+package com.ae.spring.extensions;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+
+public class FactoryBeanPostProcessorExtension implements BeanFactoryPostProcessor {
+
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+		System.out.println("Container Extensions : " + beanFactory);
+
+	}
+
+}
+
+beans.xml
+  <bean class="com.ae.spring.extensions.FactoryBeanPostProcessorExtension"/>
+
+..............................................................................................
+				More Container Features(extensions)
+
+             Spring Application
+			|	
+ 	    Configuration Management System
+		 (tools-XML,Annotations)
+		-------------------------
+		|			|--->Extensions
+					|    1.BeanPostProcessor 
+		|			|    2.Features2
+		|			|    3.Feature3
+		| 			|    4.FeatureN
+		| Spring IOC Container  |
+		|			|
+		|			|	
+		|			|
+		|		        |
+		------------------------
+			|
+		       JVM
+..............................................................................................
+			Spring provides lot of built in Extensions
+.............................................................................................
+
+
+PropertyPlaceholderConfigurer :
+   It is used to externalize the bean property values
+eg:
+
+Bean defintion file
+<bean id="customer" class="com.ae.spring.entity.Customer"
+  <property name="customerId" value="100">
+</bean>
+
+With PropertyPlaceHolder = ${propertykey} => propValue
+eg: 
+<bean id="customer" class="com.ae.spring.entity.Customer"
+  <property name="customerId" value="${customer.id}">
+</bean>
+
+PropertyPlaceholderConfigurer 
+
+classpath:customer-info.properties
+customer.id=1
+customer.name=Ram
+
+eg:
+Steps:
+1.property file
+src/main/java/customer-info.properties
+customer.id=1
+customer.name=Ram
+2.Activate Extension to read Property file
+  ->
+<beanclass="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath:customer-info.properties" />
+</bean>
+
+3.Read Property value:
+		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+		Customer customer = context.getBean("customer", Customer.class);
+		System.out.println(customer.getId() + " " + customer.getName());
+
+
+.............................................................................................
+				How to introduce Annotations
+...............................................................................................
+
+Annotations:
+ Meta Information about class,methods,fields.
+
+Why Annotation?
+Annotations help to inject "boiler plate code" -The code which is not neccessary for the dev but necessary for compiler,build tools,document generation tools,runtime.
+
+Spring Introduced Annoations to simplify the lot of code generations.
+
+Types of Spring Annotations
+
+1.Spring Properity annotations
+2.JSR 250 Annotations 
+
+
+How to introduce Annotations inside Spring?
+ 
+ Via ContainerExtension Mechanism
+
+
+Common Annotations:
+1.RequiredAnnotationBeanPostProcessor - @Required
+2.AutowiredAnnotationBeanPostProcessor  -@Autowrited
+3.CommonAnnotationBeanPostProcessor  -@Common
+4.PersistenceAnnotationBeanPostProcessor -@Entity
+etc....
+
+Steps to integrate Annotations:
+
+1.Activate The Annoation via ContainerExtension Point Beans
+
+beans.xml
+
+ <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+ -@Required
+
+ <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+
+ -@Autowried
+<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+
+What if any one of the AnnotationBeanPostProcessor has its own dependency, we need to inject
+That as well, other wise it will throw error.
+
+what if i want to use more annotations, i need to add more AnnotationBeanPostProcessor beans in bean.xml
+  This is very complex
+............................................................................................
+				Automation - Annoation Scanner
+.............................................................................................
+
+Spring added feature called automated scanner, which scans all annoations from the build path/class path, creates all the beans related to annotationBeanPostoer
+
+How to tell spring container to scan annotations?
+
+via beans.xml file
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:annotation-config />
+	
+</beans>
+...........
+
+Annoation Example
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+    <bean id="cust" class=" com.valtech.spring.app.annotations.config.Customer"/>
+    <bean id="address" class=" com.valtech.spring.app.annotations.config.Address"/>
+
+</beans>
+
+package com.valtech.spring.app.annotations.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Customer {
+    private  int id;
+    private String name;
+    @Autowired
+    private Address address;
+
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+}
+package com.valtech.spring.app.annotations.config;
+
+public class Address {
+    private  String city;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "city='" + city + '\'' +
+                '}';
+    }
+}
+..............................................................................................
+					Types of Annotations
+..............................................................................................
+
+1.JSR 250 annoations
+
+@PostConstruct
+@PreDestroy
+
+
+2.Spring Annoations
+
+How to remove bean definitions from the beans.xml file
+
+<bean id="customer" class="com.valtech.beans.Customer" />
+
+Stereotype Annotations:
+
+Stereotype: "Same type of things but it adds extra behaviour based on context"
+
+
+@Component
+
+What is Component?
+
+The term coined by Microsoft in 1989.
+In Object Oriented System Every thing is Object
+The Term object is more general term.
+
+Component is also Object(Bean) in spring context
+  ->It is resulable
+  ->follows all java bean standards
+
+In java technology:
+Bean
+ In java Bean is called "java Object Only"
+
+EJB
+ It is also java object, which is distributed
+
+Enitity
+ It is also java object, which is persitable into fs,networks,rdbms
+
+
+
+What is use of @Component?
+ ->To eleminate bean definition from beans.xml file
+
+<bean id="customerService"  class="com.ae.spring.service.impl.CustomerServiceImpl"/>
+
+
+Spring provides  stereotype annotations:
+ @Component is core type
+
+Api doc:
+
+ @Target(value=TYPE)
+ @Retention(value=RUNTIME)
+ @Documented
+ @Indexed
+public @interface Component
+
+@Component is class level annotation,declared on the top of class.
+
+Indicates that an annotated class is a "component"
+Such classes are considered as candidates for auto-detection when using annotation-based configuration and classpath scanning.
+
+Auto-detection and component scanning:
+
+base package: com.ae.spring
+			    com
+			     |
+			    ae
+			     |
+                           spring
+		    -----------------------------
+		   |                            |
+                service                        repo
+		   |                            |
+		 impl                          impl
+-------------------------------       -----------------------------
+  |               |                   |                          |
+CustomerService ProductService     CustomerRepoImpl          ProductRepoImpl
+Impl            Impl
+
+@Component      @Component         @Component                @Component
+.............................................................................................
+				Automation - Stereotype Annoation Scanner
+   ..............................................................................................
+   
+How to scan SteroTypes?
+
+ <context:component-scan base-package="com.valtech.spring.beans.automation"/>
+
+This package and its subpackages , scan and creates beans and make it ready.
+
+@Component is a generic stereotype for any Spring-managed component.
+
+@Repository, @Service, and @Controller are specializations of @Component for more specific use cases.
+
+by annotating them with @Repository, @Service, or @Controller instead, your classes are more properly suited for processing by tools or associating with aspects.
+
+.............................................................................................
+				DOMAIN Driven Design
+.............................................................................................
+
+ 
+@Service:
+
+@Target(value=TYPE)
+ @Retention(value=RUNTIME)
+ @Documented
+ @Component
+public @interface Service
+
+Indicates that an annotated class is a "Service", originally defined by Domain-Driven Design (Evans, 2003) as "an operation offered as an interface that stands alone in the model, with no encapsulated state."
+
+
+@Repository:
+@Target(value=TYPE)
+ @Retention(value=RUNTIME)
+ @Documented
+ @Component
+public @interface Repository
+
+indicates that an annotated class is a "Repository", originally defined by Domain-Driven Design (Evans, 2003) as "a mechanism for encapsulating storage, retrieval, and search behavior which emulates a collection of objects".
+
+...........................................................................................
+
+@Target(value=TYPE)
+ @Retention(value=RUNTIME)
+ @Documented
+ @Component
+public @interface Controller
+Indicates that an annotated class is a "Controller" (e.g. a web controller).
+.............................................................................................
+				 End of Xml Configuration
+.............................................................................................
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--scanner for common Annotation -->
+    <context:annotation-config/>
+    <!--    Scanner for StreoType Annotations-->
+    <context:component-scan base-package="com.valtech.spring.beans.automation"/>
+</beans>
+..............................................................................................
+		What if i want to remove this beans.xml itself
+			    Java Config
+.............................................................................................
+
+Thanks to XML ,Good bye to XML,Welcome to Java Config:
+......................................................
+
+What is Java Config?
+
+JavaConfig <=======> beans.xml
+  but it is pure java Program.
+
+
+
+package com.valtech.spring.javaconfig;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomerService {
+    public String findAll() {
+        return "Hello";
+    }
+}
+
+package com.valtech.spring.javaconfig;
+
+//beans.xml === This java class
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+    //bean creation
+    @Bean
+    public CustomerService getCustomerService() {
+        return new CustomerService();
+    }
+}
+package com.valtech.spring.javaconfig;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext ctx=new AnnotationConfigApplicationContext(AppConfig.class);
+        CustomerService service=ctx.getBean(CustomerService.class);
+        System.out.println(service.findAll());
+    }
+}
+.....................................................................................................
+				How to simplify or modularize the bean creations
+....................................................................................................
+
+Modulariazation:
+...............
+
+Can we have multiple bean definition files- modular definition files
+
+1.XML is so complex to maintain when app grows.
+   -In general we can have multiple configurations
+  like
+	projectname-dao.xml
+	cleartrip.dao.xml 
+        cleartrip.service.xml
+        cleartrip.entitis.xml
+	cleartrip.beans.xml
+via Program:
+ConfigurableApplicationContext context = ClassPathXmlApplicationContext("bank-app.xml","account-repo.xml");
+
+or
+ConfigurableApplicationContext context = new ClassPathXmlApplicationContext
+new String[] { "bank-app.xml", "account-repo.xml" });
+
+
+How to break the configuration in annotations?
+
+customer
+ @Configuration
+ class  CustomerConfig {
+   ///customer beans
+ }
+
+order
+@Configuration
+ class  OrderConfig {
+   ///customer beans
+ }
+accounts
+@Configuration
+ class  AccountsConfig {
+   ///customer beans
+ }
+
+
+...
+package com.valtech.spring.javaconfig;
+
+//beans.xml === This java class
+
+import com.valtech.spring.javaconfig.customer.CustomerConfig;
+import com.valtech.spring.javaconfig.customer.OrderConfig;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+@Configuration
+@Import({CustomerConfig.class, OrderConfig.class})
+public class AppConfig {
+    //bean creation
+//    @Bean
+//    public CustomerService getCustomerService() {
+//        return new CustomerService();
+//    }
+//    @Bean
+//    public OrderService getOrderService(){
+//        return new OrderService();
+//    }
+//    @Bean
+//    public OrderRepo getOrderRepo(){
+//        return new OrderRepo();
+//    }
+}
+
+package com.valtech.spring.javaconfig.customer;
+
+import com.valtech.spring.javaconfig.CustomerService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class CustomerConfig {
+    @Bean
+    public CustomerService getCustomerService() {
+        return new CustomerService();
+    }
+}
+
+package com.valtech.spring.javaconfig.customer;
+
+import com.valtech.spring.javaconfig.OrderRepo;
+import com.valtech.spring.javaconfig.OrderService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class OrderConfig {
+
+    @Bean
+    public OrderService getOrderService() {
+        return new OrderService();
+    }
+
+    @Bean
+    public OrderRepo getOrderRepo() {
+        return new OrderRepo();
+    }
+}
+........................................................................................................
+			How to remove bean creations from the Java config
+.......................................................................................................
+@Component-scan
+
+
+package com.valtech.spring.javaconfig;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan
+public class AppConfigComponentScanner {
+}
+
+  ApplicationContext ctx=new AnnotationConfigApplicationContext(AppConfigComponentScanner.class);
+        CustomerService service=ctx.getBean(CustomerService.class);
+        System.out.println(service.findAll());
+
+        OrderService orderService=ctx.getBean(OrderService.class);
+        System.out.println(orderService.findAll());
+........................................................................................................
+					Profiles and Environements
+........................................................................................................
+
+
+What is Profile?
+ 
+  Profile is concept through which you can segregate beans and features.
+
+Types of Profiles:
+
+1.dev -  Development
+2.test - Testing
+3.prod  -Production
+
+
+I want some beans in dev,but i dont want the same bean in production.
+
+How to tell spring to activate different profiles in differnt environments to bootstrap only the beans we need.
+
+Way 1 : Setting Profile via annotation
+
+This is available in dev
+@Profile("dev")
+public class DevDataSourceConfig {
+
+}
+This not availble in dev
+@Profile("!dev")
+public class DevDataSourceConfig {
+
+} 
+
+				
+Way 2: Setting Profile via code					
+
+@Environment env
+
+env.setActiveProfile("dev")
+
+Way 3: Via env variable
+
+export spring_profiles_active=dev
+
+Way 3: application.properties
+spring.profiles.active = dev
+
+Way 4: During app lanuch time
+
+java -jar target/myapp.jar -Pprod
+........................................................................................................
+
+package com.valtech.spring.app.beans.profiles;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class ProfileMain {
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        //set
+        ctx.getEnvironment().setActiveProfiles("prod");
+        ctx.register(DataSourceConfig.class);
+        ctx.refresh();
+
+    }
+}
+
+package com.valtech.spring.app.beans.profiles;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+import javax.xml.transform.Source;
+
+@Configuration
+public class DataSourceConfig {
+
+    @Bean
+    @Profile("dev")
+    public DevDataSource createDevDataSource(){
+        return new DevDataSource();
+    }
+    @Bean
+    @Profile("prod")
+    public ProdDataSource createProdDataSource(){
+        return new ProdDataSource();
+    }
+}
+
+
+package com.valtech.spring.app.beans.profiles;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class DevDataSource {
+    public DevDataSource() {
+        System.out.println("Dev Data Source");
+    }
+
+    public String getDevDataSource(){
+        return "Dev Data Source";
+    }
+
+}
+
+package com.valtech.spring.app.beans.profiles;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class ProdDataSource {
+
+    public ProdDataSource() {
+        System.out.println("Production datasource");
+    }
+
+    public String getProdDataSource() {
+        return "production data source";
+    }
+}
+........................................................................................................
+					@Enable Annotation
+					  EnableXXX
+.......................................................................................................
+
+Enable annotation helps to inject not only bean or configuration but beyond that -  Cross Cutting Concerns
+
+Cross Cutting Concerns:
+
+Every Application requires some features
+
+-Transaction
+-Security
+-concurrency
+-caching
+-AutoConfiguration
+-ConfigServer
+etc......
+........................................................................................................
+					Auto Configuration
+				 Getting Spring Boot Architecture
+.......................................................................................................
+
+What is Spring Boot?
+
+Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run".
+
+We take an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss. Most Spring Boot applications need minimal Spring configuration.
+
+Spring Boot Focus Mainly Configuration
+
+1.Build Configuration
+2.Application Configuration.
+
+
+Use case : i want to create WebApp using Spring- SpringMVC
+
+Architecture:
+
+WEB  +DATABASE CONNECTion using Mysql
+
+Steps:
+
+1.you have to create maven project
+
+2.you need to add spring dependencies
+   Spring-context
+   Spring-web
+   Spring-mvc
+   mysql-connector-java
+   commons-dbcp
+   spring-orm
+   hibernate-entitymanager
+   jsr-250-api
+ etc.........
+
+3.App configuration
+  src
+   -main
+      webapp
+       -web-inf
+       views
+4.beans.xml / java config
+   config
+      WebListener COnfiguration
+       -Change Spring container from plain to web
+      WebAppConfig
+        ViewResolver
+  DataSourceConfig
+  JPAConfig
+
+........................................................................................................
+					Why Spring Boot?
+
+Spring Boot 
+   starters reduces build dependency
+   AutoConfigrator reduces the AppDepedency
+  
+1.Create stand-alone Spring applications
+   You can deploy apps in containers,cloud.....easily
+
+2.Embed Tomcat, Jetty or Undertow directly (no need to deploy WAR files)
+   SPring boots provides execuatble jar / fat jar /uber jar.	
+
+3.Provide opinionated 'starter' dependencies to simplify your build configuration
+     Looks like profie based configuration which is applied even for pom dependencies
+
+4.Automatically configure Spring and 3rd party libraries whenever possible
+    Via autoconfiguration and class path scanning.
+
+Provide production-ready features such as metrics, health checks, and externalized configuration
+
+Absolutely no code generation and no requirement for XML configuration
+.......................................................................................................
+How to start with Spring Boot Project?
+
+
+spring-boot-starter:
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+Spring Boot download all its dependencies based on root entry(starters)
+
+Spring boot offers lot of maven plugins
+
+mvn dependency:tree
+mvn dependency:tree
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------< com.valtech:bootapp >-------------------------
+[INFO] Building bootapp 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:3.1.2:tree (default-cli) @ bootapp ---
+[INFO] com.valtech:bootapp:jar:0.0.1-SNAPSHOT
+[INFO] +- org.springframework.boot:spring-boot-starter:jar:2.5.3:compile
+[INFO] |  +- org.springframework.boot:spring-boot:jar:2.5.3:compile
+[INFO] |  |  \- org.springframework:spring-context:jar:5.3.9:compile
+[INFO] |  |     +- org.springframework:spring-aop:jar:5.3.9:compile
+[INFO] |  |     +- org.springframework:spring-beans:jar:5.3.9:compile
+[INFO] |  |     \- org.springframework:spring-expression:jar:5.3.9:compile
+[INFO] |  +- org.springframework.boot:spring-boot-autoconfigure:jar:2.5.3:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.5.3:compile
+[INFO] |  |  +- ch.qos.logback:logback-classic:jar:1.2.4:compile
+[INFO] |  |  |  \- ch.qos.logback:logback-core:jar:1.2.4:compile
+[INFO] |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.14.1:compile
+[INFO] |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.14.1:compile
+[INFO] |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.32:compile
+[INFO] |  +- jakarta.annotation:jakarta.annotation-api:jar:1.3.5:compile
+[INFO] |  +- org.springframework:spring-core:jar:5.3.9:compile
+[INFO] |  |  \- org.springframework:spring-jcl:jar:5.3.9:compile
+[INFO] |  \- org.yaml:snakeyaml:jar:1.28:compile
+[INFO] \- org.springframework.boot:spring-boot-starter-test:jar:2.5.3:test
+[INFO]    +- org.springframework.boot:spring-boot-test:jar:2.5.3:test
+[INFO]    +- org.springframework.boot:spring-boot-test-autoconfigure:jar:2.5.3:test
+[INFO]    +- com.jayway.jsonpath:json-path:jar:2.5.0:test
+[INFO]    |  +- net.minidev:json-smart:jar:2.4.7:test
+[INFO]    |  |  \- net.minidev:accessors-smart:jar:2.4.7:test
+[INFO]    |  |     \- org.ow2.asm:asm:jar:9.1:test
+[INFO]    |  \- org.slf4j:slf4j-api:jar:1.7.32:compile
+[INFO]    +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:test
+[INFO]    |  \- jakarta.activation:jakarta.activation-api:jar:1.2.2:test
+[INFO]    +- org.assertj:assertj-core:jar:3.19.0:test
+[INFO]    +- org.hamcrest:hamcrest:jar:2.2:test
+[INFO]    +- org.junit.jupiter:junit-jupiter:jar:5.7.2:test
+[INFO]    |  +- org.junit.jupiter:junit-jupiter-api:jar:5.7.2:test
+[INFO]    |  |  +- org.apiguardian:apiguardian-api:jar:1.1.0:test
+[INFO]    |  |  +- org.opentest4j:opentest4j:jar:1.2.0:test
+[INFO]    |  |  \- org.junit.platform:junit-platform-commons:jar:1.7.2:test
+[INFO]    |  +- org.junit.jupiter:junit-jupiter-params:jar:5.7.2:test
+[INFO]    |  \- org.junit.jupiter:junit-jupiter-engine:jar:5.7.2:test
+[INFO]    |     \- org.junit.platform:junit-platform-engine:jar:1.7.2:test
+[INFO]    +- org.mockito:mockito-core:jar:3.9.0:test
+[INFO]    |  +- net.bytebuddy:byte-buddy:jar:1.10.22:test
+[INFO]    |  +- net.bytebuddy:byte-buddy-agent:jar:1.10.22:test
+[INFO]    |  \- org.objenesis:objenesis:jar:3.2:test
+[INFO]    +- org.mockito:mockito-junit-jupiter:jar:3.9.0:test
+[INFO]    +- org.skyscreamer:jsonassert:jar:1.5.0:test
+[INFO]    |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
+[INFO]    +- org.springframework:spring-test:jar:5.3.9:test
+[INFO]    \- org.xmlunit:xmlunit-core:jar:2.8.2:test
+.......................................................................................................
+
+2.Application Configuration
+   
+AutoConfiguration:
+..................
+
+Configuration is based on config meta data provied in "META-INF/spring.factories"
+
+org.springframework.boot.spring-autoconfigure.2.5.3
+
+spring.factories 
+  It is meta configuration file read by spring container to create objects/beans based on certain conditions -rules
+
+
+Spring container scans spring.factories file , starts loading configuration, which apples @condtional 
+annotations.
+
+  Container------|AppConfig----|spring.factories----starts initalizing beans/configurations/components   based on rules(conditions) => Spring Boot.
+
+
+spring-configuration-meta.json
+
+ This file contains default "Properties and values" - application.properties file default value
+ eg
+ {
+      "name": "spring.redis",
+      "type": "org.springframework.boot.autoconfigure.data.redis.RedisProperties",
+      "sourceType": "org.springframework.boot.autoconfigure.data.redis.RedisProperties"
+    },
+    {
+      "name": "spring.redis.cluster",
+      "type": "org.springframework.boot.autoconfigure.data.redis.RedisProperties$Cluster",
+      "sourceType": "org.springframework.boot.autoconfigure.data.redis.RedisProperties",
+      "sourceMethod": "getCluster()"
+    },
+  
+This file is loaded during boot process
+
+additional-spring-configuration-metadata.json
+
+  {
+      "name": "server.port",
+      "defaultValue": 8080
+    }
+
+Annotations are processed by ASM - java bytecode engineering lib.
+https://asm.ow2.io/
+........................................................................................................
+					Conditional Bean Creations
+........................................................................................................
+
+When building a spring boot app, we sometimes want to only load beans or modules(configurations) into the application context(container) if some conditions met, Be it disable some beans during tests, or react to a certain property in the runtime env.
+
+Spring has annotation Called @Conditional annotation.
+
+This annotation allows us custom conditions to apply to parts of application context.
+
+Why Conditional Beans?
+
+ A spring application context contains an object graph that makes up all the beans that our application needs at runtime.
+@Conditional annotation allows us to define conditions under which a certain bean is included into that object graph.
+
+eg:
+
+ Some beans work in test env, the same bean i dont want in production env.
+ enable or disable some certain cross cutting concerns.
+  eg:
+    we have built a module that configures security, during dev test, we dont want to have username and passwords every time. so i want to disable the whole security module in local tests.
+ 
+ if some external resources is available without which they cant work. 
+   for eg: my application should not work if there is no logback.xml file has been found on classpath.
+
+
+- if beans does not exits  / exits
+- if module does not exits / exits
+- if external does not exitis / exits
+
+
+Declaring Conditional Bean:
+..........................
+In application, you can declare bean any where, optionaly we can add condition.
+
+only if this condition is satisifed will the bean added to the application context
+
+eg:
+
+@Configuration
+class MyBeanConfig {
+
+ @Conditional(...)
+ @Bean
+ public MyBean  getBean(){ 
+       return new MyBean()
+ }
+
+}
+
+
+Module Level
+
+@Configuration
+@Conditional(...)
+class MyBeanConfig {
+
+ @Bean
+ public MyBean  getBean(){ 
+       return new MyBean()
+ }
+
+}
+
+Component Level
+
+
+@Component
+@Conditional(...)
+class MyComponent {
+
+ 
+}
+........................................................................................................
+
+PreDefined Conditions:
+......................
+1.ConditionalOnProperty 
+   Loads beans based on env property - application.properties
+2.ConditionalOnExpression
+3.ConditionalOnBean
+4.ConditionalOnMissingBean
+5.ConditionalOnResource
+6.ConditionalOnClass
+...
+ConditionalOnJava -  version based
+
+custom conditions
+
+Boolean Operators
+
+Or
+And
+.............................................................................................
+
+ConditionalBean:
+
+-OnBean - The bean if  threre , what should i do
+
+if Mysql dependency (driver jar) in the build path
+     -Create Datasource Object
+           -Add properties - connection string - url,password,userName
+
+
+-OnMissing -Then bean if not there ,what should i do
+  if web missing, then start console container
+      
+package com.valtech.bootapp.conditionalonbean;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class DependantBeanConfig {
+
+    @Bean
+    OptionalBean optionalBean() {
+        return new OptionalBean();
+    }
+
+    @Bean
+    @ConditionalOnBean(OptionalBean.class)
+    //create this bean only if OptionalBean is available , if not dont
+    DependantBean dependantBean() {
+        return new DependantBean();
+    }
+
+    static class DependantBean {
+        public DependantBean() {
+            System.out.println("DependantBean is ready");
+        }
+    }
+
+    static class OptionalBean {
+        public OptionalBean() {
+            System.out.println("OptionalBean is ready");
+
+        }
+    }
+
+}
+.............................................................................................
+@ConditionalOnClass and @ConditionalOnMissingClass
+
+
+
+package com.valtech.bootapp.conditionalonclass;
+
+public class RequiredClass {
+}
+package com.valtech.bootapp.conditionalonclass;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+//@ConditionalOnClass(name = "com.valtech.bootapp.conditionalonclass.RequiredClass2")
+public class SpringConfig {
+
+    @Bean
+    //@ConditionalOnClass(value = RequiredClass.class)
+//    @ConditionalOnClass(name = "com.valtech.bootapp.conditionalonclass.RequiredClass")
+    public MyClass getMyClass() {
+        return new MyClass();
+    }
+    @Bean
+    //@ConditionalOnClass(value = RequiredClass.class)
+//    @ConditionalOnMissingClass("com.valtech.bootapp.conditionalonclass.RequiredClass1")
+    public MyClass getMyClassMissing() {
+        return new MyClass("Missing Class");
+    }
+
+    public static class MyClass {
+
+        public MyClass(String message) {
+            System.out.println(message);
+        }
+
+        public MyClass() {
+            System.out.println("MyClass");
+        }
+    }
+}
+
+main method
+
+		SpringApplication application = new SpringApplication(BootappApplication.class);
+		application.setWebApplicationType(WebApplicationType.NONE);
+		application.setBannerMode(Banner.Mode.OFF);
+		ConfigurableApplicationContext context =application.run(args);
+		HelloWorld helloWorld = context.getBean(HelloWorld.class);
+		System.out.println(helloWorld.sayHello());
+
+
+Conditional Componnent:
+
+@Component
+@ConditionalXXX
+public class MyComponent{}
+
+@ConditionalOnProperty("value.endabled",havingValue="true",matchIfMissing=true)
+@Configuration
+public class CrossCuttingModule{
+
+}
+.............................................................................................
+
+
+...................................................................................................
+					@SpringBootApplication
+....................................................................................................
+
+
+@@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan
+@SpringBootApplication
+
+
+@Configuration   ------> Bean Creations - <bean>
+@@SpringBootConfiguration
+
+@EnableAutoConfiguration
+
+ -Tells Spring boot to guess how you  want to configure spring,based on the jar dependencies that you have addeded
+-IT auto configures the beans that are present in the class path.
+
+ This simplifies the developer work by guuessing the required beans from the class path and configures to run the application.
+
+-for eg, H2 is on your class path, you have not manually configured any database connection beans, then spring will auto configure an in memory database.
+
+
+@ComponentScan
+ Tells spring to look for other components,configurations and all services in the specificied package.
+Spring is able to auto scan,detect  and register your beans or components from predefined project package.
+if no package is specified current class package is taken as the root package.
+.......................................................................................................
+
+Spring Boot App bootstrap from java main method
+
+
+SpringApplication.run(BootappApplication.class, args);
+
+When you run this.
+
+You will get
+
+1.It creates ApplicationContext object -Spring Container
+
+2.Register CommandLinePropertyResource
+
+3.Refersh ApplicationContext
+
+4.Trigger any CommandLineRunner Bean
+........................................................................................................
+
+Spring boot Application type:
+
+1.Spring Pojo Style App -command Line - Core Spring App
+
+2.Web Application - Servlet Based - Tomcat
+
+3.Reactive Web Apps - Reactive Extensions-Project Reactor- Netty
+
+
+Which application is default App?
+
+Based on starter Dependency.
+spring-boot-starter   ---- Spring Pojo Style app
+..............................................................................................
+				Spring Dev Tools
+..............................................................................................
+
+-Auto reload
+
+How to enable dev tool?
+
+Steps:
+
+1.Add dependency
+
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+2.Enable feature in IDE - intellij idea.
+
+2.1 Build,Exucution,Environment
+ -compiler -
+	Build Project automatically.
+
+2.2.open 
+   settings-Advanced Settings-Allow auto make to start even if developed application is running.
+...........................................................................................
+				RestFull Web Development in Spring Boot
+.............................................................................................
+
+What is Rest?
+
+ REST-Representational State Transfer - Architectural pattern proposed based on HTTP protocal
+to build hypermediea distributed Web Application
+
+What is Restfull?
+  Restfull is Implementation based REST Architecture patterns
+
+RestFull can be implemented in any language,any platform.
+
+Java:
+  JCP defined a spec to build RestFull apps - JAX-RS
+
+JAX-JS -  RestEasy,Jersy
+
+Spring Web Services(RestFull) is not following jcp standards rather than they follow direct REST spec.
+
+Types of Web Apps:
+1.Static web apps -  html - 1989-1995
+2.Dynamic Content Generation Web Applications
+   -CGI - c,perl
+   -J2EE - Servlet,jsp
+   -MS -  ASP,asp.net
+   - PHP
+  etc
+3.Web Services -  Data Interchange among applications
+   XML,JSON,..........
+ XML 
+  Web App can distributed XML docs over http protocal.
+  SOAP over http - SOAP based web services -SOA
+  
+  REST Architecture born to send any type of data format from xml to json,pdf,doc,image,binary
+4.SPA -Single Page Apps 
+   -Client Side Apps
+
+  SPA -------------------------RESTFull
+...............................................................................................
+REST Core Concepts:
+
+RE-Representation - Data format - json,xml,pdf...
+S - State -  Data id,name,ordervalue,
+T - Transfer - sending
+
+How to begin Restfull Web Service based distributed App?
+
+1.Identifying Model(Object)-Domain Object
+
+ eg:
+  Customer,Order,Inventory,Products,Items
+
+2.Resources
+   
+    Program, having apis , gets exectued when ever request comes for accessing object.
+
+ In java Resource is class.
+
+   public class OrderResource{
+
+   }
+   public class CustomerResource{
+
+   }
+
+    public class ProductResource{
+
+   }
+
+
+3.Model URI
+
+ URI - Uniform Resource Identifier.
+
+ /api/orders
+ /api/customers
+ /api/orders/1
+ /api/products/1
+ 
+Client(Could be  humman being or anythoer system(app)) wants data from Distributed System.
+
+Client-----------request(want)---------System---Running on Another Software(WebContainer)---Runs Resources
+................................&&&&&&&&&&&&&&&&&&&&........................................
+				  Spring And Web
+
+Spring can be used to build
+
+1.dynamic content apps
+   Layers
+ MVC - Design pattern
+      DAO
+      Service
+      Controller
+      View - html
+
+2.web services
+
+2.1.Soap Based /XML web services- SOA
+
+2.2.RestFull implementation
+  MVC - Design pattern
+      DAO
+      Service
+      Controller
+
+Spring Projects(modules)
+
+spring-boot-starter-web
+  -can be used to build dynamic content apps- view based apps
+  -can be used to build dynamic content apps- Resources based apps
+.............................................................................................
+			     Reactive programming and Spring
+.............................................................................................
+
+Reactive Programming:
+  
+  It is based on events -Event Driven Programming.
+  It is push based programming
+
+ It decouples caller(Object) and callee(Object)
+
+ Caller -----asks  data---callee 
+ Caller -----request data---callee 
+
+Here callee return either data or error in one short  - Request-Reply Pattern
+
+Callee returns data in sequence(flow of something)    - Streaming  
+  -Data Streaming
+
+Reactive Programming is general concept -http://reactivex.io/
+
+
+Reactive Programming :
+Java:
+    -Rxjava 2  -Netflix
+    -Project Reactor - from pivtol
+    -Mutiny - Redhat
+  
+Project Reactor used inside Spring framework 5 onwards.
+.............................................................................................
+			  Spring Mvc and Project Reactor
+				  Spring-WebFlux
+.............................................................................................
+			  Blocking and Non Blocking
+............................................................................................
+
+What is blocking? and blocking implemneted
+
+What is non blocking and how we can implement non blocking?
+
+
+How to reduce threads and how to enable async programming model.
+
+Java uses - nio,netty,Vert.X,SPring WebFlux.
+...............................................................................................
+			 Reactive + Non Blocking = Spring WebFlux
+...............................................................................................
+
+ - Less threads 
+ - streaming
+  ===High Performance and effective in processing
+
+Netty container used by spring  already reactivifed....
+.............................................................................................
+				RestFull WebServices
+.............................................................................................
+
+Spring MVC Annotations:
+.......................
+
+Core Annotations
+
+@Controller.
+@RestController
+@RequestMapping.
+@PathVariable.
+@RequestParam.
+@ModelAttribute.
+@RequestBody and @ResponseBody.
+@RequestHeader and @ResponseHeader.
+
+Handler methods:
+
+ -Web request handler methods
+
+- public methods
+- Return values
+	
+- accept args
+
+Args:
+ ServletRequest
+ WebRequest
+ HttpSession
+ @PathVariable
+ @MatrixVariable
+ @RequestParam
+ @RequestHeader
+ @RequestBody
+
+Return values:
+............
+@ResponseBody
+ The return value is converted through HttpMessageConverter implementations and written to the response
+  Uses HttpMessageConverter -  XML,JSON,VIEW........
+
+HttpEntity<B>, ResponseEntity<B>
+The return value that specifies the full response (including HTTP headers and body) is to be converted through HttpMessageConverter implementations and written to the response.
+
+Response:
+   Server will send domain data and meta informations = response
+   Domain data  = payload/body
+
+ResponseEntity
+  Wraps - body,+ headers,status code
+
+ResponseEntity
+ using constructor
+ - new ResponseEntity<Customer>(customer, httpHeaders, HttpStatus.OK);
+ using functional style: builder pattern
+..............................................................................................
+				 Controller
+.............................................................................................
+
+Spring Web apps based on popular MVC Design Pattern.
+
+Spring introduced MVC design pattern implemenation via project "Spring-MVC".
+
+SpringMVC was introduced to build dynamic content generation apps  - With View Technologies.
+
+SpringMVC streo type annotation
+
+1.@Controller
+    When you mark the class,spring will invoke methods from the class using "Dispatcher servlet" - Front Controller.
+
+   This controller is used to render views.
+
+2.@ResponseBody
+    This annotation is used to render "data formats - xml ,json"
+
+Web   
+
+ Client----request GET /customers.do---------------|web container will run method-render            views-html view
+
+ Client--ajax--request GET / orders---------------|web container will run method-render            XML/JSON-Data Driven
+ 
+
+3.@RestController
+   This annotation is used to build Restfull applications
+ @Controller
+@ResponseBody
+public @interface RestController {}
+
+4.URI and HTTP Method Mapping
+
+GET /api/resource  -uri
+
+POST /api/resource  -uri
+
+DELETE /api/resource  -uri
+
+PUT /api/resource  -uri
+
+@RequestMapping
+
+GET /greeter
+
+@RestController
+@RequestMapping("/greeter")
+public class GreeterController {
+
+    @RequestMapping(value = "")
+    public String sayHello(){
+        return "Hello Spring !!!!";
+    }
+
+}
+package com.example.restapp.resources;
+
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+//@Controller
+//@ResponseBody
+@RestController
+@RequestMapping("/api/greeter")  //main resource
+public class GreeterController {
+
+    //sub resources
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping
+    public String sayHello() {
+        return "Hello Spring !!!!";
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public String create() {
+        return "Save is called";
+    }
+}
+.............................................................................................
+				 Semantic Annoations
+..............................................................................................
+
+Semantic annotations are annotations which gives meaning to dev and also system.
+
+eg:
+@RestController
+
+@GetMapping
+@PostMapping
+@DeleteMapping
+@PutMapping
+
+package com.example.restapp.resources;
+
+
+import org.springframework.web.bind.annotation.*;
+
+
+//@Controller
+//@ResponseBody
+@RestController
+@RequestMapping("/api/greeter")  //main resource
+public class GreeterController {
+
+    //sub resources
+
+    //    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
+    public String sayHello() {
+        return "Hello Spring !!!!";
+    }
+
+    //@RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping(value = "/create")
+    public String create() {
+        return "Save is called";
+    }
+
+    @DeleteMapping(value = "/remove")
+    public String remove() {
+        return "delete is called";
+    }
+
+    @PutMapping(value = "/update")
+    public String update() {
+        return "Update is called";
+    }
+
+}
+.............................................................................................
+				Sending Input to Restfull api
+.............................................................................................
+
+1.Parameters : According to REST specfication
+   -Path Parameters
+   -Query Parameters
+   -Matrix Parameters
+   -Form Parameters
+2.Payload
+   -Any thing(data) can be embeded into HTTP body and sent to Server
+
+Path Parameters:
+
+  -Query Information based on dynamic input called path
+
+   /api/resource/{placeholder}
+
+   /api/orders/1
+   /api/orders/2
+
+Depedency Injection:
+
+ @Autowire
+ Service service 
+
+Spring provides many di annotations.
+
+  @PathVariable
+  @RequestParam
+
+
+GET http://localhost:8080/api/customers/3
+
+@RestController
+@RequestMapping("/api")
+public class ParamController {
+
+    //id is place hoder which will be updated based on values
+    @GetMapping(value = "/customers/{id}")
+    public String findById(@PathVariable(value = "id") int id) {
+             return "Got Id " + id;
+    }
+}
+.............................................................................................
+                 QueryParam /Query Strings/ Request Parameters
+
+GET /api/resource?variable=value&variable=value
+
+    //http://localhost:8080/api/customers/filter?ranking=prime
+    @GetMapping(value = "/customers/filter")
+    public String filter(@RequestParam(value = "ranking") String ranking) {
+        return "Filter By " + ranking;
+    }
+............................................................................................
+			Matrix parameters
+........................................................................................
+
+ GET /api/resource/subresource/variable1=value;variable2=value;variable3=value
+
+http://localhost:8080/api/customers/contacts/1234567890
+   //matrix parameters
+    @GetMapping(value = "/customers/contacts/{contactNumber}")
+    public String contactInfo(@PathVariable(value = "contactNumber") @MatrixVariable(required = true) int contactNumber) {
+        return "Customer Contact Number" + contactNumber;
+    }
+.............................................................................................
+				Responses
+..............................................................................................
+
+Response means - content. -
+ 
+  Media type= text/plain;charset=UTF-8
+              application/json ; application/xml
+
+Return Types
+
+1.String
+2.Object
+3.ResponseBody With Object
+4.ResponseEnity
+
+
+1.String
+    //plain text: string
+    @GetMapping("/str")
+    public String hello() {
+        return "Hello";
+    }
+
+
+2.Object 
+
+    @GetMapping("/object")
+    public Customer customer() {
+        return  new Customer(1,"Subramanian");
+    }
+
+Response:
+   Payload - json/xml/plain text
+   meta data
+      -headers
+      -status code
+
+
+3.Object with Status code - 201 ,400,500....
+
+    @PostMapping("/save")
+   // @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResposeTransfer postForm(@RequestBody LoginForm loginForm) {
+        System.out.println(loginForm);
+        return new ResposeTransfer("Thank you for Posting");
+    }
+
+4.Requirement
+  -Want to send payload
+  -status code
+  -Headers
+
+ResponseEntity
+ @GetMapping("/info")
+    public ResponseEntity sendMoreInfo() {
+        Customer customer = new Customer(1, "Subramanian");
+        //payload,header,status code
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("myheader","myvalue")
+                .body(customer);
+    }
+.............................................................................................
+				Error/Exception Handling 
+.............................................................................................
+
+Exception is error, if it is thrown by application.
+
+  -Handle or rethrow- propagated to the user application -stack trace..
+
+Best Practice :
+  Exception must be treated like "SucessResponse"
+  You have to send to json report to the client apps.
+
+
+Two patterns
+
+1.class level
+
+package com.example.restapp.resources.errors;
+
+import com.example.restapp.resources.ResposeTransfer;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public ResponseEntity getById(@PathVariable long id) {
+        if (id == 10) {
+            throw new UserNotFoundException("User Not Found");
+        }
+        return ResponseEntity.ok().body("User found!");
+    }
+
+    //error handler
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity handleError() {
+        return ResponseEntity.status(400).body(new ResposeTransfer("User Not Found"));
+    }
+
+    //inner classes
+    private class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException() {
+        }
+
+        public UserNotFoundException(String message) {
+            super(message);
+        }
+
+        public UserNotFoundException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public UserNotFoundException(Throwable cause) {
+            super(cause);
+        }
+
+        public UserNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+            super(message, cause, enableSuppression, writableStackTrace);
+        }
+    }
+}
+
+
+2.Global level
+
+
+package com.example.restapp.resources.errors;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+class ExceptionHandlerAdvice {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> showError(RuntimeException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+..............................................................................................
+				Logging
+.............................................................................................
+
+What is Logging?
+
+  Recording various activties of application
+
+-information
+-errors
+-warining
+-trace
+
+ Without having logs is eq to driving a car with your eyes closed
+
+a---b--c---d----x
+
+............................................................................................
+				 Spring boot and logging
+..........................................................................................
+
+Spring boot uses by default a logger framework - logback
+   
+Loggers For Your App:
+
+-Spring Boot Frameworks uses logger information
+
+2021-08-20 12:13:37.822  INFO 16844 --- [           main] c.e.loggingapp.LoggingappApplication     : Starting LoggingappApplication using Java 11.0.11 on LAPTOP-R2TGGFDL with PID 16844 (C:\session\ValTech\loggingapp\target\classes started by sasub in C:\session\ValTech\loggingapp)
+
+-Application logs
+  We have to add logs into application
+
+Date and Time: Millisecond precision and easily sortable.
+Log Level: ERROR, WARN, INFO, DEBUG, or TRACE.
+Process ID.
+A --- separator to distinguish the start of actual log messages.
+Thread name: Enclosed in square brackets (may be truncated for console output).
+Logger name: This is usually the source class name (often abbreviated).
+The log message.
+
+Log Mediums:
+
+1.Console
+2.File
+3.Cloud /Remote Server -  Centeralized Logging Services
+
+
+Logger configuration:
+
+Y can control loggers in the application , what log message,medium can be control.
+
+Via configuration
+
+
+1.application.properties /application.yaml in the application
+logging.level.root=warn
+logging.level.org.springframework.web=debug
+logging.level.org.hibernate=error
+
+2.When you run application 
+
+ java --jar target/myapp.jar --trace 
+
+3.Separate out logger configurations outside application config.
+
+ logback provides an xml configuration called
+  logback.xml
+  logback-spring.xml
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="com.example.loggingapp" level="INFO"/>
+
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%X{user}] [%X{function}] [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>myapp.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.logPathPrefix}/myproject.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%thread]
+                [%logger:%line] %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+<!--    <root level="OFF">-->
+<!--        <appender-ref ref="FILE"/>-->
+<!--    </root>-->
+        <root level="trace">
+            <appender-ref ref="FILE" />
+        </root>
+    <springProfile name="dev">
+        <logger name="com.example.loggingapp" level="info"/>
+    </springProfile>
+    <springProfile name="test">
+        <logger name="com.example.loggingapp" level="trace"/>
+    </springProfile>
+</configuration>
+..............................................................................................
+				  Spring Data
+..............................................................................................
+
+Spring Data provides common abstraction across data sources
+
+1.SQL Datasources
+2.NoSql datasource
+
+Data Data Project objective is domain model - DDD.
+
+
+Spring Data JPA:
+
+
+Repository layer : DAO - @Repository
+
+Spring provides interface model, you dont need provide implemenation
+
+Repository interface
+
+Any data models works on entity.
+
+Spring generates repositories based on entities.
+
+Spring data jpa provides all basic curd operations.
+
+Traditonal Spring provides
+
+1.drivers
+2.Datasource configuration -BeanCreations
+3.Repository interface
+4.Repository Implementation
+5.YOu have to do di EntityManager
+6.You can perform curd operations.
+
+
+Spring Data abstracts away
+ - Configuration is simplified through property files
+ - Just We can have only Interface
+ - We can use domain apis for CURD And Data Operations
+ - We can add onfly database related operation -Query Operations.
+ - Simplified transaction management.
+
+
+Spring 5:
+ 
+ xml
+  <jpa:respositories base-pacakge="com.valtec.repo"/>
+
+ java config
+
+ @Configuration
+ @EnableJpaRepositories
+ @EnableTransactionManagement
+ public class JPAConfig {
+
+
+     @Bean
+     pubilic DataSource datasource(){ 
+        ...connection string
+     }
+
+    
+    @Bean
+    public EntityManager entityManger(){
+    }
+    ....
+ }
+
+Spring Boot AutoConfiguration
+
+ <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+    <version>2.5.4</version>
+</dependency>
+............................................................................................
+Application side:
+
+1.Start Dependency
+2.Database Driver dependency
+3.Database configuration via application.properties or application.yaml
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+    <version>2.5.4</version>
+</dependency>
+................
+
+<dependency>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+</dependency>
+
+
+application.properties
+spring.datasource.driver-class-name=org.h2.Driver
+				
+..........................................................................................
+
+1.Coding
+
+You  need domain model and database model
+
+customer -table
+
+1.repository interface 
+
+public interface Repository {
+
+}
+
+public interface CrudRepository<T,ID> extends Repository<T,ID>{
+
+}
+
+
+public interface PagingAndSortingRepository<T,ID> extends CrudRepository<T,ID>
+
+
+public interface JpaRepository<T,ID> extends PagingAndSortingRepository<T,ID>, QueryByExampleExecutor<T>
+
+public interface CustomerRepository extends JpaRepsitory{
+    //Your own query methods
+      findByEmailAddressAndlastName(String emailAddress,String lastName)
+}
+
+Note: forall methods Spring will generate Query;
+    select u from User u where u.emailAddress=?1 and u.lastName=?2
+
+KeywordsToform query methods
+
+findByXXXKeyword
+
+Distinct -  findDistinctByLastname
+
+JPQL Custom Query:
+
+public interface CustomerRepository extends JpaRepsitory{
+    //Your own query methods
+      findByEmailAddressAndlastName(String emailAddress,String lastName)
+
+
+      @Query("select u from User u where u.emailAddress=?1")
+      User findByEmailAddress(String email)
+}
+
+.............................................................................................
+
+package com.example.accessingdatajpa;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Customer {
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long id;
+	private String firstName;
+	private String lastName;
+
+	protected Customer() {}
+
+	public Customer(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+
+	@Override
+	public String toString() {
+		return String.format(
+				"Customer[id=%d, firstName='%s', lastName='%s']",
+				id, firstName, lastName);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+}
+
+
+Repository:
+package com.example.accessingdatajpa;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+	List<Customer> findByLastName(String lastName);
+	Customer findById(long id);
+}
+.........................................................................................
+package com.example.accessingdatajpa;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/customers")
+public class CustomerController {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @GetMapping("/list")
+    public ResponseEntity findAllCustomer() {
+        return ResponseEntity.ok(customerRepository.findAll());
+    }
+}
+.............................................................................................
+
+package com.example.accessingdatajpa;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+@SpringBootApplication
+public class AccessingDataJpaApplication {
+
+	private static final Logger log = LoggerFactory.getLogger(AccessingDataJpaApplication.class);
+
+	public static void main(String[] args) {
+		SpringApplication.run(AccessingDataJpaApplication.class);
+	}
+
+	@Bean
+	public CommandLineRunner demo(CustomerRepository repository) {
+		return (args) -> {
+			// save a few customers
+			repository.save(new Customer("Jack", "Bauer"));
+			repository.save(new Customer("Chloe", "O'Brian"));
+			repository.save(new Customer("Kim", "Bauer"));
+			repository.save(new Customer("David", "Palmer"));
+			repository.save(new Customer("Michelle", "Dessler"));
+
+			// fetch all customers
+			log.info("Customers found with findAll():");
+			log.info("-------------------------------");
+			for (Customer customer : repository.findAll()) {
+				log.info(customer.toString());
+			}
+			log.info("");
+
+			// fetch an individual customer by ID
+			Customer customer = repository.findById(1L);
+			log.info("Customer found with findById(1L):");
+			log.info("--------------------------------");
+			log.info(customer.toString());
+			log.info("");
+
+			// fetch customers by last name
+			log.info("Customer found with findByLastName('Bauer'):");
+			log.info("--------------------------------------------");
+			repository.findByLastName("Bauer").forEach(bauer -> {
+				log.info(bauer.toString());
+			});
+			// for (Customer bauer : repository.findByLastName("Bauer")) {
+			// 	log.info(bauer.toString());
+			// }
+			log.info("order by");
+			Pageable firstPageWithTwoElements = PageRequest.of(0, 5, Sort.by("id").ascending());
+			 repository.findAll(firstPageWithTwoElements).getContent().forEach(customer1 -> {
+			 	log.info(customer1.toString());
+			 });
+		};
+	}
+
+}
+..............................................................................................
+				 Caching And Spring Boot
+...............................................................................................
+
+
+Caching:
+
+What is cache / Caching?
+
+In computing, a cache is a component that transparently stores data so that future requests
+for that data can be served faster.
+
+The data that is stored within a cache might be values that have been computed earlier or duplicates of original values that are stored elsewhere.
+
+Before this, you need to understand one concept, called "IO".
+
+
+ Before this, you need to understand one concept, called "IO".
+
+IO - read and write.
+
+Write:
+  moving data into some place
+
+Place:
+ - In memory
+ - Disk
+ - Network Socket
+ - Processors
+ - External Storage devices.
+
+IN Memory: Random access memory :RAM.
+......................................
+- Writing data into RAM.
+
+Which is faster, but not durable.
+
+Disk:
+  -Writing data into hard disk.
+Eg:
+  file systems
+     -Databases-RDBMS
+Which is slow but durable.
+
+Network Socket:
+ -socket is entry and exit point of networks
+ -apps write data into socket via os kernal, which intern transfer data to other machines 
+  in the network.
+
+-Processors
+   you can store data inside cpu registers for faster access.
+
+- External Storage devices
+   -physical storage like pendrives,extrnal harddisk....
+   -Cloud Storage.
+
+Reading:
+ -Reading requires more responsive- end user should able to get data very very faster.
+
+Reads costs more when we talk to disk(file system,databases,remote storages) based data.
+
+How to improve read performance?
+................................
+
+if any application / users reads the same data again and again, dont hit disk every time, rather make snapeshot of that data in first hit, keeps that "IN Memory(RAM) / CPU Register"
+so that future requests served very faster : Caching
+
+Real world examples:
+
+ if application sends an sql query request to database engine.
+
+-The database engine 
+   -parses the query
+   -Query Excution plan
+   -Query will be compiled - binary image of that query
+   -Query exection - Database engine will do sys call to disk
+   -Read operation begins
+   -Results are prepared
+   -Send back to Client Applicaiton
+
+imagine, if application repeats the same process again.
+
+How to improve Network reads : WEB
+
+If web clients ask some web documents such as html,pdf,image,json,xml to the webserver.
+
+-webserver will do low level io calls-read
+
+if web clients ask the same document again and again, we need to improve performance, so that 
+HTTP protocals having feature called storing repeated content some where(IN Memory)-HTTP caching.
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Hardwares :How to avoid reading data within hardware devices
+
+-Hardware cache
+A CPU cache is a hardware cache used by the central processing unit (CPU) of a computer to reduce the average cost (time or energy) to access data from the main memory. A cache is a smaller, faster memory, located closer to a processor core, which stores copies of the data from frequently used main memory locations.
+///////////////////////////////////////////////////////////////////////////////////////////// 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+             
+          Caching is nothing but how to improve IO( Frequrent READ of same data) operation
+
+
+Types of Caching:
+................
+Based on implemenentations
+
+-hardward level caching
+-software level caching
+   -Disk cache -databases,filesystems....
+   -Web cache - webservers,proxy servers, cdn
+   -Memoization - Program level caching, to avoid code repationcycles(loop)
+                  - languages -pythyon,groovy,javascript-most of the functional pl
+   -Application level caching with caching components
+         -Caching in Java Apps.
+         -Spring framework abstracts away caching soultions in enterprise/micro services
+          application.
+
+-network level caching
+   -protocal based caching-TCP
+   -HTTP
+   -SMTP.
+............................................................................................
+
+............................................................................................
+
+How to implement caching: Cache algorthims/Policy
+
+caching is allabout io.
+
+-write 
+-read
+-Replacement / Eviction.
+
+Write Policys:
+.............
+ It defines how to interact with cache component/architecture, when application starts writing data.
+
+1.Write Through
+2.Write Around
+3.Write Back
+
+
+
+1.Write through pattern/policy:
+...............................
+
+1.When ever write request comes , write operation will be done in cache system.
+2.From the Cache , data will be written to Database System.
+3.Once Data is written in database successfully, acknowledgement will be sent to Client Application.
+
+4.Application has to wait until the response come from cache(not suitable for blocking apps)
+  (may be suitable for async /non blocking application).
+5.It increases latency, since cache interacts with db,db interacts with cache and app.
+
+2.Write around policy:
+.......................
+
+1.Applications write data to database directly
+2.When read requests, Application hits Cache
+3.If no data found in the cache first time, Cache loads data from Database into caching
+  system
+4.If data found in the cache , data will be returned from cache itself.
+
+3.Write Back Policy:
+...................
+
+1.Application sends write requests to Cache System, once write is completed in Cache, Acknowledgement sent to Client Application.
+
+There is background service, which starts writing data from Cache into Database Async
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+Read Policy:
+...........
+1.Cache Hit
+2.Cache Miss
+
+
+Cache Hit:
+..........
+Cache hit means the requested data already there in the cache.
+This request can be served by simply reading the cache, which is comparatively faster
+Hit happens , subsquent calls only, first time it wont happen.
+
+
+Cache Miss:
+...........
+
+1.The data has to be recomputed or fetched from its original storage location
+
+2.A cache miss occurs either
+   2.1.Because the data was never placed in the cache,
+   2.2 Because the data was removed (“evicted”) from the cache by either the caching system itself or an external application that specifically made that eviction request.
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+Cache Replacement-Eviction Policy:
+..................................
+
+This is policy , implemented by cache providers in order to manage memory.
+
+How to clear stale /unwanted /un used data from the cache system?
+  This process of removing data from cache system is called "eviction".
+
+How to evict?
+
+-manual evication
+-automatic evication.
+  Systems like redis offers an alogorthims-TTL - Time to live.(how long data can be inside
+  System, once timeout, data will be removed automatically.
+
+In order to evit data from cache system, there are plent of algorthims.
+
+1.Bélády's algorithm
+2.First in first out (FIFO)
+3.Last in first out (LIFO) or First in last out (FILO)
+4.Least recently used (LRU)
+5.Time aware least recently used (TLRU)
+6.Most recently used (MRU)
+8.Pseudo-LRU (PLRU)
+9.Random replacement (RR)
+10.Segmented LRU (SLRU)
+12.Least-frequently used (LFU)
+13.Least frequent recently used (LFRU)
+14.LFU with dynamic aging (LFUDA)
+15.Low inter-reference recency set (LIRS)
+16.CLOCK-Pro
+17.Adaptive replacement cache (ARC)
+18.AdaptiveClimb (AC)
+19.Clock with adaptive replacement (CAR)
+20.Multi queue (MQ)
+21.Pannier: Container-based caching algorithm for compound objects
+
+
+Least recently used (LRU):
+   Redis uses this alorthim.
+
+////////////////////////////////////////////////////////////////////////////////////////////
+		Application Caching  Soultions and Implementation:
+		..................................................
+
+Application caching provides, how to store data inside application.
+
+Application caching can be classified into two types:
+.....................................................
+
+1.Local Cache
+2.Distributed Cache
+
+Both cache implementation will store data in side RAM Only.
+
+
+1.Local Cache : (Cache System) 
+ 
+ Cache is provided iniside application as "Data Structure".
+ if you are working in java application , java provides a spec called jcache
+JSR 107: JCACHE - Java Temporary Caching API
+
+ IF you  are working in spring framework, Spring framework provides an abstraction
+  "Caching Abstraction" : set of apis and annotations , developers start building caching system without worring about underlaying cache implemenation(systems-like memcache,redis,hazlecast....)
+
+
+          "Cache data is maintained inside Application Process(JVM)"
+
+Spring provides an data structure called "ConcurrentHashMapCache" 
+  -it is map datastructure
+  - used to store data inside app.
+
+
+
+Note:
+
+  In any caching system, data is stored in side data structure only : KEY-VALUE pair datastructure : Dictionary/HashMap/Map
+   This is fundamental storage model of any caching system.
+.............................................................................................
+
+2.Distributed Cache /Data Grid
+
+    Cache data is maintained outside application process(JVM).
+
+///////////////////////////////////////////////////////////////////////////////////////////
+Caching best practices:
+.......................
+
+Local Cache:
+ -Part of application
+ -easy to implement
+ -very fast, no lantency.
+-as application shuts down, no where data is persisted.
+-it is diffcult in concurrency
+-data cant be replicated
+-heap size will increase , if you store more data.
+-Avoid big heaps just for caching
+-Big heap leads to long major GCs
+
+
+Distributed Cache:
+ -outside application process
+ -it is easy to scale across clusters of nodes.
+ -it is easy to make highly  available.
+ -It is persisted-you can save data across time.
+etc.......
+
+
+Use a distributed cache for big amounts of data
+
+Distributed caches implemented cache nodes.
+
+Cache Nodes:
+
+1.Hazelcast
+2.Redis
+3.memcached
+4.Appache zoo keeper
+5.Generic.
+6.EhCache 2. x.
+7.Infinispan
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Application Caching Implementation using Spring Boot caching Abstraction:
+.........................................................................
+
+1.Spring boot can support local and distributed cache providers
+2.Spring boot offers abstraction apis to work with any cache providers without changing app
+  code, you can switch any provider any time.
+3.Spring boot uses cache starter packages.
+
+Spring boot Caching Architecture:
+.................................
+     				       Application
+				   (Caching Abstraction)
+					   |
+				      CacheManager
+					   |
+				---------------------------------- Cache Providers
+				|  |   |  |                       |
+	                       LocalCache / Distributed
+				   |              |
+			     ConcurrentHashMap	  Redis,MemCache,EHCach,Haelzcast......
+
+
+
+Spring Application Setup and how to employ caching.
+...................................................
+
+Spring Application Setup and how to employ caching.
+...................................................
+
+Application Req:
+ -It could be simple Databse CURD app
+ -It could be complex microservice application.
+
+App settings:
+
+Lab Guide:
+
+1.go to 
+https://start.spring.io/
+
+2.Add springweb,springdata,springcache dependencies
+
+pom.xml
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+  	     <dependency>
+           	 <groupId>com.h2database</groupId>
+            	<artifactId>h2</artifactId>
+       	     </dependency>
+
+2.create entity,Repository,Services,Rest End point.
+
+Entity
+Book.java
+package com.example.entity;
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+public class Book {
+    @Id
+    @GeneratedValue
+    private long id;
+    private String name;
+    private String category;
+    private String author;
+    private String publisher;
+    private String edition;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getEdition() {
+        return edition;
+    }
+
+    public void setEdition(String edition) {
+        this.edition = edition;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", author='" + author + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", edition='" + edition + '\'' +
+                '}';
+    }
+}
+.........................................................................................
+
+JPA implemenation:
+.................
+
+package com.example.repo;
+import com.example.entity.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import javax.transaction.Transactional;
+
+public interface BookRepository extends JpaRepository<Book, Long> {
+    @Transactional
+    @Modifying
+    @Query("update Book u set u.name=?2 where u.id=?1")
+    int updateAddress(long id, String name);
+}
+........................................................................................
+
+Service Implemenation:
+
+
+package com.example.service;
+
+
+import com.example.entity.Book;
+
+public interface BookService {
+    Book addBook(Book book);
+
+    Book updateBook(Book book);
+
+    Book getBook(long id);
+
+    String deleteBook(long id);
+}
+
+package com.example.service;
+
+import com.example.entity.Book;
+import com.example.repo.BookRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class BookServiceImpl implements BookService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Override
+    public Book addBook(Book book) {
+        logger.info("adding book with id - {}", book.getId());
+        return bookRepository.save(book);
+    }
+
+
+    @Override
+    public Book updateBook(Book book) {
+        bookRepository.updateAddress(book.getId(), book.getName());
+        logger.info("book updated with new name");
+        return book;
+    }
+
+    @Override
+    public Book getBook(long id) {
+        logger.info("fetching book from db");
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+
+    @Override
+    public String deleteBook(long id) {
+        bookRepository.deleteById(id);
+        return "Book deleted";
+    }
+}
+..........................................................................................
+
+Controller
+
+package com.example.api;
+
+import com.example.entity.Book;
+import com.example.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+
+@RestController
+public class BooksController {
+
+    @Autowired
+    private BookService bookService;
+
+    @PostMapping("/book")
+    public Book addBook(@RequestBody Book book) {
+        return bookService.addBook(book);
+    }
+
+    @PutMapping("/book")
+    public Book updateBook(@RequestBody Book book) {
+        return bookService.updateBook(book);
+    }
+
+    @GetMapping("/book/{id}")
+    public Book getBook(@PathVariable long id) {
+        return bookService.getBook(id);
+    }
+
+    @DeleteMapping("/book/{id}")
+    public String deleteBook(@PathVariable long id) {
+        return bookService.deleteBook(id);
+    }
+}
+...........................................................................................
+Main Application with Data:
+
+package com.example;
+
+import com.example.entity.Book;
+import com.example.repo.BookRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class MycacheAppApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MycacheAppApplication.class, args);
+    }
+
+    @Bean
+    CommandLineRunner runner(BookRepository bookRepository) {
+        return args -> {
+            Book book = null;
+            for (int i = 0; i < 10; i++) {
+                book = new Book();
+                book.setAuthor("Author " + i);
+                book.setCategory("Caching " + i);
+                book.setEdition(i + "nd edition ");
+                book.setName("Caching in Action " + i);
+                book.setPublisher("my Publisher " + i);
+                bookRepository.save(book);
+            }
+            bookRepository.findAll().forEach(System.out::println);
+
+        };
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+Caching integration:
+....................
+
+Declarative Annotation-based Caching
+
+For caching declaration, Spring’s caching abstraction provides a set of Java annotations:
+
+@EnableCaching - Enable caching behaviour to the application
+
+@Cacheable: Triggers cache population.
+
+@CacheEvict: Triggers cache eviction.
+
+@CachePut: Updates the cache without interfering with the method execution.
+
+@Caching: Regroups multiple cache operations to be applied on a method.
+
+@CacheConfig: Shares some common cache-related settings at class-level.
+...........................................................................................
+
+
+@EnableCaching - Enable caching behaviour to the application
+
+-Can be added at top level- in the Main program or
+-Can be created a separate Configuration file where you can add.
+
+Caching features are added on top of biz apis - find,update,delete
+
+
+At its core, the cache abstraction applies caching to Java methods, thus reducing the number of executions based on the information available in the cache.
+
+That is, each time a targeted method is invoked, the abstraction applies a caching behavior that checks whether the method has been already executed for the given arguments.
+
+If it has been executed, the cached result is returned without having to execute the actual method.
+
+ If the method has not been executed, then it is executed, and the result is cached and returned to the user so that, the next time the method is invoked the cached result is returned.
+
+This way, expensive methods (whether CPU- or IO-bound) can be executed only once for a given set of parameters and the result reused without having to actually execute the method again
+
+The caching logic is applied transparently without any interference to the invoker.
+
+"This approach works only for methods that are guaranteed to return the same output (result) for a given input (or arguments) no matter how many times it is executed."
+
+........................................................................................
+
+Annotations overview:
+.....................
+
+@Cachable:
+As the name implies, you can use @Cacheable to demarcate methods that are cacheable 
+-that is, methods for which the result is stored in the cache so that, on subsequent invocations (with the same arguments), the value in the cache is returned without having to actually execute the method.
+
+parameterize it with the name of the cache where the results would be stored.
+
+eg:
+@Cacheable("books")
+public Book findBook(ISBN isbn) {...}
+
+The findBook() call will first check the cache books before actually invoking the method and then caching the result.
+
+-In the preceding snippet, the findBook method is associated with the cache named books.
+
+-Each time the method is called, the cache is checked to see whether the invocation has already been executed and does not have to be repeated.
+
+-While in most cases, only one cache is declared, the annotation lets multiple names be specified so that more than one cache is being use.
+
+-. In this case, each of the caches is checked before executing the method — if at least one cache is hit, the associated value is returned.
+
+Eg:
+    @Override
+    //now this method will executed only if cache miss, if cache hit, method wont be executed
+    @Cacheable("books")
+    public Book getBook(long id) {
+        logger.info("fetching book from db");
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+
+ConcurrentHashMap books = new ConcurrentHashMap();
+books.put(key,value);
+
+Multiple cach names:
+...................
+The following example uses @Cacheable on the findBook method:
+
+@Cacheable({"books", "isbns"})
+public Book findBook(ISBN isbn) {...}
+
+In this case, if any of the caches contains the required result, the result is returned and the method is not invoked.
+
+eg:
+    @Override
+    @Cacheable(cacheNames = {"books", "isbns"})
+    public Book getBook(long id) {
+        logger.info("fetching book from db");
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+How Spring boot sends cached data to Cache Provider? How data is indentified in caching?
+
+-You need unique indentification.
+
+Key-Value Store:
+
+ All cache implementation uses , key-value stores internally.
+ Each invocation of a cached method needs to be translated into a suitable key for cache  access
+
+ConcurrentHashMap books = new ConcurrentHashMap();
+books.put(key,value);
+
+
+KeyGenerator:
+
+-This is responsible for generating every key for each data item in the cache, which would be used to lookup the data item on retrieval.
+
+-The default implementation here is the SimpleKeyGenerator – which uses the method parameters provided to generate a key
+
+The default key generator
+
+By default, SimpleKeyGenerator in the org.springframework.cache.interceptor package, an implementation of KeyGenerator interface, is used to generate the cache key
+
+SimpleKeyGenerator evaluates parameters of the cache annotated methods (by @Cachable, @CachePut and @CacheEvict). If only one non-null param is existing, it returns the param itself, otherwise the below SimpleKey's toString() method is used for computing all params
+
+@Override
+public String toString() {  
+    return getClass().getSimpleName() + " [" + StringUtils.arrayToCommaDelimitedString(this.params) + "]";
+}
+
+Default Key Generation
+
+The caching abstraction uses a simple KeyGenerator based on the following algorithm.
+
+-If no params are given, return SimpleKey.EMPTY.
+
+-If only one param is given, return that instance.
+
+-If more than one param is given, return a SimpleKey that contains all parameters
+
+
+   @Cacheable("books")
+    public Book getBook(long id) {
+        logger.info("fetching book from db");
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+
+ConcurrentHashMap books = new ConcurrentHashMap();
+books.put(1,book);
+
+
+Default Key Generation code
+
+public class CustomKeyGenerator implements KeyGenerator {
+
+ @Override
+ public Object generate(Object target, Method method, Object...params) {
+  return generateKey(params);
+ }
+
+ /**
+  * Generate a key based on the specified parameters.
+  */
+ public static Object generateKey(Object...params) {
+  if (params.length == 0) {
+   return CustomCacheKey.EMPTY;
+  }
+  if (params.length == 1) {
+   Object param = params[0];
+   if (param != null && !param.getClass().isArray()) {
+    return param;
+   }
+  }
+  return new CustomCacheKey(params);
+ }
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+IS it Recommended to use default key generation ?
+
+No!
+Because it may cause unexpected key collisions.
+
+Recommended use keys parameters:
+
+The @Cacheable annotation lets you specify how the key
+ is generated through its key attribute
+
+@Cacheable(cacheNames="books", key="#isbn")
+public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+
+# - spring expression language syntax.
+isbn - key reference. here we are using entire object as key.
+
+Eg:
+
+    @Cacheable(cacheNames = {"books"}, key = "#id")
+    public Book getBook(long id) {
+        logger.info("fetching book from db");
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+
+Note:
+ISBN isbn and key="#isbn" should match.
+
+@Cacheable(cacheNames="books", key="#isbn.rawNumber")
+public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+Here we are taking isbn.rawNumber which is one of the field value for cache.
+
+////////////////////////////////////////////*********************////////////////////////////
+
+Conditional Based Caching:
+..........................
+
+Use case:
+ What if i dont want to cache every thing i mean , i need to cache only few values 
+based on some condtion.
+
+The cache annotations support such functionality through the condition parameter, which takes a SpEL expression that is evaluated to either true or false.
+If true, the method is cached. If not, it
+
+@Cacheable(cacheNames="book", condition="#name.length() < 32") 
+public Book findBook(String name)
+
+//conditional : cache only books whose id greater than 5
+    @Override
+    @Cacheable(cacheNames = "books", condition = "#id>5 ")
+    public Book getBook(long id) {
+        logger.info("fetching book from db" + id);
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+Multi threading and caching:
+
+ if  a  method is by multiple thread of execution , there might be inconsistency in data reterival.
+
+
+Synchronized caching
+
+In a multi-threaded environment, certain operations might be concurrently invoked for the same argument (typically on startup). By default, the cache abstraction does not lock anything and the same value may be computed several times, defeating the purpose of caching.
+
+For those particular cases, the sync attribute can be used to instruct the underlying cache provider to lock the cache entry while the value is being computed. As a result, only one thread will be busy computing the value while the others are blocked until the entry is updated in the cache.
+
+@Cacheable(cacheNames="foos", sync=true)
+public Foo executeExpensiveOperation(String id) {...}
+
+This is an optional feature and your favorite cache library may not support it. All CacheManager implementations provided by the core framework support it. Check the documentation of your cache provider for more details.
+////////////////////////////////////////////////////////////////////////////////////////////
+
+How to update Cache?
+....................
+
+In order to avoid inconsistency between database and cache during data updates in the database.
+
+When ever we update database, we need to update cache provider also.
+
+                                      update cache as well
+                                          |
+ Client---------PUT------------api-----service---Repo---db
+
+@CachePut:
+-When the cache needs to be updated without interfering with the method execution, you can use the @CachePut annotation.
+
+
+  @Override
+    @CachePut(cacheNames = "books", key = "#book.id")
+    public Book updateBook(Book book) {
+        bookRepository.updateAddress(book.getId(), book.getName());
+        logger.info("book updated with new name");
+        return book;
+    }
+/////////////////////////////////////////////////////////////////////////////////////////////
+How to evit data from cache?
+ -Via code
+ -automatic
+
+When ever we remove record from databse , we need to remove key from cache also.
+
+                                      Delete from cache as well
+                                          |
+ Client---------DELTE------------api-----service---Repo---db
+
+How to remove cache Entries?
+
+@CacheEvict annotation:
+.......................
+The cache abstraction allows not just population of a cache store but also eviction
+
+This process is useful for removing stale or unused data from the cache.
+
+ Opposed to @Cacheable, annotation @CacheEvict demarcates methods that perform cache eviction, that is methods that act as triggers for removing data from the cache. 
+
+Just like its sibling, @CacheEvict requires specifying one (or multiple) caches that are affected by the action, allows a custom cache and key resolution or a condition to be specified but in addition, features an extra parameter allEntries which indicates whether a cache-wide eviction needs to be performed rather then just an entry one (based on the key):
+
+@CacheEvict(cacheNames="books", allEntries=true)
+public void loadBooks(InputStream batch)
+
+
+    @Override
+    @CacheEvict(cacheNames = "books", key = "#id" ,allEntries = true)
+    public String deleteBook(long id) {
+        bookRepository.deleteById(id);
+        return "Book deleted";
+    }
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+@Caching:
+
+Use case , what if i want to apply different caching on single method
+like having two different CacheEvit Policy.
+
+Sometimes, multiple annotations of the same type (such as @CacheEvict or @CachePut) need to be specified — for example, because the condition or the key expression is different between different caches. @Caching lets multiple nested @Cacheable, @CachePut, and @CacheEvict annotations be used on the same method. The following example uses two @CacheEvict annotations
+
+
+@Caching(evict = { @CacheEvict("primary"), @CacheEvict(cacheNames="secondary", key="#p0") })
+public Book importBooks(String deposit, Date date)
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@CacheConfig annotation
+
+So far we have seen that caching operations offered many customization options and these can be set on an operation basis. 
+
+However, some of the customization options can be tedious to configure if they apply to all operations of the class. For instance, specifying the name of the cache to use for every cache operation of the class could be replaced by a single class-level definition.
+This is where @CacheConfig comes into play.
+
+@CacheConfig("books")
+public class BookRepositoryImpl implements BookRepository {
+
+    @Cacheable
+    public Book findBook(ISBN isbn) {...}
+}
+
+eg:
+package com.example.service;
+
+import com.example.entity.Book;
+import com.example.repo.BookRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@CacheConfig(cacheNames = "books")
+public class BookServiceImpl implements BookService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Override
+    public Book addBook(Book book) {
+        logger.info("adding book with id - {}", book.getId());
+        return bookRepository.save(book);
+    }
+
+
+    @Override
+    @CachePut(key = "#book.id")
+    public Book updateBook(Book book) {
+        bookRepository.updateAddress(book.getId(), book.getName());
+        logger.info("book updated with new name");
+        return book;
+    }
+
+    //   @Override
+    //now this method will executed only if cache miss, if cache hit, method wont be executed
+//    @Cacheable(cacheNames = {"books", "isbns"})
+//    public Book getBook(long id) {
+//        logger.info("fetching book from db");
+//        Optional<Book> book = bookRepository.findById(id);
+//        if (book.isPresent()) {
+//            return book.get();
+//        } else {
+//            return new Book();
+//        }
+//    }
+
+    @Override
+    @Cacheable(key = "#id")
+    public Book getBook(long id) {
+        logger.info("fetching book from db");
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return book.get();
+        } else {
+            return new Book();
+        }
+    }
+    //conditional : cache only books whose id greater than 5
+//    @Override
+//    @Cacheable(cacheNames = "books", condition = "#id>5 ")
+//    public Book getBook(long id) {
+//        logger.info("fetching book from db" + id);
+//        Optional<Book> book = bookRepository.findById(id);
+//        if (book.isPresent()) {
+//            return book.get();
+//        } else {
+//            return new Book();
+//        }
+//    }
+
+//    @Override
+//    @Cacheable(cacheNames = "books",  unless = "#id==3")
+//    public Book getBook(long id) {
+//        logger.info("fetching book from db" + id);
+//        Optional<Book> book = bookRepository.findById(id);
+//        if (book.isPresent()) {
+//            return book.get();
+//        } else {
+//            return new Book();
+//        }
+//    }
+
+    @Override
+    @CacheEvict(key = "#id", allEntries = true)
+    public String deleteBook(long id) {
+        bookRepository.deleteById(id);
+        return "Book deleted";
+    }
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
+				  Unit Testing
+.............................................................................................
+
+What is Unit Testing?
+ Testing a unit of code.
+ Testing a unit of biz logic.
+
+Dev writes
+ Biz logic
+
+Unit Testing ensures that our biz logic works based on biz req.
+
+eg: Biz is adding two numbers
+
+public int add(int a, int b){
+      return a + b;
+}
+add(1,2) =>3
+
+When i run this code, it gives output.
+
+public int add(int a, int b){
+      return a - b;
+}
+add(1,2) => -1
+
+When i run this code, it gives output but it does not match biz req.
+
+eg:
+In UI apps, client based the background color is light blue, but you have give dark blue.
+  Here you have not met client expectation / req expecation
+
+In order to ensure app output meets biz req expecation - we need to test our code before moving to next level.
+				Unit Test
+..............................................................................................
+
+Components of Unit Testing:
+...........................
+
+1.you need biz logic
+2.Testing libs and frameworks
+
+->Assertion lib
+   Verify api result against biz exectation
+
+    any assertion lib apis give two result
+  - true , false
+
+    -true means you have met req      - test passed
+    -false means you have not met req - test failed
+
+JUnit — The de-facto standard for unit testing Java applications.
+
+Sample Junit
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import example.util.Calculator;
+
+import org.junit.jupiter.api.Test;
+
+class MyFirstJUnitJupiterTests {
+
+    private final Calculator calculator = new Calculator();
+
+    @Test
+    void addition() {
+        assertEquals(2, calculator.add(1, 1));
+    }
+
+}
+
+ -Test Suite
+	Collection of Tests ,Test Cases
+  Suite defined by class
+    class MySuite{
+
+    }
+
+ -Test Case
+	Unit of Test
+
+- We have collections Test suit, how to test all suit and cases: 
+..............................................................................................
+                                    Test Runner - Junit
+...............................................................................................
+
+Test Runner or Test Framework provides runtime infrastructure and code infrastructure to run multiple Test suites,cases and provides facility to prepares reports, coverage reports......
+
+Junit is only  for Plain old java apps
+
+What about Spring ?
+
+Spring Test & Spring Boot Test — Utilities and integration test support for Spring Boot applications.
+
+AssertJ — A fluent assertion library.
+Hamcrest — A library of matcher objects (also known as constraints or predicates).
+...........................................................................................
+				 What to test and What not Test?
+
+Code has depdenency:
+  
+ Controller has Service depdency and Service has Repository dependency.
+
+ I want to test Service alone.
+
+What not test ?
+
+  Real implementation you should not test like talking to db, talking to external system.
+
+How to simulate real env under test?
+   Mocking
+
+Mocking means faking the real implemenation under test to verify our api is meeting expecatation.
+
+
+// mock creation
+List mockedList = mock(List.class);
+
+// using mock object - it does not throw any "unexpected interaction" exception
+mockedList.add("one");
+mockedList.clear();
+
+// selective, explicit, highly readable verification
+verify(mockedList).add("one");
+verify(mockedList).clear();
+
+
+JSONassert — An assertion library for JSON.
+JsonPath — XPath for JSON.
+
+.............................................................................................
+
+spring boot starter test dependency has all theses libs
+
+
+Eg: Spring Boot With Mockito
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+
+package com.frontbackend.springboot.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.frontbackend.springboot.service.HelloService;
+
+@RestController
+public class HelloController {
+
+    private final HelloService helloService;
+
+    @Autowired
+    public HelloController(HelloService helloService) {
+        this.helloService = helloService;
+    }
+
+    @GetMapping("/")
+    public @ResponseBody String greeting() {
+        return helloService.getWelcomeMessage();
+    }
+    @GetMapping("/hai")
+    public @ResponseBody String hai() {
+        return helloService.getHaiMessage();
+    }
+}
+
+package com.frontbackend.springboot.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class HelloService {
+
+    public String getWelcomeMessage() {
+        return "Hello World!";
+    }
+    public String getHaiMessage(){
+        return "Hai";
+    }
+}
+
+Testing Class:
+package com.frontbackend.springboot.controller;
+
+import com.frontbackend.springboot.service.HelloService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class HelloControllerMockitoTest {
+
+    @Mock
+    private HelloService helloService;
+
+    @InjectMocks
+    private HelloController helloController;
+
+    @BeforeEach
+    void setMockOutput() {
+        //which is eq == calling api from browser or post man -  GET  /
+        //We are defining rule that if i call HelloService getWelcomeMessage, should return "Hello"
+        when(helloService.getWelcomeMessage()).thenReturn("Hello Mockito Test");
+        System.out.println(helloService.getWelcomeMessage());
+        when(helloService.getHaiMessage()).thenReturn("Hai");
+    }
+
+    @Test
+    public void shouldReturnDefaultMessage() {
+        String response = helloController.greeting();
+        assertThat(response).isEqualTo("Hello Mockito Test");
+    }
+
+    @Test
+    public void shouldReturnHaiMessage() {
+      String response = helloController.hai();
+      assertThat(response).isEqualTo("hi");
+    }
+}
+.............................................................................................
+.............................................................................................
+			   Spring Boot  Application In Production
+............................................................................................
+
+Package the Application:
+
+  -Jar File Model
+
+Spring boot packs the application using jar pattern called "fat jar"/Uber jar..
+
+Legacy Application package format:
+
+1.jar - plain jar
+2.war 
+3.Ear 
+
+The application packed into war and deployed on Web containers -  Tomcat,Jboss,Weblogic....
+ -Monolith style.
+
+MicroServices apps packed small and small apps, deployed on Virtual Envs-  vms,containers.
+
+The application is packaged along containers(embeded container -tomcat,netty)
+
+In order to pack app in optimizted way, the model was dervied called "fat/uber" jar.
+
+The fat jar is suitable for vm envs.
+
+How to create fat jars and how to run it?
+
+mvn clean package
+
+java -jar target/spring-boot-actuator-example-0.0.1-SNAPSHOT.jar
+...........................................................................................
+				 Managment - Managining Running Applications
+...........................................................................................
+
+How to monitor Enterprise java apps?
+
+Java Management Extensions (JMX) is a Java technology that supplies tools for managing and monitoring applications, system objects, devices (such as printers) and service-oriented networks. Those resources are represented by objects called MBeans (for Managed Bean).
+
+JConsole,Jmeter.
+
+What you can monitor
+
+-health - whether server and service is running or not.
+-metrics
+-object
+-memory
+-providers
+  -database,messaging,cache
+.............................................................................................
+				Thanks to spring Boot, Spring boot provides 
+			     built in monitoring tool which is exposed via RestFull apis
+.............................................................................................
+
+Spring-boot Actuator:
+     Server which is running in the same port where app is running by default.
+Restapi results are based HATEOAS.... 
+
+HATEOAS:
+Hypermedia as the Engine of Application State (HATEOAS) is a component of the REST application architecture that distinguishes it from other network application architectures.
+
+if i have built a rest api for some resources,
+
+ if i share that rest api to other developers / team /company
+
+ They will ask us to share documentation.
+
+document says that How to query rest api
+  
+is it necessary to prepare documentation?.
+
+if any web site , do you need any documentation for how to browse that website?
+
+ In general , we dont need, we use hyper links to navigate to see the information.
+
+HATEOAS is kind of self document model along with data, which guides how to use REST API
+
+
+
+EG:
+GET /accounts/12345 HTTP/1.1
+Host: bank.example.com
+Accept: application/vnd.acme.account+json
+...
+
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: application/vnd.acme.account+json
+Content-Length: ...
+
+{
+    "account": {
+        "account_number": 12345,
+        "balance": {
+            "currency": "usd",
+            "value": 100.00
+        },
+        "links": {
+            "deposit": "/accounts/12345/deposit",
+            "withdraw": "/accounts/12345/withdraw",
+            "transfer": "/accounts/12345/transfer",
+            "close": "/accounts/12345/close"
+ 
+        }
+  }
+
+{
+    "account": {
+        "account_number": 12345,
+        "balance": {
+            "currency": "usd",
+            "value": 100.00
+        },
+        "links": {
+            "self": "/accounts/12345"         
+ 
+        }
+  }
+............................................................................................
+
+Steps:
+
+1.Add the following dependency
+	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+
+2.enable settings in application.properties
+management.security.enabled=false
+management.endpoints.web.exposure.include=*
+
+http://localhost:8080/actuator/
+
+The information provided by actuator server(management server) information can be exposed to other production monitoring tools.
+https://prometheus.io/
+..............................................................................................
+  		     Deploying Spring boot apps in Virtualized Env
+.............................................................................................
+
+App deloyment 
+Data centers
+
+1.bare metal deployment -  
+2.Virtual machines deployment
+3.Light weight vm deployment-containers - docker.
+.............................................................................................
+
+Image:
+  -compressed file which having all bootable information
+
+osimages.
+
+We can delivery apps as images which are light weight, can be booted on light wight os(virtual os) vm -container-docker.
+
+How to dockerize the spring boot application.
+
+App runtime arch inside docker
+
+   SpringBootApp
+ ---------------
+     JVM
+  -------------
+    Shell
+  ------------   
+ Linux Kernal
+  
+Image creation for our app:
+
+Dockerfile
+
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java" ,"-jar","/app.jar"]
+
+
+docker build .... -t yourcompany/appjava
+
+Running Image , boot 
+
+docker run -p 8080:8080 imageName
+
+............................................
+
+mvn clean package
+
+docker build -t valtech/app-docker .
+
+docker run -p 8080:8080 valtech/app-docker
+
+http://localhost:8080/
+............................................Thank You.......................................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

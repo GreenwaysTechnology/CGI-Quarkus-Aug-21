@@ -103,7 +103,31 @@ events/rest/v1/list
 java -jar target/....
  
 
+Lab 7: Building Reactive Application
 
+Customer Manager  Application having reactive
+
+ Create Reactive  RESTFull api for the following Resources and write CURD operations using Reactive Hibernate Panche With Service implementation using cdi
+
+/users - findAll Users
+/users/create - post use new user
+/users/{id} - findBy User
+/users/{id} - delete users
+/users/{id} - Update Users
+
+Req:
+
+- Should create User Service
+- Should create User repository,which should have array operations
+- Should  inject repository into service 
+- Should inject service into Resources
+-Should call api from Resource to api
+- Should return responses using response builder
+- Should implement the Execption for all apis - could be biz exceptions 
+   lets say if you find users by id , if id does not find, you have to send Response 
+  that user not found
+-Api should have implemented content-negotation - json and xml
+-Should have used Resource and SubResource concept.
 
 
 

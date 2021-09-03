@@ -5833,7 +5833,7 @@ event.request -  request-reply
 eventbus.send -  point to point
 eventbus.publish - pub -sub
 
-............................................................................
+.............................................................................................
 				Point to Point
 
 
@@ -5880,5 +5880,1329 @@ public class GreetingConsumer {
         System.out.println(name.body().encodePrettily());
     }
 }
+..............................................................................................
+			 Request-Reply Pattern
+..............................................................................................
+
+In Resource :
+
+   @GET
+    @Path("/reply/{name}")
+    public Uni<String> greeting(@PathParam(value = "name") String name) {
+        //request-reply
+        return eventBus.<String>request(EventBusAddress.CGI_GREETINGS_REPLY, name)
+                .onItem().transform(Message::body);
+    }
+
+In Service
+
+  //reply
+    @ConsumeEvent(EventBusAddress.CGI_GREETINGS_REPLY)
+    public Uni<String> replyTo(String name) {
+        return Uni.createFrom().item(() -> name.toUpperCase()).emitOn(executor);
+    }
+..............................................................................................
+			   Pub - Sub - One to many
+.............................................................................................
+
+Resource
+  @GET
+    @Path("/publish/{name}")
+    public Uni<String> broadcast(@PathParam(value = "name") String name) {
+        eventBus.publish(EventBusAddress.CGI_GREETINGS_BROADCAST, name);
+        return Uni.createFrom().item("Published");
+    }
+
+package org.acme.vertx.eventbus;
+
+import io.quarkus.vertx.ConsumeEvent;
+import io.vertx.mutiny.core.eventbus.Message;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class HaiConsumer {
+    //reply
+    @ConsumeEvent(EventBusAddress.CGI_GREETINGS_BROADCAST)
+    public void publish(Message<String> name) {
+        System.out.println(this.getClass().getName() + " " + name.body());
+    }
+}
+
+package org.acme.vertx.eventbus;
+
+import io.quarkus.vertx.ConsumeEvent;
+import io.vertx.mutiny.core.eventbus.Message;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class HelloConsumer {
+
+    //reply
+    @ConsumeEvent(EventBusAddress.CGI_GREETINGS_BROADCAST)
+    public void publish(Message<String> name) {
+        System.out.println(this.getClass().getName() + " " + name.body());
+    }
+}
+..............................................................................................					USING REACTIVE ROUTES
+				......................
+
+We have seen designing rest api using Jaxjs spec. without jaxjs also we can design rest apis.
+using vertx web modules.
+
+Vertx web modules advantages
+
+1.you can embed or write rest apis  into any bean with Annotated @Applicationscoped,singleTon
 
 
+@ApplicationScoped
+class MyRouterBean { 
+   ....
+}
+
+2.funtional style
+   uses function composition
+   uses pure function concepts
+
+
+
+How to write ?
+
+vertx-core
+    <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-vertx</artifactId>
+        </dependency>
+
+vertx-web
+
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-vertx-web</artifactId>
+</dependency>
+
+Vertx code
+Router router = Router.router(vertx)
+
+router.get("/hello",rc->{
+   rc.response().end("helllo");
+})
+
+In Quarkus
+    @Route(methods = Route.HttpMethod.GET,path="/hello") 
+    void hello(RoutingContext rc) { 
+        rc.response().end("hello");
+    }
+
+package org.acme.vertx.eventbus;
+
+import io.quarkus.vertx.web.Route;
+import io.quarkus.vertx.web.RoutingExchange;
+import io.vertx.ext.web.RoutingContext;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class MyDeclarativeRoutes {
+
+    // neither path nor regex is set - match a path derived from the method name
+    @Route(methods = Route.HttpMethod.GET, path = "/vertxhello")
+    void hello(RoutingContext rc) {
+        rc.response().end("hello");
+    }
+
+    @Route(path = "/vertxworld")
+    String helloWorld() {
+        return "Hello world!";
+    }
+
+    @Route(path = "/vertxgreetings", methods = Route.HttpMethod.GET)
+    void greetings(RoutingExchange ex) {
+        ex.ok("hello " + ex.getParam("name").orElse("world"));
+    }
+}
+.............................................................................................
+			  Vertx web client apis : HTTP Service Communication
+............................................................................................
+
+<dependency>
+            <groupId>io.smallrye.reactive</groupId>
+            <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
+</dependency>
+
+In order to use webclient, we need two dependency:
+
+1.Vertx
+2.WebClient
+
+import io.smallrye.mutiny.Uni;
+import io.vertx.ext.web.client.WebClientOptions;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
+import io.vertx.mutiny.ext.web.client.WebClient;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+@Path("/myclient")
+public class WebClientResource {
+
+    @Inject
+    Vertx vertx; // Inject the managed io.vertx.mutiny.core.Vertx instance
+
+    private WebClient client;
+
+    //
+    @PostConstruct
+    public void init() {
+        System.out.println("init");
+        client = WebClient.create(vertx, new WebClientOptions()
+                .setDefaultHost("localhost")
+                .setDefaultPort(8080)
+        );
+    }
+
+    @GET
+    public Uni<String> Myapi() {
+        return client
+                .get("/hello").send()
+                .onItem().transform(HttpResponse::bodyAsString);
+    }
+}
+............................................................................................
+
+Service Communication:
+
+1.HTTP
+ -Microprofile Restclient
+ -Vertx WebClient
+2.TCP - Message driven
+ -Event Bus
+
+
+.............................................................................................
+				   Loggers
+.........................................................................................
+
+What is logging?
+  The way of recording activities of the application into memory,file,database
+
+Why we logging?
+   The logging can help to trace what went on, is going on in application.
+
+Log Level:
+.........
+INFO
+INFO messages are like the normal behavior of applications. They state what happened. For example, if a particular service stopped or started or you added something to the database. These entries are nothing to worry about during usual operations.
+
+FATAL
+FATAL means that the application is about to stop a serious problem or corruption from happening. The FATAL level of logging shows that the application’s situation is catastrophic, such that an important function is not working. For example, you can use FATAL log level if the application is unable to connect to the data store.
+
+ERROR
+Unlike the FATAL logging level, error does not mean your application is aborting. Instead, there is just an inability to access a service or a file. This ERROR shows a failure of something important in your application. This log level is used when a severe issue is stopping functions within the application from operating efficiently. Most of the time, the application will continue to run, but eventually, it will need to be addressed.
+
+WARN
+The WARN log level is used when you have detected an unexpected application problem. This means you are not quite sure whether the problem will recur or remain. You may not notice any harm to your application at this point. This issue is usually a situation that stops specific processes from running. Yet it does not mean that the application has been harmed. In fact, the code should continue to work as usual. You should eventually check these warnings just in case the problem reoccurs.
+
+
+DEBUG
+With DEBUG, you are giving diagnostic information in a detailed manner. It is verbose and has more information than you would need when using the application. DEBUG logging level is used to fetch information needed to diagnose, troubleshoot, or test an application. This ensures a smooth running application.
+
+TRACE
+The TRACE log level captures all the details about the behavior of the application. It is mostly diagnostic and is more granular and finer than DEBUG log level. This log level is used in situations where you need to see what happened in your application or what happened in the third-party libraries used. You can use the TRACE log level to query parameters in the code or interpret the algorithm’s steps.
+
+ALL
+This log level logs any logging levels that are defined. It logs everything and includes custom logging levels as well. It is the combination of all other logging levels.
+..............................................................................................
+				 Profile based loggers
+
+dev
+  INFO
+test
+  DEBUG /WARNING
+prod
+  -DEBUG/TRACE
+
+Quarkus and log level configuration:
+You want to change the default logging configuration.
+
+Open src/main/resources/application.properties and add the following content:
+
+quarkus.log.level=DEBUG
+
+# Changing Logger Configuration
+
+You want to change the default logging configuration.
+
+Open src/main/resources/application.properties and add the following content:
+quarkus.log.level=DEBUG
+
+Log Mediums:
+
+1.Console
+2.File
+3.Cloud /Remote Server -  Centeralized Logging Services
+
+
+
+Application Logging:
+.......................
+
+Most of the time, your applications need to write their own logging messages and not
+rely solely on the default logs provided by Quarkus. Applications may use any of the
+supported APIs for logging, and the logs will be merged.
+
+Quarkus supports these logging libraries:
+
+• JDK java.util.logging
+• JBoss logging
+• SLF4J
+• Apache Commons Logging
+..............................................................................................
+
+  private static Logger LOG = Logger.getLogger(GreetingResource.class);
+
+
+LOG.info
+LOG.WARN
+LOG.TRACE
+LOG.DEBUG
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Logging Reporting Technology: Centeralized Log Management Micro Service Log Management.
+.......................................................................................
+
+
+When working with microservice architectures and Kubernetes, logging is an important
+thing to take into consideration because each service is logging individually; but
+as a developer or operator, you might want to have all the logs centralized in one
+place so they can be consumed as a whole.
+
+
+
+Use the GELF extension to produce logs in GELF format and send them using either
+TCP or UDP.
+
+Graylog extended log format (GELF) is understood by three of the most centralized
+logs systems that are used nowadays:
+
+
+• Graylog (MongoDB, Elasticsearch, Graylog)
+ -Product to collect logs from the application(ms) for analysis.
+
+• ELK (Elasticsearch, Logstash, Kibana)
+
+• EFK (Elasticsearch, Fluentd, Kibana)
+............................................................................................
+				GELF Stack
+............................................................................................
+
+
+Steps:
+
+1.mvnw quarkus:add-extension -Dextensions="logging-gelf"
+	<dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-logging-gelf</artifactId>
+        </dependency>
+2.application.properties
+quarkus.log.handler.gelf.enabled=true
+quarkus.log.handler.gelf.host=localhost
+quarkus.log.handler.gelf.port=12201
+
+3.Send logs to Graylog
+To send logs to Graylog, you first need to launch the components that compose the Graylog stack:
+MongoDB
+Elasticsearch
+Graylog
+
+Run Graylog stack:
+........................
+
+docker run --name mongo -d mongo:4.2
+
+docker run --name elasticsearch \
+    -e "http.host=0.0.0.0" \
+    -e "discovery.type=single-node" \
+    -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
+
+
+docker run --name graylog --link mongo --link elasticsearch \
+    -p 9000:9000 -p 12201:12201/udp -p 1514:1514 \
+    -e GRAYLOG_HTTP_EXTERNAL_URI="http://127.0.0.1:9000/" \
+    -d graylog/graylog:4.1
+..............................................................................................
+				Micro services -Falut Management
+............................................................................................
+What is fault?
+
+Any System Subject to fail.
+
+Layers of system and its failures
+
+-Hardware failures
+-OS Failures
+-Network failures
+-Application failures
+
+Software failures:
+..................
+->JVM failures
+  -out of memory
+  -heap dump errors
+  -process related errors
+  -thread related errors
+-How to fix failures
+  -there tools available to detect memories,threads,heap dump 
+   -jmeter,heapdump errors, apache benchmark....
+
+Application failures:
+
+->Exception handling
+ file handling,database handling, call third party apis,networking, biz use case failures.
+-How to fix application errors
+  -Exception handlers--- give report , we can decide what do.
+
+
+try{
+ //what type of code i can write
+ //The code subject to fail, risky code. : The code may cause error any time.
+
+}
+catch(Exception e){
+  //for recovery code.
+  //you can report to other code or ui
+  //you can log those errors, you can audit latter.
+}
+..............................................................................................
+				Micro Services and Error Handling
+..............................................................................................
+
+You have to have idea that the system will fail at any point of time, if failure comes how to handle that.
+
+System failures and how to handle via patterns: Resilience Patterns:
+
+Quarkus and Falut Tolerance: 
+  Quarkus provides MicroProfile Fault Tolerance apis. 
+
+ <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+ </dependency>
+
+
+1.BulkHead:
+
+  The idea behind bulkhead is to set a limit on the number of concurrent calls we make to a remote service.
+  
+@Bulkhead(5) // maximum 5 concurrent requests allowed
+public Connection serviceA() {
+       Connection conn = null;
+       conn = connectionService();
+       return conn;
+}
+
+eg:
+    //loadtest -n 100 -c 10 http://localhost:8080/coffee/bulk
+    @GET
+    @Path("/bulk")
+    @Bulkhead(value = 5)
+    @Fallback(fallbackMethod = "handleBulkHead")
+    public Response dontOverload() {
+        LOGGER.info("Api is called");
+        return Response.ok("bulk").build();
+    }
+
+    public Response handleBulkHead() {
+        LOGGER.info("You are here");
+        return Response.ok("sorry System busy").build();
+    }
+..............................................................................................
+					Timeout - Time limiting
+.............................................................................................
+
+What is Timeout?
+   Setting a limit on the amount of time we are willing to wait for an operation to complete is called time limiting.
+   If the operation does not complete within the time we specified, we want to be notified about it with timeout Error.
+
+Sometime it is refered to as "setting a deadline"
+
+  @Timeout(400) // timeout is 400ms
+   public Connection serviceA() {
+       Connection conn = null;
+       conn = connectionService();
+       return conn;
+}
+.....
+Timeout with Fallback:
+
+    private void randomDelay() throws InterruptedException {
+        // introduce some artificial delay
+        Thread.sleep(new Random().nextInt(500));
+    }
+    @GET
+    @Path("/{id}/recommendations")
+    @Timeout(250)
+    @Fallback(fallbackMethod = "fallbackRecommendations")
+    public List<Coffee> recommendations(@PathParam int id) {
+        long started = System.currentTimeMillis();
+        final long invocationNumber = counter.getAndIncrement();
+
+        try {
+            randomDelay();
+            LOGGER.infof("CoffeeResource#recommendations() invocation #%d returning successfully", invocationNumber);
+            return coffeeRepository.getRecommendations(id);
+        } catch (InterruptedException e) {
+            LOGGER.errorf("CoffeeResource#recommendations() invocation #%d timed out after %d ms",
+                    invocationNumber, System.currentTimeMillis() - started);
+            return null;
+        }
+    }
+..............................................................................................	
+
+				 Fail fast and Fail slow -later
+					 Retry
+.............................................................................................
+
+Fail fast:
+ As soon as failure is dedecuted, either we throw exception, or we redirect with fallback.
+
+eg:
+  in Bulkhead 
+   if more conncurrency access than expected , it will throw BulkHeadExection, if exception
+ you can handle via fallback.
+
+  In Timeout
+   if there is delay in response than expected timeout , it will throw TimeoutExection, if exception  you can handle via fallback.
+
+SOme times i need to give a chance to recover from the failures.
+
+For eg , i call api, which fails due to network failure, i dont want to handle exception, i need to give chance to recover from those errors.
+
+Re-try - try automatically n of times within some time period of time.
+
+When you retry you can  customize when to retry.
+
+eg: 
+  i dont want to retry for SocketException,FileNotFoundException,MemoryoverFlowException
+  biz use cases like Login
+  if login failed in first attempt, dont retry.
+
+...
+
+/**
+* The configured the max retries is 90 but the max duration is 1000ms.
+* Once the duration is reached, no more retries should be performed,
+* even through it has not reached the max retries.
+*/
+@Retry(maxRetries = 90, maxDuration= 1000)
+public void serviceB() {
+    writingService();
+}
+
+/**
+* There should be 0-800ms (jitter is -400ms - 400ms) delays
+* between each invocation.
+* there should be at least 4 retries but no more than 10 retries.
+*/
+@Retry(delay = 400, maxDuration= 3200, jitter= 400, maxRetries = 10)
+public Connection serviceA() {
+    return connectionService();
+}
+
+
+
+/**
+* Sets retry condition, which means Retry will be performed on
+* IOException.
+*/
+@Retry(retryOn = {IOException.class})
+public void serviceB() {
+    writingService();
+}
+
+eg:
+   /**
+     * Provides list of all our coffees.
+     * <p>
+     * This method fails about 50% of time. However, in case of a failure, the method is automatically re-invoked again
+     * (up to 4 times), thanks to the {@link Retry} annotation. That means that a user is rarely exposed to a
+     * failure, since the probability of a failure occurring 4 times in row is fairly low.
+     */
+    @GET
+    @Retry(maxRetries = 4, retryOn = RuntimeException.class)
+    @Fallback(fallbackMethod = "fallbakcoffeesList")
+    public List<Coffee> coffees() {
+        final Long invocationNumber = counter.getAndIncrement();
+        maybeFail(String.format("CoffeeResource#coffees() invocation #%d failed", invocationNumber));
+        LOGGER.infof("CoffeeResource#coffees() invocation #%d returning successfully", invocationNumber);
+        return coffeeRepository.getAllCoffees();
+    }
+
+    public List<Coffee> fallbakcoffeesList() {
+        LOGGER.infof("Fallback");
+        return new ArrayList<>();
+    }
+.......
+
+    private void maybeFail(String failureLogMessage) {
+        // introduce some artificial failures
+        if (new Random().nextFloat() < failRatio) {
+            LOGGER.error(failureLogMessage);
+            throw new RuntimeException("Resource failure.");
+        }
+    }
+..............................................................................................
+				 Fail Fast - Circuit Breaker
+.............................................................................................
+
+A CB  is to prevent calls to remote service, if we know that the call is likely to fail or timeout. we do this so that we dont unnessarily waste critical resourcs both in our service and the service service.
+
+
+CB is state machine: which has three states
+
+1.closed state
+2.open state
+3.half open state
+
+CB is any one of the state.
+
+1.closed state:
+  Application is good, or healthy.
+
+2.Open state
+   Application has dedecuted error
+  
+3.Half open
+   It is trying to move from failure state to normal state.
+
+
+@CircuitBreaker(successThreshold = 10, requestVolumeThreshold = 4, failureRatio=0.75,delay = 1000)
+public Connection serviceA() {
+       Connection conn = null;
+       conn = connectionService();
+       return conn;
+}
+
+The above code-snippet means the method serviceA applies the CircuitBreaker policy, which is to open the circuit once 3 (4x0.75) failures occur among the rolling window of 4 consecutive invocations. The circuit will stay open for 1000ms and then back to half open. After 10 consecutive successful invocations, the circuit will be back to close again. When a circuit is open, A CircuitBreakerOpenException will be thrown.
+
+   @GET
+    @Path("/cb")
+    @CircuitBreaker(successThreshold = 10, requestVolumeThreshold = 4, failureRatio = 0.75, delay = 1000)
+    @Fallback(fallbackMethod = "cbFallback")
+    public Response circuitBreakerApi() {
+        maybeFailcb();
+        return Response.ok(new Random().nextInt(30)).build();
+    }
+
+    private void maybeFailcb() {
+        final Long invocationNumber = counter.getAndIncrement();
+        if (invocationNumber % 4 > 1) {
+            throw new RuntimeException("Service failed");
+        }
+    }
+..............................................................................................
+				Spring and Quarkus
+..............................................................................................
+
+Spring and Spring Boot:
+.......................
+
+What is spring?
+ Spring is framework to build enterprise java applications.
+
+Why Spring?
+  
+Early 2000, Java Started becoming more popular in distributed application dev.
+.............................................................................................
+                            Complixty of JEE Spec and implementation
+.............................................................................................
+
+////////////////////////////////////////////////////////////////////////////
+
+JEE enterprise application:
+............................
+
+Client Layer         Web Layer      Biz layer      Data Layer/Persistency
+
+Browser             Servlet/JSP      EJB               Entity Beans
+
+EJB :Enterprise Java Bean
+  Java Object can support distributed biz operations
+eg: incase of shopping cart
+  I have a bean(java object) which has three apis addToCart,Checkout,Payment)
+
+Api classifications:
+1.Session Bean  - to represent biz logic---jdbc--dml
+2.Enitity bean  -ORM - Object to Table mapping-First orm solution---Hibernate
+3.Message Driven Bean - Message driven systems-RabbitMQ,Kaffka,JMS
+
+Rod  was working in enterprise banking application with jee, he faced lot of complexity in designing ejb driven systems, so he decided to move ejb from JEE application, he wrote book called expert  J2EE ONE ON ONE design and development.
+
+
+He proposed a model  that model later on came as The project in "Spring Season" - Spring Framework.
+
+Client Layer         Web Layer        Biz layer                Data Layer/Persistency
+
+Browser              Spring MVC      Spring Services            Spring-orm - Spring-data
+
+Spring development objective is "POJO". (Plain Old Java Object)
+
+When you build enterprise java apps, no plumbing(bolier plate code),Spring framework takes care that plumbing.
+
+..............................................................................................
+				Enterprise application challanges
+..............................................................................................
+
+Java is Object Oriented Programming language.
+
+Apps built on java collection of objects.
+..............................................................................................
+
+				Object Management :Hierarchy
+.............................................................................................
+
+Object Relationship
+
+-HAS-A -  Composition
+-IS-A - Inheritance.
+
+Enterprise application challanges:
+
+1.Object Management
+
+IOC : Inversion of Control
+ Inversion -Do opposit
+ of Control -Management
+
+In enterprise application object creation and linking objects are so complex that should be removed from the developer.
+
+Someone should take care object creation and linking= 
+  =>This process is called as IOC.
+The IOC suggest the automation program,that program called as IOC Container.
+....
+class Product{}
+
+class Order {
+   //dependency - has-a
+    Product product;
+}
+
+Product pr=new Product()
+Order order = new Order()
+//links
+order.setProduct(pr)
+Order order = new Order(new Product())
+
+The first IOC Container
+1.PICO Container
+2.Spring container : It was born as enterprise container.
+
+Spring container takes care of object creations and object linking .
+Which is other wise called as "Dependency Injection" .
+ Dependency - HAS-A
+    injection - linking objects
+
+
+Spring Application:
+   The application is written in java technology, executed on Spring Container which is runtime for spring applications.spring container runs on jvm
+
+			  Spring Application
+				 |
+			   Spring Container
+				 |
+				JVM
+
+
+
+class Product{}
+
+class Order {
+   //dependency - has-a
+    Product product;
+}
+
+The below job done by spring container;
+
+Product pr=new Product()
+Order order = new Order()
+//links
+order.setProduct(pr)
+Order order = new Order(new Product())
+.............................................................................................
+			  How Spring Container creates Objects and link them
+..............................................................................................
+Spring Versions and features
+
+2004 - Spring Framework 1.0 released
+– Champions dependency injection
+– Encourages POJOs
+– Uses XML files to describe application
+  configuration
+– Becomes popular quickly as an EJB
+  alternative
+
+• Spring 2.0 (2006):
+ – XML simplification, async JMS, JPA, AspectJ support
+
+• Spring 2.5 (2007, last release 2.5.6)
+  – Requires Java 1.4+ and supports JUnit 4
+  – Annotation DI, @MVC controllers, XML namespaces
+
+• Spring 3.x (3.2.17 released July 2013)
+
+   – Environment & Profiles, @Cacheable, @EnableXXX …
+   – Requires Java 1.5+ and JUnit 4.7+
+   – REST support, JavaConfig, SpEL, more annotations
+
+• Spring 4.x (released Dec 2016)
+    – Support for Java 8, @Conditional, Web-sockets
+
+• Spring 5.x (2017 to till date)
+  MicroService driven Dev features
+   – Reactive programming focus
+   - Functional Programming
+   - Cloud Functionality
+   - Container support
+...............................................................................................		      How Spring Container creates Objects and link them
+............................................................................................
+
+
+Application configuration descriptor: 
+  information to the spring container how to create object and link them, make available for the developer to use created and linked objects.
+
+
+Spring Core Concepts:
+
+1.Spring Bean.
+
+What is Bean?
+   
+  Bean is terminallogy coined by SUN Micro System to name java object.
+
+Object vs Bean?
+
+ -Same but Bean has some special characteristics  which was proposed by SUN micro system via 
+"Java Bean Spec"
+
+It is java class, based Java Bean standards
+ 	-class should be public
+ 	-properties should be private
+ 	-set and get methods - Accessors and mutators
+	-constructors
+
+Why Bean Spec?
+  - in order to standarize the java dev process- Coding Standards.
+
+class Customer {
+  public int id;
+  private String name;
+}
+
+Spring  follows java bean spec in order to create object and links objects.
+
+class CustomerService {
+
+   private CustomerRespository rep;
+
+   CustomerService(){
+
+   }
+   set /get
+
+}
+class CustomerRespository{
+
+
+}
+
+Spring Bean is Java Object follows Bean Specification and also managemented by Spring Container.
+
+.............................................................................................
+				   Spring Bean Creation(Object)
+.............................................................................................
+
+
+
+Architecture:
+
+			POJO Classes(Bean)
+				 |
+    Spring-Application <====>SpringContainer
+      config file		 |
+		       Fullyconfigured System
+
+
+Spring Bean Definitions(file) instructs Spring Container how to create objects(order of creations) and how to link (DI) objects
+............................................................................................
+			Spring Application Configuration Managment
+............................................................................................
+
+Spring Application can be configured in many ways
+
+1.XML files  -  Old and Legacy.
+
+2.Java Config + Annotations
+
+2.1 Java Config -Manual - Write Configuration and logic
+
+ Here Dev need to write Configuration and biz logic , which makes app dev slower.
+
+Just Focus logic, automate configuration itself - AutoConfig
+
+3.AutoConfig:
+    Framework must take care of configuration based on various condtions like
+ i want web and jpa , messaging.
+                        "Birth of Spring Boot"
+
+.............................................................................................
+
+
+What is Spring Boot?
+
+Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run".
+
+We take an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss. Most Spring Boot applications need minimal Spring configuration.
+
+Spring Boot Focus Mainly Configuration
+
+1.Build Configuration
+2.Application Configuration.
+
+Steps:
+
+1.you have to create maven project
+
+2.you need to add spring dependencies
+   Spring-context
+   Spring-web
+   Spring-mvc
+   mysql-connector-java
+   commons-dbcp
+   spring-orm
+   hibernate-entitymanager
+   jsr-250-api
+ etc.........
+
+3.App configuration
+  src
+   -main
+      webapp
+       -web-inf
+       views
+4.beans.xml / java config
+   config
+      WebListener COnfiguration
+       -Change Spring container from plain to web
+      WebAppConfig
+        ViewResolver
+  DataSourceConfig
+  JPAConfig
+					Why Spring Boot?
+
+Spring Boot 
+   starters reduces build dependency
+   AutoConfigrator reduces the AppDepedency
+  
+1.Create stand-alone Spring applications
+   You can deploy apps in containers,cloud.....easily
+
+2.Embed Tomcat, Jetty or Undertow directly (no need to deploy WAR files)
+   SPring boots provides execuatble jar / fat jar /uber jar.	
+
+3.Provide opinionated 'starter' dependencies to simplify your build configuration
+     Looks like profie based configuration which is applied even for pom dependencies
+
+4.Automatically configure Spring and 3rd party libraries whenever possible
+    Via autoconfiguration and class path scanning.
+
+Provide production-ready features such as metrics, health checks, and externalized configuration
+............................................................................................
+
+How to start with Spring Boot Project?
+
+
+spring-boot-starter: Which takes of build configuration
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+Spring Boot download all its dependencies based on root entry(starters)
+
+
+2.Application Configuration  : which takes care of annotation
+ -@EnableAutoConfiguration,@Configuration,@ComponentScan.....
+   
+AutoConfiguration:
+..................
+
+Configuration is based on config meta data provied in "META-INF/spring.factories"
+
+org.springframework.boot.spring-autoconfigure.2.5.3
+
+spring.factories 
+  It is meta configuration file read by spring container to create objects/beans based on certain conditions -rules
+
+
+Spring container scans spring.factories file , starts loading configuration, which apples @condtional 
+annotations.
+
+  Container------|AppConfig----|spring.factories----starts initalizing beans/configurations/components   based on rules(conditions) => Spring Boot.
+.............................................................................................
+
+Spring Application Types:
+
+1.Web Application - Spring-MVC
+  -Dynamic content Generation application - With templates
+  -RestFull app developement
+
+2.Data Application - Spring-data - Spring-data-jpa, Spring-data-jdbc,...Spring-data-redis
+
+3.Micro service Development - Spring-cloud
+   config
+   service communication
+   etc...
+............................................................................................
+				Quarkus supports some of the Spring modules
+..............................................................................................
+
+We can write spring applications(we can use spring annotations) on Quarkus runtime.
+
+Quarkus-Extension for Spring DI,Spring Web,Spring Data Jpa,spring cache,Spring schdulers, Spring data Rest,SPring security,spring boot cloud config server..........
+
+Spring DI On Quarkus:
+....................
+Spring extension
+
+quarkus-spring-di , quarkus-spring-web
+
+Spring Annotations:
+
+@Configuration
+public class AppConfig {
+
+   @Bean
+   public MyBean getMyBean(){ 
+
+   }
+}
+Reading config properties:
+application.properties
+greet.message =hello
+
+Streo type annotations: @Service,@Repository,@Component,@RestController...
+
+@Service
+pubic class GreetingService {
+   @Value("greet.message")
+   String message
+}
+
+@Component
+public class HelloBean {
+
+  @Autowired
+  @Qualifier("q1")
+  GreeterBean bean1;
+
+  @Autowired
+  @Qualifier("q2")
+  GreeterBean bean2;
+
+}
+
+Can i use beans inside jaxRs resource? Yes
+
+@Path("/spring")
+public class MyResource {
+
+   @Autowired
+   GreeterBean bean1;
+ 
+}
+
+eg:
+
+Bean Class:
+package org.acme.spring.di;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class GreeterBean {
+
+    private final MessageProducer messageProducer;
+
+    @Autowired
+    @Qualifier("noopFunction")
+    StringFunction noopStringFunction;
+
+    @Autowired
+    @Qualifier("capitalizeFunction")
+    StringFunction capitalizerStringFunction;
+
+    @Value("${greeting.suffix:!}")
+    String suffix;
+
+    public GreeterBean(MessageProducer messageProducer) {
+        this.messageProducer = messageProducer;
+    }
+
+    public String greet(String name) {
+        final String initialValue = messageProducer.getPrefix() + " " + name + suffix;
+        return noopStringFunction.andThen(capitalizerStringFunction).apply(initialValue);
+    }
+}
+
+package org.acme.spring.di;
+
+import java.util.function.Function;
+
+public interface StringFunction extends Function<String, String> {
+
+}
+
+package org.acme.spring.di;
+
+import org.springframework.stereotype.Component;
+
+@Component("noopFunction")
+public class NoOpSingleStringFunction implements StringFunction {
+
+    @Override
+    public String apply(String s) {
+        return s;
+    }
+}
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageProducer {
+
+    @Value("${greeting.message}")
+    String message;
+
+    public String getPrefix() {
+        return message;
+    }
+}
+
+App Configuration:
+package org.acme.spring.di;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfiguration {
+
+    @Bean(name = "capitalizeFunction")
+    public StringFunction capitalizer() {
+        return String::toUpperCase;
+    }
+}
+
+package org.acme.spring.di;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Path("/greeting")
+public class GreeterResource {
+
+    @Autowired
+    GreeterBean greeterBean;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return greeterBean.greet("world");
+    }
+}
+..............................................................................................
+				 Quarkus-Spring-Web
+..............................................................................................
+
+Dependency:
+ quarkus-spring-web
+
+@RestController
+@RequestMapping
+@GetMapping
+@PostMapping
+@DeleleteMapping
+@PutMapping
+@PathVariable
+
+/*
+ * Copyright 2018 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.acme.spring.web;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/greeting")
+public class GreetingController {
+
+//    @Autowired
+    private final GreetingBean greetingBean;
+
+    public GreetingController(GreetingBean greetingBean) {
+        this.greetingBean = greetingBean;
+    }
+
+    @GetMapping("/{name}")
+    public Greeting hello(@PathVariable(name = "name") String name) {
+        return new Greeting(greetingBean.greet(name));
+    }
+}
+
+
+
+
+package org.acme.spring.web;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class GreetingBean {
+
+    public String greet(String input) {
+        return "HELLO " + input.toUpperCase() + "!";
+    }
+}
+
+package org.acme.spring.web;
+
+public class Greeting {
+
+    private final String message;
+
+    public Greeting(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+}
+.............................................................................................
+				 Rest api documentation -OPEN API Specification
+............................................................................................
+
+Open Api spec insipired Swagger 
+
+The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection. When properly defined, a consumer can understand and interact with the remote service with a minimal amount of implementation logic.
+.............................................................................................
+					Deployments
+.............................................................................................
+
+1.Bare Metal Deployments.
+  You have Data center -  where you have machines with all configurations
+  -WebServer,Database,Middleware,Infra softwares
+Java:
+ Dev ---- Test----Package------(War/Ear)----Deployment Descriptors(configuration file)--- AppServers(Jboss/Weblogic)---|--Live---
+ 
+ Mainitance:
+  what if app server goes down----app unavailability.
+
+ Scalling:
+		Running the same application in clustered of machines - replicating same app across multiple machines.
+                                  clusterNode1
+                  MasterNode-----|
+                                  ClusterNode2
+  
+ load balancing
+
+Drawbacks:
+
+  1.Cost - hardware host was very high 
+  2.Maintaince cost
+  3.Compablity hell -  Production machine is linux, dev machine is windows , some of the  
+    software depedency may not be suitable for in all envs.
+  
+2.Virtual Machine Deployment
+  -We can simulate os on single hardware.
+  -We can run multiple os in isloation on the same hardware.
+  -we can test apps on same os in dev andtest and prod.
+
+Java app deployment on VMS.......
+
+VMS was very good initially.
+
+Drawbacks
+ -Cost is high
+ -We need high powered hardwares
+    -We cant provide provision in dev.
+
+3. Data center maintaince and its problems
+
+-Data center maintaince increases cost of the company.
+
+Cloud Technology:
+      "Taking Data center services for Rent".
+
+Cloud Provider started thinking how to utilize the hardware and os efficiently.
+  - BareMetal
+  - Virtualzation
+
+How to improve virtualzation?
+
+                                      "Container Technologies"
+
+Run micro operating systems on host machines.
+
+MicroOperating :
+  -Kernal
+  -shel
+  -memory,networking,storage utilities
+  -I can have app runtime
+  -Apps
+
+Namespaces: isloate operating system resources,fs,memory
+-------Containers-------------Docker.........................................................
+
+
+
+
+
+
+  
+
+
+	
+
+   
