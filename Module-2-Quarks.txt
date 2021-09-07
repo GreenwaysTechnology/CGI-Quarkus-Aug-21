@@ -2373,7 +2373,7 @@ public class HelloResource {
 			Bean Creation Exception-UnsatisfiedResolutionException
 
 
-avax.enterprise.inject.UnsatisfiedResolutionException: Unsatisfied dependency for type com.cgi.di.HelloService and qualifiers [@Default]
+avax.enterprise.inject.	: Unsatisfied dependency for type com.cgi.di.HelloService and qualifiers [@Default]
 	- java member: com.cgi.HelloResource#helloService
 	- declared on CLASS bean [types=[java.lang.Object, com.cgi.HelloResource], qualifiers=[@Default, @Any], target=com.cgi.HelloResource]
 	at io.quarkus.arc.processor.Beans.resolveInjectionPoint(Beans.java:492)
@@ -7157,7 +7157,7 @@ Drawbacks:
 2.Virtual Machine Deployment
   -We can simulate os on single hardware.
   -We can run multiple os in isloation on the same hardware.
-  -we can test apps on same os in dev andtest and prod.
+  -we can test apps on same os in dev and test and prod.
 
 Java app deployment on VMS.......
 
@@ -7196,12 +7196,73 @@ Namespaces: isloate operating system resources,fs,memory
 -------Containers-------------Docker.........................................................
 
 
+Docker:
+  Program/software, which helps to pack your application into micro operating system, takes care of running application.
 
+Docker installation:
+1.windows,linux,mac.
 
+in order to install docker in windows
 
+-hyper-visior
+-subsystem linux
+..............................................................................................
+Docker core concepts:
 
+image
+    : template which decribes how to pack and deploy application.
+how to distribute os in compressed form. 
+ image is derved from vms.
+
+docker images are very light weight, when compare to vm images.
   
+docker image is starting point for deploying applications.
 
+where are the images? how to create images?
+
+Any software can be converted into image, and can distribtued to others.
+
+docker hub is reposistory , where people publish, download images 
+............................................................................................
+
+
+
+container
+
+ It is runtime representation of image -  process
+
+.............................................................................................
+
+
+Docker components
+
+1.Docker host : os where docker is installed
+2.Docker daemon : it is process  , running ,managing ,containers
+3.docker registry
+   -local -  where images are stored in local machine
+   -remote - where images are hosted in remote machines
+4.docker clients
+    can be cmd tools/ui tools which interacts with dockerdaemon via http protocal.
+
+5.docker objects.
+
+ images, containers, networks, volumes, plugins, and other objects
+
+6.docker commands
+   docker commands are like http verbs - get,post,delete.
+
+ maincommand options subcommand
+
+ docker options subcommand  
+
+
+image:
+docker image subcommand
+
+image properties
+-imageid -  every image must be uniqukly identifed by image id
+-image name - 
+-tag -  version information about image -  1.1.1 or latest
 
 	
 
